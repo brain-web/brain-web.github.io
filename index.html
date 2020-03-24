@@ -1,27 +1,263 @@
-<div id="repo-list">
-</div>
-<script>
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://api.github.com/search/repositories?q=topic:brainweb');
-xhr.send(null);
-xhr.onreadystatechange = function () {
-  var DONE = 4; // readyState 4 means the request is done.
-  var OK = 200; // status 200 is a successful return.
-  if (xhr.readyState === DONE) {
-    if (xhr.status === OK) {
-        const res = JSON.parse(xhr.responseText);
-        console.log(res);
-        for(repo of res.items) {
-            const {name, description, html_url} = repo;
-            document.getElementById("repo-list").innerHTML+=`
-<div>
-    <b><a href="${html_url}">${name}</a></b>
-    <p>${description}</p>
-</div>`;
-        }
-    } else {
-      console.log('Error: ' + xhr.status); // An error occurred during the request.
-    }
-  }
-};
-</script>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>BrainWeb</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./css/main.css">
+        <link rel='shortcut icon' type='image/x-icon' href="./favicon.ico" />
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+        <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
+    </head>
+
+
+    <body>
+
+    <!-- navigation bar -->
+        <!-- currently, the fixed top class is added, so it sticks to the top -->
+        <!-- data value of nav bar corresponds to id in each section -->
+        <nav class="navbar navbar-expand-lg fixed-top ">
+
+            <a class="navbar-brand" href="https://brain-web.github.io/" target="_blank">
+                <div class="logo_brainweb"><p style="padding-left:3.7em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p></div>
+                <!-- <div><p style="padding-left:2.7em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.2;vertical-align: middle;">BrainWeb</p></div> -->
+            </a>
+
+            <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;" onclick="this.blur();">
+            </button>
+
+            <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
+                <!-- <a class="navbar-brand" href="#myheader">
+                    <div class="logo_brainweb"></div>
+                </a> -->
+                <ul class="navbar-nav mr-4" >
+                    <li class="nav-item">
+                        <a class="nav-link" data-value="home" href="#">BrainWeb</a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- <a class="nav-link" id="datatablemri" href="./datatables/mri/" target="_blank">Events</a> -->
+                        <a class="nav-link" data-value="events" href="#">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" <a id="projects" href="#">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" <a id="community" href="#">Community</a>
+                    </li>
+                    <!--<li class="nav-item">
+                        <a class="nav-link" data-value="projects" href="#">Projects</a>
+                    </li>-->
+                </ul>
+            </div>
+        </nav>
+
+
+        <!-- my header -->
+        <header class="header" id="myheader">
+            <div class="overlay">
+            </div>
+            <div class="container">
+                <!-- <div class="description rectangle"> -->
+                    <div class="row">
+                        <div id="chart"></div>
+                        <div id="chart2"></div>
+                        
+                        <div id="intro" style="color:white;position:absolute;top:8em;right:15%;text-align:left;padding:0.25em">
+                            <h1 style="font-family:Raleway;font-size:2.9rem;font-weight:300;text-align:left">BrainWeb</h1>
+                            <h1 style="font-family:Raleway;font-size:1.4rem;font-weight:300;text-align:left;margin-top:1.4em;">NEUROSCIENCE COLLABORATION</h1>
+                            <h1 style="font-family:Raleway;font-size:1.4rem;font-weight:300;text-align:left;margin-bottom:2em;">IN THE TIME OF THE CORONA</h1>
+                            <h2 style="font-family:Oswald;font-size:2.5rem;font-weight:700;text-align:left;margin-bottom:0.8em;transform:translate(0,-15px);">Kickoff 27/03/2020</h2>
+                            <!-- <h1 style="font-family:Raleway;font-size:2.4rem;font-weight:300;text-align:left;margin-bottom:1em;transform:translate(0,-15px);">3 pm UTC</h1> -->
+                            <p><a href="https://meet.jit.si/BrainWeb" target="_blank" style="color:white;font-family:Raleway;font-size:1.4rem;font-weight:300;line-height:1;">JOIN US HERE AT 3 PM UTC</a></p><br/>
+                        </div>
+                        <span class="btn-scroll-down scroll"></span>
+
+                        <!-- <div id="videoContainer">
+                            <video autoplay loop poster="./images/logo/brainweb-voronoi2.png">
+                                <source src="./images/logo/brainweb_bg.mp4" type="video/mp4">
+                            </video>
+                        </div>  -->
+
+                        <!-- left side logo -->
+                        <!-- <div class="col-lg-4 col-md-4 col-xs-12">
+                            <div class="fiindlogobig" style="max-width:80%;transform:translate(0,0)">
+                                <img src="./images/logo/brainweb-voronoi.png" class="img-fluid" alt="">
+                            </div>
+                            <br/>
+                        </div> -->
+                        <!-- right side text -->
+                        <!-- <div class="col-lg-8 col-md-8 col-xs-12" style="position: relative;bottom:0em;vertical-align: bottom; vertical-align: text-bottom; padding-top:8em;padding-left:1em;">
+                            <p style="vertical-align: bottom;position:absolute;bottom:0.3em;padding-right: 2em;">A project to create an online atlas of the development of the ferret brain, and to further the development of interactive tools to collaborate on the FIIND dataset.
+                            </p>
+                        </div> -->
+                    <!-- </div> -->
+                </div>
+            </div>
+        </header>
+
+
+        <!-- BrainWeb description -->
+        <div class="row mainpageparts" id="home">
+            <div class="container">
+                <h1>BrainWeb</h1>
+                <div class="row">
+                    <!-- left side 1 -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div data-aos="fade-in" data-aos-easing="linear" data-aos-duration="3000" data-aos-offset="0">
+                            <!-- <img data-aos="fade-in" data-aos-easing="linear" data-aos-duration="3000" data-aos-offset="0" src="./images/landing/brainweb-voronoi-1.png" style="width:100%;padding-top:2.8em;filter:grayscale(50%) contrast(100%) opacity(90%); -webkit-filter:grayscale(50%) contrast(100%) opacity(90%);"" class="img-fluid" alt=""> -->
+                            <img data-aos="fade-in" data-aos-easing="linear" data-aos-duration="3000" data-aos-offset="0" src="./images/landing/brainweb-voronoi-1.png" style="width:60%;padding-top:2.8em;" class="img-fluid" alt="">
+                        </div>
+                        <div>
+                            <span></span>
+                        </div>
+                        <div><p><br></p></div>
+                    </div>
+                    <!-- right side 1 -->
+                    <div class="col-lg-8 col-md-8 col-sm-12 desc">
+                        <h3>The BrainWeb</h3>
+                        <!-- to be together online, meet & matcha, work  & watermelon, catch up & coffee.  -->
+                        <p>
+                            BrainWeb is a permanent virtual space for online collaborations on projects related to neuroscience. Inspired by initiatives such as Brainhack Global, the OHBM Hackathon, and the OHBM Equinox Brain Twitter Conference, BrainWeb aims at providing an online workspace to facilitate distributed collaboration on a continuous basis. <br>
+
+                            Let's connect as a community around the globe once every 6 weeks via <a href="https://meet.jit.si/BrainWeb" style="cursor:pointer">video conference</a> where anyone can join in flexibly.
+                            <br/><br/>
+                        </p>
+                    </div>
+                    <!-- left side 2 -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div data-aos="fade-in" data-aos-easing="linear" data-aos-duration="3000" data-aos-offset="0">
+                            <img src="./images/landing/brainweb-voronoi-2.png" style="width:60%; filter:grayscale(50%) contrast(100%) opacity(90%); -webkit-filter:grayscale(60%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
+                        </div>
+                        <div>
+                            <span></span>
+                        </div>
+                        <div><p><br></p></div>
+                    </div>
+                    <!-- right side 2 -->
+                    <div class="col-lg-8 col-md-8 col-sm-12 desc">
+                        <h3>Coding, coffee & collaborations</h3>
+                        <p>
+                            We are inviting all nodes of the BrainWeb to coffee & catch up every 6 weeks. This will be our regular opportunity to chat, present our progress if you wish, do spontaneous unconferences or kick off new projects and collaborations. <br>
+                            BrainWeb’s kickoff meeting is March 27th, one week after the OHBMX Twitter conference has stimulated endless new ideas and enthusiasm. <a href="https://meet.jit.si/BrainWeb" style="cursor:pointer">Let’s get together at 3pm UTC on the BrainWeb</a>! <br>
+                        <br>
+                        </p>
+                    </div>
+                    <!-- left side 3 -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div data-aos="fade-in" data-aos-duration="3000" data-aos-offset="0">
+                            <img src="./images/landing/brainweb-voronoi-8.png" style="width:60%;filter:grayscale(50%) contrast(100%) opacity(90%); -webkit-filter:grayscale(50%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
+                        </div>
+                        <div>
+                            <span></span>
+                        </div>
+                        <div><p><br></p></div>
+                    </div>
+                    <!-- right side 3 -->
+                    <div class="col-lg-8 col-md-8 col-sm-12 desc">
+                        <h3>Propose a project</h3>
+                        <p>
+                            Before, during, and after the BrainWeb kickoff we will keep track of all BrainWeb projects.  All you need to do to add your project to the BrainWeb community is to create a repository on GitHub and to add “BrainWeb” as a <i>topic</i>. <br>
+                            During our meetings, you are invited to pitch your project, find enthusiasts, break out into smaller meetings in parallel, and continue to work in teams after the online BrainWeb meeting.
+                        </p>
+                    </div>
+                    <!-- left side 4 -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div data-aos="fade-in" data-aos-duration="3000" data-aos-offset="0">
+                            <img src="./images/landing/brainweb-voronoi-16.png" style="width:60%;filter:grayscale(50%) contrast(100%) opacity(90%); -webkit-filter:grayscale(50%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
+                        </div>
+                        <div>
+                            <span></span>
+                        </div>
+                        <div><p><br></p></div>
+                    </div>
+                    <!-- right side 4 -->
+                    <div class="col-lg-8 col-md-8 col-sm-12 desc">
+                        <h3>Communication</h3>
+                        <p>
+                            While we all meet in the <a href="https://meet.jit.si/BrainWeb" target="_blank" style="cursor:pointer">main Jitsi</a>, you can also create your own, more focused video conference room to discuss & brainstorm in parallel. You will be able to find the list of all simultaneous project rooms in our shared Google Doc below. <br>
+                            We also encourage you to create a channel on Brainhack’s Mattermost, to keep track of your progress and collaborate in between BrainWeb meetings. This will also make it easier for new collaborators to learn about what your team has already achieved.
+                        </p>
+                    </div>
+                    <!-- left side 5 -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div data-aos="fade-in" data-aos-duration="3000" data-aos-offset="0">
+                            <img src="./images/landing/brainweb-voronoi-8.png" style="width:60%;filter:grayscale(50%) contrast(100%) opacity(90%); -webkit-filter:grayscale(50%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
+                        </div>
+                        <div>
+                            <span></span>
+                        </div>
+                        <div><p><br></p></div>
+                    </div>
+                    <!-- right side 5 -->
+                    <div class="col-lg-8 col-md-8 col-sm-12 desc">
+                        <h3>Format</h3>
+                        <p>
+                            BrainWeb will kick off with project pitches as a start into 3 days of hacking together, unconferencing, coffee chats and a peek into project progress. At the end of the 3 days, each team is invited to share updates on their projects with the entire community!<br>
+                            Let's work together no matter where we are!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous">
+        </script>
+        <!--<script src='https://cdn.jsdelivr.net/npm/jquery@3.1.1/dist/jquery.min.js'></script>-->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script src="./js/main.js"></script>
+
+        <script>
+            AOS.init();
+        </script>
+
+        <script>
+            const selectedChart = parseInt(2*Math.random());
+        </script>
+
+        <script type="module">
+            import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+            import notebook from "https://api.observablehq.com/@katjaq/voronoi-update.js?v=3";
+
+            if(selectedChart == 0) {
+                const main = new Runtime().module(notebook, (name) => {
+                    if(name === "chart") {
+                        console.log(name);
+                        return new Inspector(document.getElementById("chart"));
+                    }
+                });
+                main.redefine("height",window.innerHeight);
+                main.redefine("width",window.innerWidth);
+            }
+        </script>
+
+        <script type="module">
+            import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+            import notebook from "https://api.observablehq.com/@katjaq/voronoi-update/2.js?v=3";
+            
+            if(selectedChart > 0) {
+                const main = new Runtime().module(notebook, (name) => {
+                    if(name === "chart") {
+                        console.log(name);
+                        return new Inspector(document.getElementById("chart2"));
+                    }
+                });
+                main.redefine("height",window.innerHeight);
+                main.redefine("width",window.innerWidth);
+            }
+        </script>
+
+
+    </body>
+</html>
