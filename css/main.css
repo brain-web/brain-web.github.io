@@ -134,8 +134,8 @@ button:active,.button:active:focus,.button:visited {
     left:0;
     padding: 0;
     margin: 0;
-    filter: contrast(100%) opacity(30%);
-    -webkit-filter: contrast(100%) opacity(30%);
+    filter: contrast(100%) opacity(35%);
+    -webkit-filter: contrast(100%) opacity(35%);
 }
 #chart2 {
     position: absolute;
@@ -143,8 +143,8 @@ button:active,.button:active:focus,.button:visited {
     opacity: 0.8;
     padding: 0;
     margin: 0;
-    filter: contrast(100%) opacity(40%);
-    -webkit-filter: contrast(100%) opacity(40%);
+    filter: contrast(100%) opacity(45%);
+    -webkit-filter: contrast(100%) opacity(45%);
 }
 
 /* header text */
