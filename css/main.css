@@ -314,6 +314,19 @@ a:hover,a:focus,a:active {
     /* padding-bottom: 3px; */
     opacity: 1;
 }
+/* page 2 events text */
+#events a {
+    color: white;
+    /* padding-bottom: 3px; */
+    border-bottom: 1px solid rgba(255, 255, 255, .3);
+    transition: border-bottom 0.5s;
+}
+#events a:hover {
+    border-style:solid;
+    border-bottom: 1px solid white;
+    /* padding-bottom: 3px; */
+    opacity: 1;
+}
 
 /* Gallery –– static gallery */
 /*
