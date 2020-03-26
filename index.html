@@ -91,7 +91,7 @@
 
 
         <!-- BrainWeb description -->
-        <div class="row mainpageparts" id="home">
+        <div class="row mainpageparts hide" id="home">
             <div class="container">
                 <h1>BrainWeb</h1>
                 <div class="row">
@@ -197,7 +197,7 @@
 
 
         <!-- part 2 Events -->
-        <div class="row mainpageparts" id="events">
+        <div class="row mainpageparts hide" id="events">
             <div class="container">
                 <h1>Events</h1>
                 <!-- visual head image of section -->
@@ -255,7 +255,7 @@
         </div> -->  
 
         <!-- part 3 Gallery of projects -->
-        <div class="row" id="projects">
+        <div class="row hide" id="projects">
             <div class="container">
                 <h1>Projects</h1>
                 <div class="row">
@@ -307,6 +307,12 @@
 
         <script>
             const selectedChart = parseInt(2*Math.random());
+            function unhide() {
+                const elems = document.querySelectorAll(".hide");
+                [].forEach.call(elems, function(el) {
+                    el.classList.remove("hide");
+                });
+            }
         </script>
 
         <!-- ObservableHQ 1 -->
@@ -318,6 +324,7 @@
                 const main = new Runtime().module(notebook, (name) => {
                     if(name === "chart") {
                         console.log(name);
+                        setTimeout(unhide,1000);
                         return new Inspector(document.getElementById("chart"));
                     }
                 });
@@ -335,6 +342,7 @@
                 const main = new Runtime().module(notebook, (name) => {
                     if(name === "chart") {
                         console.log(name);
+                        setTimeout(unhide,1000);
                         return new Inspector(document.getElementById("chart2"));
                     }
                 });
@@ -360,7 +368,7 @@
                     goTo (url) {
                         window.location = url
                     },
-                },
+                }
             })
 
             async function get_1st_image_from_md(url) {

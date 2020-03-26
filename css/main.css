@@ -5,9 +5,10 @@ html,h1,h2,h3,h4,h5,h6,a {
     /*font-family: 'Montserrat', sans-serif;*/
 }
 /* hide everything until compilation complete */
-/* [v-cloak] {
+.hide {
     display: none;
-} */
+}
+
 /* h1 in body except for header */
 h1 {
     font-size: 2.5rem;
