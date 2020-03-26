@@ -4,14 +4,61 @@ html,h1,h2,h3,h4,h5,h6,a {
     font-family: 'Raleway', sans-serif;
     /*font-family: 'Montserrat', sans-serif;*/
 }
+/* h1 in body except for header */
+h1 {
+    font-size: 2.5rem;
+    line-height: 1.2 !important;
+    letter-spacing: normal;
+    -webkit-font-smoothing: auto;
+}
+h1 div:not(#myheader){
+    font-family: 'Raleway', sans-serif !important;
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: normal;
+    font-weight: 300 !important;
+    line-height: 48px !important;
+    margin: 1.6em 0 0 0 !important;
+    text-align: left !important;
+}
+h3 {
+    font-weight: 500 !important;
+    line-height: normal;
+}
+
 body {
     font-family: 'Raleway', sans-serif;
+    /* font-size: 16px;
+    -webkit-font-smoothing: auto; */
     padding: 0;
     margin: 0;
     /*background:#111;*/
     background: rgb(20, 20, 20);
     color: #fff;
 }
+p {
+    font-size: 16px;
+    -webkit-font-smoothing: auto;
+}
+
+a {
+    text-decoration: none;
+    color:white;
+    border-style:solid;
+    border-width: 0px 0px 0.1px 0px;
+    padding-bottom:3px;
+    opacity:0.95;
+}
+a:hover,a:focus,a:active {
+    /*text-decoration: underline;*/
+    text-decoration:none;
+    border-style:solid;
+    border-width: 0px 0px 0.1px 0px;
+    padding-bottom:3px;
+    opacity:1;
+    /*transition: all .3s ease-in;*/
+}
+
 
 /* Logo in the header */
 .logo_brainweb {
@@ -66,6 +113,7 @@ body {
     /* height:2.7em; */
 }
 
+
 /* navigation */
 .navbar {
     background: #000;
@@ -97,6 +145,7 @@ body {
     margin-right: 1em !important;
     font-size: 14px;
     font-weight: 400 !important;
+    -webkit-font-smoothing: auto;
     text-align: -webkit-match-parent;
 }
 .nav-link:hover {
@@ -147,8 +196,58 @@ button:active,.button:active:focus,.button:visited {
     -webkit-filter: contrast(100%) opacity(45%);
 }
 
-/* header text */
+/* intro text */
+#intro {
+    position: absolute;
+    top: 128px !important;
+}
+#introbrainweb {
+    font-family: 'Raleway', sans-serif;
+    font-size: 2.9rem;
+    font-weight: 300 !important;
+    letter-spacing: 0;
+    -webkit-font-smoothing: auto;
+    line-height: 1.2;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    margin-top:5 !important;
+}
+#introneurocollab {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.4rem;
+    line-height: 1.2;
+    letter-spacing: normal;
+    font-weight: 300;
+    text-align: left;
+    margin-top: 1.4em;
+}
+#introinthetimeof {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.4rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+    font-weight: 300;
+    text-align: left;
+    margin-bottom: 2em;
+}
+#introkickoff {
+    font-family: Oswald;
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: normal;
+    line-height: 1.2;
+    text-align: left;
+    margin-bottom: 0.8em;
+    transform: translate(0,-15px);
+    -webkit-font-smoothing: auto;
+}
+/* intro links */
 #intro a {
+    color: white;
+    font-family: Raleway;
+    font-size: 1.4rem;
+    font-weight: 300;
+    line-height: 1;
     border-bottom: 1px solid transparent;
     transition: border-bottom 0.5s;
 }
@@ -157,25 +256,6 @@ button:active,.button:active:focus,.button:visited {
     border-bottom: 1px solid white;
     padding-bottom:3px;
     opacity: 1;
-}
-
-
-a {
-    text-decoration: none;
-    color:white;
-    border-style:solid;
-    border-width: 0px 0px 0.1px 0px;
-    padding-bottom:3px;
-    opacity:0.95;
-}
-a:hover,a:focus,a:active {
-    /*text-decoration: underline;*/
-    text-decoration:none;
-    border-style:solid;
-    border-width: 0px 0px 0.1px 0px;
-    padding-bottom:3px;
-    opacity:1;
-    /*transition: all .3s ease-in;*/
 }
 
 
@@ -261,7 +341,7 @@ a:hover,a:focus,a:active {
 .mainpageparts h1 {
     color: #fff;
     font-weight: 300;
-    margin: 1.6em 0 0 0;
+    margin: 1.6em 0 0 0 !important;
     text-align: left;
 }
 .mainpageparts img {
@@ -345,6 +425,57 @@ a:hover,a:focus,a:active {
   margin: 0em;
 }
 */
+
+
+/* Q Cards for projects */
+#q-app {
+    margin: 1.6 0 0 0;
+}
+#q-app {
+    margin-top: 1rem;
+}
+.my-card {
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+    border-style: solid;
+    border: 1px solid transparent;
+    transition: border 0.5s;
+}
+.my-card:hover {
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid lightgrey;
+    opacity: 0.95;
+    transition: border 0.5s;
+}
+/* .row {
+    margin-right: auto !important;
+    margin-left: auto !important;
+} */
+.q-card__section {
+    font-family: Roboto, sans-serif !important;
+    /* font-size: 10px !important; */
+    /* line-height: 21px !important; */
+}
+.q-card__section p {
+    font-size: 8px;
+}
+a.hover {
+    color: white !important;
+}
+.q-btn {
+    color: white !important;
+}
+/* Hreading of the card */
+.text-h6 {
+    font-family: 'Raleway', sans-serif !important;
+    /* -webkit-font-smoothing: antialiased;
+    font-size: 1.25rem;
+    font-weight: 400 !important;
+    letter-spacing: 0.25px; */
+}
+
 
 /* Main page project gallery */
 /* Filter Buttons */
