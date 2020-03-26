@@ -422,16 +422,17 @@
                         const res = JSON.parse(xhr.responseText);
                         console.log(res);
                         for(repo of res.items) {
-                            (const {name, description, html_url} = aRepo;
-                            const imgSrc = get_1st_image_from_readme(html_url).then((res) => {
-                                app.projects.push({
-                                    imgSrc:(res)?res:defaultImages[parseInt(defaultImages.length*Math.random())],
-                                    projectName: name,
-                                    projectDescription: description,
-                                    projectURL: html_url
-                                })
-                            }).catch((e)=>console.log);
-                            )(repo);
+                            ((aRepo) => {
+                                const {name, description, html_url} = aRepo;
+                                const imgSrc = get_1st_image_from_readme(html_url).then((res) => {
+                                    app.projects.push({
+                                        imgSrc:(res)?res:defaultImages[parseInt(defaultImages.length*Math.random())],
+                                        projectName: name,
+                                        projectDescription: description,
+                                        projectURL: html_url
+                                    })
+                                }).catch((e)=>console.log);
+                            })(repo);
                         }
                     } else {
                       console.log('Error: ' + xhr.status); // An error occurred during the request.
