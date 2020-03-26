@@ -363,6 +363,48 @@
                 },
             })
 
+            async function get_1st_image_from_md(url) {
+                console.log("Trying", url);
+                var pr = new Promise((resolve, reject) => {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url);
+                    xhr.send(null);
+                    xhr.onreadystatechange = function () {
+                        var DONE = 4; // readyState 4 means the request is done.
+                        var OK = 200; // status 200 is a successful return.
+                        let imgSrc = null;
+                        if (xhr.readyState === DONE) {
+                            if (xhr.status === OK) {
+                                const text = xhr.responseText;
+                                const arr = text.match(/(https:[^\) ]+)/);
+                                if(arr !== null && arr[0] !== null) {
+                                    imgSrc = arr[0];
+                                }
+                            } else {
+                                // console.log('Error: ' + xhr.status); // An error occurred during the request.
+                            }
+                            resolve(imgSrc);
+                        }
+                    }
+                });
+                return pr;
+            }
+
+            async function get_1st_image_from_readme(repoURL) {
+                const url = repoURL.replace("https://github.com/","https://raw.githubusercontent.com/") + "/master";
+                let imgSrc;    
+                imgSrc = await get_1st_image_from_md(url + '/README.md');
+                if(imgSrc === null) {
+                    imgSrc = await get_1st_image_from_md(url + '/ReadMe.md');
+                } else if(imgSrc === null) {
+                    imgSrc = await get_1st_image_from_md(url + '/readme.md');
+                } else if(imgSrc === null) {
+                    imgSrc = await get_1st_image_from_md(url + '/Readme.md');
+                }
+                console.log("Got:", imgSrc);
+                return imgSrc;
+            }
+
             // get repo list
             const defaultImages = [
                 "https://generative-placeholders.glitch.me/image?width=300&height=200&style=triangles",
@@ -379,7 +421,8 @@
                     const res = JSON.parse(xhr.responseText);
                     console.log(res);
                     for(repo of res.items) {
-                        const {name, description, html_url, imgSrc} = repo;
+                        const {name, description, html_url} = repo;
+                        const imgSrc = await get_1st_image_from_readme(html_url);
                         app.projects.push({
                             imgSrc:(imgSrc)?imgSrc:defaultImages[parseInt(defaultImages.length*Math.random())],
                             projectName: name,
