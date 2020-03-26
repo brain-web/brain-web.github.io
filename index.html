@@ -406,40 +406,43 @@
             }
 
             // get repo list
-            const defaultImages = [
-                "https://generative-placeholders.glitch.me/image?width=300&height=200&style=triangles",
-                "https://generative-placeholders.glitch.me/image?width=300&height=200"
-            ]
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://api.github.com/search/repositories?q=topic:brainweb');
-            xhr.send(null);
-            xhr.onreadystatechange = function () {
-              var DONE = 4; // readyState 4 means the request is done.
-              var OK = 200; // status 200 is a successful return.
-              if (xhr.readyState === DONE) {
-                if (xhr.status === OK) {
-                    const res = JSON.parse(xhr.responseText);
-                    console.log(res);
-                    for(repo of res.items) {
-                        const {name, description, html_url} = repo;
-                        const imgSrc = await get_1st_image_from_readme(html_url);
-                        app.projects.push({
-                            imgSrc:(imgSrc)?imgSrc:defaultImages[parseInt(defaultImages.length*Math.random())],
-                            projectName: name,
-                            projectDescription: description,
-                            projectURL: html_url
-                        })
-            //             document.getElementById("repo-list").innerHTML+=`
-            // <div>
-            //     <b><a href="${html_url}">${name}</a></b>
-            //     <p>${description}</p>
-            // </div>`;
+            async function get_repo_list() {
+                const defaultImages = [
+                    "https://generative-placeholders.glitch.me/image?width=300&height=200&style=triangles",
+                    "https://generative-placeholders.glitch.me/image?width=300&height=200"
+                ]
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://api.github.com/search/repositories?q=topic:brainweb');
+                xhr.send(null);
+                xhr.onreadystatechange = function () {
+                  var DONE = 4; // readyState 4 means the request is done.
+                  var OK = 200; // status 200 is a successful return.
+                  if (xhr.readyState === DONE) {
+                    if (xhr.status === OK) {
+                        const res = JSON.parse(xhr.responseText);
+                        console.log(res);
+                        for(repo of res.items) {
+                            const {name, description, html_url} = repo;
+                            const imgSrc = await get_1st_image_from_readme(html_url);
+                            app.projects.push({
+                                imgSrc:(imgSrc)?imgSrc:defaultImages[parseInt(defaultImages.length*Math.random())],
+                                projectName: name,
+                                projectDescription: description,
+                                projectURL: html_url
+                            })
+                //             document.getElementById("repo-list").innerHTML+=`
+                // <div>
+                //     <b><a href="${html_url}">${name}</a></b>
+                //     <p>${description}</p>
+                // </div>`;
+                        }
+                    } else {
+                      console.log('Error: ' + xhr.status); // An error occurred during the request.
                     }
-                } else {
-                  console.log('Error: ' + xhr.status); // An error occurred during the request.
-                }
-              }
-            };
+                  }
+                };
+            }
+            get_repo_list();
             </script>
 
 
