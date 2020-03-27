@@ -240,11 +240,43 @@
             }
             window.signOut = signOut;
 
-            function update(data) {
-                const str = JSON.stringify(data);
+            function arr2dic(arr) {
+                const dic = {};
+                for(let item of arr) {
+                    const {name} = item;
+                    dic[name] = {}
+                    for(let key of Object.keys(item)) {
+                        if(key !== "name") {
+                            dic[name][key] = item[key];
+                        }
+                    }
+                }
+                return dic;
+            }
+
+            function dic2arr(dic) {
+                const arr = [];
+                for(let name of Object.keys(dic)) {
+                    const item = {name};
+                    for(let key of Object.keys(dic[name])) {
+                        if(key!==name) {
+                            item[key] = dic[name][key];
+                        }
+                    }
+                    arr.push(item);
+                }
+                return arr;
+            }
+
+            function update(databaseDic) {
+                const {userName} = app;
+                if(userName === null) {
+                    return;
+                }
+                const str = databaseDic[userName];
                 const obj = {};
-                obj[circleName] = str;
-                firebase.database().ref('circles').update(obj)
+                obj[userName] = str;
+                firebase.database().ref(`circles/${circleName}`).update(obj)
                 .then(function(snapshot) {
                     console.log('update: success');
                 }, function(error) {
@@ -257,11 +289,11 @@
                 circles.on('value', (s) => {
                     const circle = s.val();
                     if(circle === null) {
-                    return;
+                        return;
                     }
-                    databaseToPeople(circle);
+                    databaseDicToPeopleArr(circle);
                     addCurrentUser();
-                    peopleToNetwork(app.people);
+                    peopleArrToNetwork(app.people);
                     cluster(network);
                 });
             }
@@ -275,16 +307,17 @@
             }
             window.startFirebase = startFirebase;
 
-            function databaseToPeople(data) {
+            function databaseDicToPeopleArr(databaseDic) {
                 const oldPeople = app.people;
 
-                const incomingPeople = JSON.parse(data);
-                const newPeople = incomingPeople.filter((person) => !(oldPeople.map((o)=>o.name).includes(person.name)));
+                const incomingPeopleDic = databaseDic;
+                const incomingPeopleArr = dic2arr(incomingPeopleDic);
+                const newPeople = incomingPeopleArr.filter((person) => !(oldPeople.map((o)=>o.name).includes(person.name)));
                 for(let p of newPeople) {
-                app.people.push(p);
+                    app.people.push(p);
                 }
 
-                for(let p of incomingPeople) {
+                for(let p of incomingPeopleArr) {
                     for(let s of p.skills) {
                         if(!skills.includes(s)) {
                             skills.push(s);
@@ -293,15 +326,15 @@
                 }
             }
 
-            function peopleToNetwork(people) {
-                const nodes = people.map((p) => {
+            function peopleArrToNetwork(peopleArr) {
+                const nodes = peopleArr.map((p) => {
                     return {id:p.name, group: 1}
                 })
                 const links = [];
-                for(let i=0;i<people.length-1;i++) {
-                    for(let j=i+1;j<people.length;j++) {
-                        const src = people[i];
-                        const trg = people[j];
+                for(let i=0;i<peopleArr.length-1;i++) {
+                    for(let j=i+1;j<peopleArr.length;j++) {
+                        const src = peopleArr[i];
+                        const trg = peopleArr[j];
                         const srcSkills = src.skills;
                         const trgSkills = trg.skills;
                         const common = srcSkills.filter(skill => trgSkills.includes(skill));
@@ -314,12 +347,13 @@
                 main.redefine("miserable", network);
             }
 
-            function peopleToDatabase(people) {
-                const arr = []
-                for(let p of people) {
+            function peopleArrToDatabaseDic(peopleArr) {
+                const arr = [];
+                for(let p of peopleArr) {
                     arr.push(JSON.parse(JSON.stringify(p)));
                 }
-                update(arr);
+                const dic = arr2dic(peopleArr)
+                update(dic);
             }
 
             function addCurrentUser() {
@@ -395,8 +429,8 @@
                         event.stopPropagation()
                     },
                     draw (e) {
-                        peopleToNetwork(this.people);
-                        peopleToDatabase(this.people);
+                        peopleArrToNetwork(this.people);
+                        peopleArrToDatabaseDic(this.people);
                         cluster(network);
                     },
                     goTo (url) {
