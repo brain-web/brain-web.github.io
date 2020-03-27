@@ -197,8 +197,8 @@ button:active,.button:active:focus,.button:visited {
     opacity: 0.8;
     padding: 0;
     margin: 0;
-    filter: contrast(100%) opacity(45%);
-    -webkit-filter: contrast(100%) opacity(45%);
+    filter: contrast(100%) opacity(60%);
+    -webkit-filter: contrast(100%) opacity(60%);
 }
 
 /* intro text */
