@@ -4,14 +4,13 @@
         <title>BrainWeb</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-        <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
         <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+        <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
 
         <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
-
-        <link rel="stylesheet" type="text/css" href="/css/main.css">
     </head>
 
 
@@ -56,6 +55,16 @@
                 }
                 #loginStatus a:hover {
                     border-bottom:1px solid white;
+                }
+                .q-chip .row {
+                    /* padding-left: -6px !important;
+                    padding-right: 6px !important; */
+                    margin-left:-4px !important;
+                    margin-right:4px !important;
+                }
+                .q-chip > .col {
+                    padding-left:5.6px !important;
+                    padding-right:5.6px !important;
                 }
                 [v-cloak] {
                     display: none;
@@ -109,9 +118,23 @@
                                 <img :src="pr.imgSrc">
                                 <q-card-section>
                                     <div class="text-h6">{{pr.projectName}}</div>
+                                    {{pr.projectInfo.homepage}}
                                 </q-card-section>
                                 <q-card-section>
-                                    {{pr.projectDescription}}
+                                    <div class="text-subtitle1">
+                                        {{pr.projectInfo.description}}
+                                    </div>
+                                </q-card-section>
+                                <q-card-section>
+                                    <q-chip dense square icon-right="grade" style="background:#333">
+                                        <q-avatar color="grey" text-color="white">{{pr.projectInfo.stargazers_count}}</q-avatar> Stars
+                                    </q-chip>
+                                    <q-chip dense square v-if="pr.projectInfo.language" style="background:#333">
+                                        {{pr.projectInfo.language}}
+                                    </q-chip>
+                                    <q-chip dense square icon-right="error_outline" style="background:#333">
+                                        <q-avatar color="grey" text-color="white">{{pr.projectInfo.open_issues}}</q-avatar> Issues
+                                    </q-chip>
                                 </q-card-section>
                             </q-card>
                         </div>
@@ -122,6 +145,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
         <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
         <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
@@ -190,13 +214,22 @@
                             const res = JSON.parse(xhr.responseText);
                             for(let repo of res.items) {
                                 ((aRepo) => {
-                                    const {name, description, html_url} = aRepo;
+                                    const {
+                                        name,
+                                        description,
+                                        html_url,
+                                        open_issues,
+                                        stargazers_count,
+                                        language,
+                                        homepage
+                                    } = aRepo;
                                     get_1st_image_from_readme(html_url).then((res) => {
                                         app.projects.push({
                                             imgSrc:(res)?res:defaultImages[parseInt(defaultImages.length*Math.random())],
                                             projectName: name,
                                             projectDescription: description,
-                                            projectURL: html_url
+                                            projectURL: html_url,
+                                            projectInfo: {description, html_url, open_issues, stargazers_count, language, homepage}
                                         })
                                     }).catch((e)=>console.log);
                                 })(repo);
