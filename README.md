@@ -5,4 +5,6 @@ A permanent space for the  community to be together online, meet&amp;matcha, wor
 
 <img src="./images/readme/brainweb_landing.jpg" width="900" />
 <img src="./images/readme/brainweb_brainweb.jpg" width="900" />
+<img src="./images/readme/brainweb_events.jpg" width="900" />
+
 
