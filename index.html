@@ -21,7 +21,6 @@
 
         <!-- Firebase authentication -->
         <div id="firebaseui-auth-container" class="auth-dialog"></div>
-        <div id="account-details" class="auth-dialog"></div>
 
     <!-- navigation bar -->
         <!-- currently, the fixed top class is added, so it sticks to the top -->
@@ -44,7 +43,7 @@
                 #userAvatar {
                     display: none;
                 }
-                .auth-dialog {
+                .auth-dialog > div:first-child {
                     position:absolute;
                     left:50%;
                     top:50%;

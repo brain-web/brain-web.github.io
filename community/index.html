@@ -19,7 +19,6 @@
 
         <!-- Firebase authentication -->
         <div id="firebaseui-auth-container" class="auth-dialog"></div>
-        <div id="account-details" class="auth-dialog"></div>
 
     <!-- navigation bar -->
         <!-- currently, the fixed top class is added, so it sticks to the top -->
@@ -42,7 +41,7 @@
                 #userAvatar {
                     display: none;
                 }
-                .auth-dialog {
+                .auth-dialog > div:first-child {
                     position:absolute;
                     left:50%;
                     top:50%;
@@ -65,6 +64,7 @@
                     top:7rem;
                     left:50%;
                     transform:translate( -50%, 0);
+                    pointer-events: none;
                     background-image:linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0))
                 }
                 #network {
@@ -116,6 +116,12 @@
             <div id="community">
 
                 <div id="network"></div>
+
+                <!-- <q-spinner-ball
+                    color="white"
+                    size="2em"
+                    style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);"
+                ></q-spinner-ball> -->
 
                 <div class="container" style="margin-top: 5em">
 
@@ -190,8 +196,8 @@
         <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
         <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
