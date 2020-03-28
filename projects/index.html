@@ -56,6 +56,21 @@
                 #loginStatus a:hover {
                     border-bottom:1px solid white;
                 }
+                .q-pa-md {
+                    padding: 16px 10px;
+                }
+                .q-gutter-x-xl, .q-gutter-xl {
+                    margin-left: -24px;
+                }
+                .q-gutter-x-xl>*, .q-gutter-xl>* {
+                    margin-left: 24px;
+                    margin-right: 24px;
+                }
+                .column, .flex, .row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
                 .q-chip .row {
                     margin-left:-4px !important;
                     margin-right:-6px !important;
@@ -110,6 +125,7 @@
                             <q-card
                                 v-for="pr in projects"
                                 class="my-card"
+                                q-gutter-none
                                 dark
                                 @click="goTo(pr.projectURL)"
                             >
