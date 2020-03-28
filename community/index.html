@@ -78,12 +78,12 @@
                     display: none
                 }
                 .row {
-                    margin-left:4px !important;
-                    margin-right:4px !important;
+                    margin-left:0 !important;
+                    margin-right:0 !important;
                 }
                 .col {
-                    padding-left:5.6px !important;
-                    padding-right:5.6px !important;
+                    padding-left:0 !important;
+                    padding-right:0 !important;
                 }
             </style>
 
@@ -135,17 +135,16 @@
                             <q-dialog v-model="displayCard">
                             <q-card style="height:300px;width:300px">
                                 <q-card-section>
-                                <div class="row no-wrap items-center">
-                                    <div v-cloak class="col text-h6 ellipsis">
-                                    {{cardPersonName}}
+                                    <div class="row no-wrap items-center">
+                                        <div v-cloak class="col text-h6 ellipsis">
+                                        {{cardPersonName}}
+                                        </div>
                                     </div>
-                                </div>
                                 </q-card-section>
-                                <q-separator></q-separator>
-                                <q-card-section>
-                                <q-chip v-cloak color="primary" v-for="skill in cardPersonSkills">
-                                    {{skill}}
-                                </q-chip>
+                                <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
+                                    <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
+                                        {{skill}}
+                                    </q-chip>
                                 </q-card-section>
                             </q-card>
                         </q-dialog>
@@ -163,19 +162,19 @@
                             </q-card-section>
                             <q-card-section>
                                 <q-select
-                                label="Skills"
-                                filled
-                                v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
-                                use-input
-                                use-chips
-                                multiple
-                                hide-dropdown-icon
-                                input-debounce="0"
-                                new-value-mode="add-unique"
-                                :options="options"
-                                @filter="filterFn"
-                                @new-value="createValue"
-                                @input="draw"
+                                    label="Skills"
+                                    filled
+                                    v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
+                                    use-input
+                                    use-chips
+                                    multiple
+                                    hide-dropdown-icon
+                                    input-debounce="0"
+                                    new-value-mode="add-unique"
+                                    :options="options"
+                                    @filter="filterFn"
+                                    @new-value="createValue"
+                                    @input="draw"
                                 ></q-select>
                             </q-card-section>
                             </q-card>
@@ -394,7 +393,7 @@
                 main.redefine("myHeight", 610);
             }
 
-            Quasar.Dark.set(true)
+            Quasar.Dark.set(true);
 
             app = new Vue({
                 el: '#q-app',
