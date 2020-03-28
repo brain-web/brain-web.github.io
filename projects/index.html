@@ -142,7 +142,14 @@
                                         </q-item-section>
                                         <q-item-section>
                                         <div class="text-h6">{{pr.projectName}}</div>
+                                        <a
+                                            :href="pr.projectInfo.homepage"
+                                            target="_blank"
+                                            style="color:lightgrey;cursor:pointer;border-style: none;"
+                                            @click="$event.stopPropagation()"
+                                        >
                                             {{pr.projectInfo.homepage}}
+                                        </a>
                                         </q-item-section>
                                     </q-item>
                                 </q-card-section>
