@@ -217,7 +217,7 @@
                     "https://generative-placeholders.glitch.me/image?width=300&height=200"
                 ]
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'https://api.github.com/search/repositories?q=topic:brainweb');
+                xhr.open('GET', 'https://api.github.com/search/repositories?q=topic:brainweb fork:true');
                 xhr.send(null);
                 xhr.onreadystatechange = function () {
                     const DONE = 4;
