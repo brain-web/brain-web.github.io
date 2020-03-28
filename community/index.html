@@ -348,7 +348,8 @@
                         }
                     }
                 }
-                network = {nodes, links};
+                const pruned = links.filter((o)=>o.value>2);
+                network = {nodes, links: pruned};
                 main.redefine("miserable", network);
             }
 
@@ -450,14 +451,19 @@
                 const names = people.nodes.map((o)=>o.id);
                 for(let i=0;i<N;i++) {
                     data[i] = new Float32Array(N);
-                    data[i][i] = 1;
+                    data[i][i] = app.people[i].skills.length;
                 }
                 for(let e of people.links) {
                     const i = names.indexOf(e.source);
                     const j = names.indexOf(e.target);
-                    data[i][j] += 1;
-                    data[j][i] += 1;
+                    data[i][j] = e.value;
+                    data[j][i] = e.value;
                 }
+
+                // let max=0;
+                // for(let i=0;i<N;i++) for(let j=0;j<N;j++) max=(data[i][j]>max)?data[i][j]:max;
+                // for(let i=0;i<N;i++) for(let j=0;j<N;j++) if(data[i][j]<max*0.1) data[i][j]=0;
+
                 const {agnes} = ML.HClust;
                 const tree = agnes(data, {
                     method: 'ward'
