@@ -70,6 +70,10 @@
                     flex-wrap: wrap;
                     justify-content: center;
                 }
+                .q-item__section--side {
+                    padding-right: 0px;
+                    padding-left: 16px;
+                }
                 .q-chip .row {
                     margin-left:-4px !important;
                     margin-right:-6px !important;
@@ -130,8 +134,17 @@
                             >
                                 <img :src="pr.imgSrc">
                                 <q-card-section>
-                                    <div class="text-h6">{{pr.projectName}}</div>
-                                    {{pr.projectInfo.homepage}}
+                                    <q-item v-ripple>
+                                        <q-item-section side>
+                                            <q-avatar rounded size="24px">
+                                                <img src="../images/logo/github.svg" />
+                                            </q-avatar>
+                                        </q-item-section>
+                                        <q-item-section>
+                                        <div class="text-h6">{{pr.projectName}}</div>
+                                            {{pr.projectInfo.homepage}}
+                                        </q-item-section>
+                                    </q-item>
                                 </q-card-section>
                                 <q-card-section>
                                     <div class="text-subtitle1">
