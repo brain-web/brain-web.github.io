@@ -348,7 +348,7 @@
                         }
                     }
                 }
-                const pruned = links.filter((o)=>o.value>2);
+                const pruned = links.filter((o)=>o.value>1);
                 network = {nodes, links: pruned};
                 main.redefine("miserable", network);
             }
