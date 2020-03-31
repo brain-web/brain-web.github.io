@@ -6,7 +6,7 @@ const config = {
   storageBucket: "",
   messagingSenderId: "489953549172"
 };
-const uiConfig = {
+var uiConfig = {
   signInSuccessUrl: '/', // <url-to-redirect-to-on-success>
   signInOptions: [
       firebase.auth.GithubAuthProvider.PROVIDER_ID
@@ -21,7 +21,9 @@ const uiConfig = {
   signInFlow: 'popup',
   tosUrl: 'tos.html'
 };
-let uiAuth;
+window.uiConfig = uiConfig;
+var uiAuth;
+window.uiAuth = uiAuth;
 
 console.log("firebase.initializeApp");
 firebase.initializeApp(config);
