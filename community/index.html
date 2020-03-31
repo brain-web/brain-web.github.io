@@ -298,8 +298,12 @@
                     }
                     databaseDicToPeopleArr(circle);
                     addCurrentUser();
+
                     peopleArrToNetwork(app.people);
-                    cluster(network);
+                    const M = networkToSkillsMatrix(network);
+                    skillsMatrixClustersToGroups(M);
+                    pruneSkillsMatrixBasedOnNearestNeighbours(M);
+                    skillsMatrixToNetwork(M);
                 });
             }
 
@@ -331,6 +335,15 @@
                 }
             }
 
+            function peopleArrToDatabaseDic(peopleArr) {
+                const arr = [];
+                for(let p of peopleArr) {
+                    arr.push(JSON.parse(JSON.stringify(p)));
+                }
+                const dic = arr2dic(peopleArr)
+                update(dic);
+            }
+
             function peopleArrToNetwork(peopleArr) {
                 const nodes = peopleArr.map((p) => {
                     return {id:p.name, group: 1}
@@ -348,19 +361,110 @@
                         }
                     }
                 }
-                const pruned = links.filter((o)=>o.value>1);
-                network = {nodes, links: pruned};
+                // const pruned = links.filter((o)=>o.value>2);
+                // network = {nodes, links: pruned};
+                network = {nodes, links};
                 main.redefine("miserable", network);
             }
 
-            function peopleArrToDatabaseDic(peopleArr) {
-                const arr = [];
-                for(let p of peopleArr) {
-                    arr.push(JSON.parse(JSON.stringify(p)));
+            function networkToSkillsMatrix(network) {
+                const N = network.nodes.length;
+                const matrix = [];
+                const names = network.nodes.map((o)=>o.id);
+                for(let i=0;i<N;i++) {
+                    matrix[i] = new Float32Array(N);
+                    matrix[i][i] = app.people[i].skills.length;
                 }
-                const dic = arr2dic(peopleArr)
-                update(dic);
+                for(let e of network.links) {
+                    const i = names.indexOf(e.source);
+                    const j = names.indexOf(e.target);
+                    matrix[i][j] = e.value;
+                    matrix[j][i] = e.value;
+                }
+
+                return matrix;
             }
+
+            function skillsMatrixToNetwork(matrix) {
+                const links = [];
+                const N = matrix.length;
+                for(let i=0;i<N;i++) {
+                    for(let j=0;j<N;j++) {
+                        if(i!==j && matrix[i][j]>0) {
+                            links.push({
+                                source: app.people[i].name,
+                                target: app.people[j].name,
+                                value: matrix[i][j]
+                            });
+                        }
+                    }
+                }
+                network.links = links;
+                main.redefine("miserable", network);
+            }
+
+            function pruneSkillsMatrixBasedOnNumberOfSkills(matrix) {
+                const minSkills = 2;
+                for(let i=0;i<N;i++) {
+                    for(let j=0;j<N;j++) {
+                        if(matrix[i][j]<minSkills) {
+                            matrix[i][j]=0;
+                        }
+                    }
+                }
+            }
+
+            function pruneSkillsMatrixBasedOnNearestNeighbours(matrix) {
+                const kNN = 3;
+                const N = matrix.length;
+                for(let i=0;i<N;i++) {
+                    const sorted = [...matrix[i]].map((val,ind)=>[val,ind]).sort((a,b)=>a[0]-b[0])
+                    for(let j=0;j<N-kNN;j++) {
+                        const [val, ind] = sorted[j];
+                        matrix[i][ind] = 0;
+                    }
+                }
+            }
+
+            function skillsMatrixClustersToGroups(matrix) {
+                const {agnes} = ML.HClust;
+                const tree = agnes(matrix, {
+                    method: 'ward'
+                });
+                const N = matrix.length;
+                const ngroups = parseInt(Math.sqrt(N));
+                const groups = tree.group(ngroups);
+                for(let i=0;i<groups.children.length;i++) {
+                    if(groups.children[i].constructor.name === "ClusterLeaf") {
+                        network.nodes[groups.children[i].index].group = 0;
+                    } else {
+                        for(let p of groups.children[i].index) {
+                            network.nodes[p.index].group = i;
+                        }
+                    }
+                }
+            }
+
+            // function cluster(people) {
+            //     const matrix = peopleArrToSkillsMatrix(people);
+            //     const N = matrix.length;
+
+            //     const {agnes} = ML.HClust;
+            //     const tree = agnes(matrix, {
+            //         method: 'ward'
+            //     });
+            //     const ngroups = parseInt(Math.sqrt(N));
+            //     const groups = tree.group(ngroups);
+            //     for(let i=0;i<groups.children.length;i++) {
+            //         if(groups.children[i].constructor.name === "ClusterLeaf") {
+            //             people.nodes[groups.children[i].index].group = 0;
+            //         } else {
+            //             for(let p of groups.children[i].index) {
+            //                 people.nodes[p.index].group = i;
+            //             }
+            //         }
+            //     }
+            // }
 
             function addCurrentUser() {
                 if(app.userName === null) {
@@ -395,7 +499,7 @@
 
                 network = { "nodes": [], "links": [] };
                 main.redefine("miserable", network);
-                main.redefine("myStrength", 1000);
+                main.redefine("myStrength", 300);
                 main.redefine("myRadius", 10);
                 main.redefine("myHeight", 610);
             }
@@ -437,49 +541,16 @@
                     draw (e) {
                         peopleArrToNetwork(this.people);
                         peopleArrToDatabaseDic(this.people);
-                        cluster(network);
+                        const M = networkToSkillsMatrix(network);
+                        skillsMatrixClustersToGroups(M);
+                        pruneSkillsMatrixBasedOnNearestNeighbours(M);
+                        skillsMatrixToNetwork(M);
                     },
                     goTo (url) {
                         window.location = url
                     }
                 }
             });
-
-            function cluster(people) {
-                const N = people.nodes.length;
-                const data = [];
-                const names = people.nodes.map((o)=>o.id);
-                for(let i=0;i<N;i++) {
-                    data[i] = new Float32Array(N);
-                    data[i][i] = app.people[i].skills.length;
-                }
-                for(let e of people.links) {
-                    const i = names.indexOf(e.source);
-                    const j = names.indexOf(e.target);
-                    data[i][j] = e.value;
-                    data[j][i] = e.value;
-                }
-
-                // let max=0;
-                // for(let i=0;i<N;i++) for(let j=0;j<N;j++) max=(data[i][j]>max)?data[i][j]:max;
-                // for(let i=0;i<N;i++) for(let j=0;j<N;j++) if(data[i][j]<max*0.1) data[i][j]=0;
-
-                const {agnes} = ML.HClust;
-                const tree = agnes(data, {
-                    method: 'ward'
-                });
-                const ngroups = parseInt(Math.sqrt(N));
-                const groups = tree.group(ngroups);
-                for(let i=0;i<groups.children.length;i++) {
-                    if(groups.children[i].constructor.name === "ClusterLeaf") {
-                        people.nodes[groups.children[i].index].group = 0;
-                    } else {
-                        for(let p of groups.children[i].index) {
-                            people.nodes[p.index].group = i;
-                        }
-                    }
-                }
-            }
             startForceLayout();
 
         </script>
