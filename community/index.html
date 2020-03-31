@@ -34,45 +34,62 @@
 
             <style>
                 .userIcon {
-                    width:32px;
-                    height:32px;
+                    width: 32px;
+                    height: 32px;
                     clip-path: circle(16px at center);
                 }
                 #userAvatar {
                     display: none;
                 }
                 .auth-dialog > div:first-child {
-                    position:absolute;
-                    left:50%;
-                    top:50%;
-                    background:rgba(0,0,0,0.5);
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    background: rgba(0,0,0,0.5);
                     border: thin solid #777;
-                    transform: translate( -50%, -50% );
+                    transform: translate(-50%, -50%);
                     z-index: 1050;
                 }
                 #loginStatus a {
-                    border-bottom:none;
+                    border-bottom: none;
                 }
                 #loginStatus a:hover {
-                    border-bottom:1px solid white;
+                    border-bottom: 1px solid white;
                 }
                 #text {
-                    position:absolute;
-                    width: 80%;
-                    max-width:1200px;
                     padding:1em;
-                    top:7rem;
-                    left:50%;
-                    transform:translate( -50%, 0);
                     pointer-events: none;
-                    background-image:linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0))
+                    background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0))
+                }
+                #text p {
+                   column-count: 2;
+                   column-gap: 2em;
+                }
+                #content {
+                    position: fixed;
+                    width: 100%;
                 }
                 #network {
-                    position:fixed;
-                    top:50%;
-                    left:50%;
-                    transform: translate( -50%, -50%);
-                    width:100%;
+                    position: fixed;
+                    width: 100%;
+                    top: 0;
+                    bottom:0;
+                    display: flex;
+                }
+                #network svg {
+                    width: 100%;
+                    flex-grow: 1;
+
+                }
+                #network svg text {
+                    cursor: default;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                        -ms-user-select: none;
+                            user-select: none;
+                }
+                #network svg text::selection {
+                    background: none;
                 }
                 [v-cloak] {
                     display: none
@@ -114,79 +131,70 @@
         <div id="q-app">
             <!-- part 4 Community -->
             <div id="community">
-
                 <div id="network"></div>
 
-                <!-- <q-spinner-ball
-                    color="white"
-                    size="2em"
-                    style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);"
-                ></q-spinner-ball> -->
+                <div id="content">
+                    <div class="container">
+                        <div id="text">
+                            <h1>Community</h1>
+                            <p>
+                                This is the BrainWeb. If you just logged in, your name should be an isolated dot flying around. Find it, click on it, and add your skills.
+                                That will start creating links with others, and you'll become part of the cluster of people sharing similar skills.
+                                You can learn more about them by clicking on their dots.
+                            </p>
+                        </div>
 
-                <div class="container" style="margin-top: 5em">
-
-                    <div id="text">
-                        <h1>Community</h1>
-                        <p style="column-count: 2;column-gap: 2em">
-                            This is the BrainWeb. If you just logged in, your name should be an isolated dot flying around. Find it, click on it, and add your skills. That will
-                            start creating links with others, and you'll become part of the cluster of people sharing similar skills. You can learn more about them by
-                            clicking on their dots.
-                        </p>
-                    </div>
-
-                    <div v-cloak class="row">
-
-                        <!-- Person's card -->
-                        <div v-if="cardPersonName !== userName">
-                            <q-dialog v-model="displayCard">
-                            <q-card style="height:300px;width:300px">
-                                <q-card-section>
-                                    <div class="row no-wrap items-center">
+                        <div v-cloak>
+                            <div v-if="cardPersonName !== userName">
+                                <q-dialog v-model="displayCard">
+                                    <q-card style="width: 300px; max-height: 500px">
+                                        <q-card-section>
+                                            <div class="row no-wrap items-center">
+                                                <div v-cloak class="col text-h6 ellipsis">
+                                                {{cardPersonName}}
+                                                </div>
+                                            </div>
+                                        </q-card-section>
+                                        <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
+                                            <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
+                                                {{skill}}
+                                            </q-chip>
+                                        </q-card-section>
+                                    </q-card>
+                                </q-dialog>
+                            </div>
+                        
+                            <div v-else>
+                                <q-dialog v-model="displayCard">
+                                    <q-card style="height:300px;width:300px">
+                                    <q-card-section>
+                                        <div class="row no-wrap items-center">
                                         <div v-cloak class="col text-h6 ellipsis">
-                                        {{cardPersonName}}
+                                            {{userName}}
                                         </div>
-                                    </div>
-                                </q-card-section>
-                                <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
-                                    <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
-                                        {{skill}}
-                                    </q-chip>
-                                </q-card-section>
-                            </q-card>
-                        </q-dialog>
+                                        </div>
+                                    </q-card-section>
+                                    <q-card-section>
+                                        <q-select
+                                            label="Skills"
+                                            filled
+                                            v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
+                                            use-input
+                                            use-chips
+                                            multiple
+                                            hide-dropdown-icon
+                                            input-debounce="0"
+                                            new-value-mode="add-unique"
+                                            :options="options"
+                                            @filter="filterFn"
+                                            @new-value="createValue"
+                                            @input="draw"
+                                        ></q-select>
+                                    </q-card-section>
+                                    </q-card>
+                                </q-dialog>
+                            </div>
                         </div>
-                    
-                        <div v-else>
-                        <q-dialog v-model="displayCard">
-                            <q-card style="height:300px;width:300px">
-                            <q-card-section>
-                                <div class="row no-wrap items-center">
-                                <div v-cloak class="col text-h6 ellipsis">
-                                    {{userName}}
-                                </div>
-                                </div>
-                            </q-card-section>
-                            <q-card-section>
-                                <q-select
-                                    label="Skills"
-                                    filled
-                                    v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
-                                    use-input
-                                    use-chips
-                                    multiple
-                                    hide-dropdown-icon
-                                    input-debounce="0"
-                                    new-value-mode="add-unique"
-                                    :options="options"
-                                    @filter="filterFn"
-                                    @new-value="createValue"
-                                    @input="draw"
-                                ></q-select>
-                            </q-card-section>
-                            </q-card>
-                        </q-dialog>
-                        </div>
-                                                
                     </div>
                 </div>
             </div>
@@ -385,11 +393,13 @@
                     case "viewof mychart":
                         return new Inspector(document.getElementById("network"));
                     case "mychart":
-                        return {fulfilled(value) {
-                            app.displayCard = true;
-                            app.cardPersonName = app.people[value].name;
-                            app.cardPersonSkills = app.people[value].skills;
-                        }};
+                        return {
+                            fulfilled(value) {
+                                app.displayCard = true;
+                                app.cardPersonName = app.people[value].name;
+                                app.cardPersonSkills = app.people[value].skills;
+                            }
+                        };
                 }
                 });
 
