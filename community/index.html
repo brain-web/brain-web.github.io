@@ -301,8 +301,8 @@
 
                     peopleArrToNetwork(app.people);
                     const M = networkToSkillsMatrix(network);
-                    skillsMatrixClustersToGroups(M);
                     pruneSkillsMatrixBasedOnNearestNeighbours(M);
+                    skillsMatrixClustersToGroups(M);
                     skillsMatrixToNetwork(M);
                 });
             }
@@ -542,8 +542,8 @@
                         peopleArrToNetwork(this.people);
                         peopleArrToDatabaseDic(this.people);
                         const M = networkToSkillsMatrix(network);
-                        skillsMatrixClustersToGroups(M);
                         pruneSkillsMatrixBasedOnNearestNeighbours(M);
+                        skillsMatrixClustersToGroups(M);
                         skillsMatrixToNetwork(M);
                     },
                     goTo (url) {
