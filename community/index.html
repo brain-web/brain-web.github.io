@@ -326,12 +326,22 @@
 
                 const incomingPeopleDic = databaseDic;
                 const incomingPeopleArr = dic2arr(incomingPeopleDic);
-                const newPeople = incomingPeopleArr.filter((person) => !(oldPeople.map((o)=>o.uid).includes(person.uid)));
+                const newPeople = incomingPeopleArr.filter((person) => {
+                    const oldUIDs = oldPeople.map((o)=> o.uid);
+                    const includes = !(oldUIDs.includes(person.uid));
+                    return includes;
+                });
                 for(let p of newPeople) {
                     app.people.push(p);
                 }
 
                 for(let p of incomingPeopleArr) {
+                    if(typeof p.skills === "undefined") {
+                        p.skills = [];
+                    }
+                    if(typeof p.displayname === "undefined") {
+                        p.displayname = p.username;
+                    }
                     for(let s of p.skills) {
                         if(!skills.includes(s)) {
                             skills.push(s);
