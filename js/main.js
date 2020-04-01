@@ -83,10 +83,11 @@ $(function() {
 });
 
 /* hide elements until compilation completed */
-const selectedChart = parseInt(2*Math.random());
+var selectedChart = parseInt(2*Math.random());
 function unhide() {
     const elems = document.querySelectorAll(".hide");
     [].forEach.call(elems, function(el) {
         el.classList.remove("hide");
     });
 }
+window.selectedChart = selectedChart;
