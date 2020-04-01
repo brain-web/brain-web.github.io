@@ -1,5 +1,7 @@
+Join our channel on  <a href="https://mattermost.brainhack.org/brainhack/channels/brainweb" target="_blank"><img src="http://www.mattermost.org/wp-content/uploads/2016/03/logoHorizontal.png" width=100px /></a>
+
 # brain-web.github.io
-A permanent space for the  community to be together online, meet&amp;matcha, work&amp;watermelon, catch up&amp;coffee.
+A permanent space for the community to be together online, meet&amp;matcha, work&amp;watermelon, catch up&amp;coffee.
 
 <!--(https://github.com/brain-web/brain-web.github.io/raw/master/images/readme/brainweb_card.jpg)-->
 

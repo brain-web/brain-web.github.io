@@ -528,9 +528,9 @@
                 main.redefine("miserable", network);
                 main.redefine("myStrength", 200);
                 main.redefine("myRadius", 10);
-                main.redefine("myOriginY", 200);
+                main.redefine("myOriginY", document.getElementById("text").offsetHeight + document.getElementsByTagName("nav")[0].offsetHeight);
                 main.redefine("myOriginX", 0);
-                main.redefine("myHeight", document.getElementById("network").offsetHeight + 300);
+                main.redefine("myHeight", document.getElementById("network").offsetHeight);
                 main.redefine("myWidth", document.getElementById("network").offsetWidth);
             }
 
