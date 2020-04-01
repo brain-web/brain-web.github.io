@@ -66,20 +66,28 @@
                    column-gap: 2em;
                 }
                 #content {
+                    z-index: 100;
                     position: fixed;
                     width: 100%;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                        -ms-user-select: none;
+                            user-select: none;
                 }
                 #network {
+                    z-index: 50;
                     position: fixed;
                     width: 100%;
                     top: 0;
                     bottom:0;
                     display: flex;
                 }
+                #content:hover ~ #network {
+                    background-color: aqua;
+                }
                 #network svg {
                     width: 100%;
                     flex-grow: 1;
-
                 }
                 #network svg text {
                     cursor: default;
@@ -155,7 +163,7 @@
                                                 </div>
                                             </div>
                                         </q-card-section>
-                                        <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
+                                        <q-card-section style="background: hsla(0,0%,100%,0.07); border-radius:4px 4px 0 0; margin:16px">
                                             <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
                                                 {{skill}}
                                             </q-chip>
@@ -166,31 +174,31 @@
                         
                             <div v-else>
                                 <q-dialog v-model="displayCard">
-                                    <q-card style="height:300px;width:300px">
-                                    <q-card-section>
-                                        <div class="row no-wrap items-center">
-                                        <div v-cloak class="col text-h6 ellipsis">
-                                            {{userName}}
-                                        </div>
-                                        </div>
-                                    </q-card-section>
-                                    <q-card-section>
-                                        <q-select
-                                            label="Skills"
-                                            filled
-                                            v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
-                                            use-input
-                                            use-chips
-                                            multiple
-                                            hide-dropdown-icon
-                                            input-debounce="0"
-                                            new-value-mode="add-unique"
-                                            :options="options"
-                                            @filter="filterFn"
-                                            @new-value="createValue"
-                                            @input="draw"
-                                        ></q-select>
-                                    </q-card-section>
+                                    <q-card style="width: 300px; max-height: 500px">
+                                        <q-card-section>
+                                            <div class="row no-wrap items-center">
+                                            <div v-cloak class="col text-h6 ellipsis">
+                                                {{userName}}
+                                            </div>
+                                            </div>
+                                        </q-card-section>
+                                        <q-card-section>
+                                            <q-select
+                                                label="Skills"
+                                                filled
+                                                v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
+                                                use-input
+                                                use-chips
+                                                multiple
+                                                hide-dropdown-icon
+                                                input-debounce="0"
+                                                new-value-mode="add-unique"
+                                                :options="options"
+                                                @filter="filterFn"
+                                                @new-value="createValue"
+                                                @input="draw"
+                                            ></q-select>
+                                        </q-card-section>
                                     </q-card>
                                 </q-dialog>
                             </div>
@@ -511,7 +519,7 @@
                 main.redefine("miserable", network);
                 main.redefine("myStrength", 300);
                 main.redefine("myRadius", 10);
-                main.redefine("myHeight", 610);
+                main.redefine("myHeight", document.getElementById("network").offsetHeight);
             }
 
             Quasar.Dark.set(true);
