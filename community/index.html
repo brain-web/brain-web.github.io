@@ -34,56 +34,56 @@
 
             <style>
                 .userIcon {
-                    width:32px;
-                    height:32px;
+                    width: 32px;
+                    height: 32px;
                     clip-path: circle(16px at center);
                 }
                 #userAvatar {
                     display: none;
                 }
                 .auth-dialog > div:first-child {
-                    position:absolute;
-                    left:50%;
-                    top:50%;
-                    background:rgba(0,0,0,0.5);
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    background: rgba(0,0,0,0.5);
                     border: thin solid #777;
                     transform: translate( -50%, -50% );
                     z-index: 1050;
                 }
                 #loginStatus a {
-                    border-bottom:none;
+                    border-bottom: none;
                 }
                 #loginStatus a:hover {
-                    border-bottom:1px solid white;
+                    border-bottom: 1px solid white;
                 }
                 #text {
-                    position:absolute;
+                    position: absolute;
                     width: 80%;
-                    max-width:1200px;
-                    padding:1em;
-                    top:7rem;
-                    left:50%;
-                    transform:translate( -50%, 0);
+                    max-width: 1200px;
+                    padding: 1em;
+                    top: 7rem;
+                    left: 50%;
+                    transform: translate( -50%, 0);
                     pointer-events: none;
-                    background-image:linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0))
+                    background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0));
                 }
                 #network {
-                    position:fixed;
-                    top:50%;
-                    left:50%;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
                     transform: translate( -50%, -50%);
-                    width:100%;
+                    width: 100%;
                 }
                 [v-cloak] {
                     display: none
                 }
                 .row {
-                    margin-left:0 !important;
-                    margin-right:0 !important;
+                    margin-left: 0 !important;
+                    margin-right: 0 !important;
                 }
                 .col {
-                    padding-left:0 !important;
-                    padding-right:0 !important;
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
                 }
             </style>
 
@@ -127,7 +127,7 @@
 
                     <div id="text">
                         <h1>Community</h1>
-                        <p style="column-count: 2;column-gap: 2em">
+                        <p style="column-count: 2;column-gap: 2em; background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.5), rgba(20,20,20,0.75), rgba(20,20,20,0.5),rgba(20,20,20,0))">
                             This is the BrainWeb. If you just logged in, your name should be an isolated dot flying around. Find it, click on it, and add your skills. That will
                             start creating links with others, and you'll become part of the cluster of people sharing similar skills. You can learn more about them by
                             clicking on their dots.
@@ -186,7 +186,7 @@
                             </q-card>
                         </q-dialog>
                         </div>
-                                                
+
                     </div>
                 </div>
             </div>
@@ -509,7 +509,7 @@
                 main.redefine("miserable", network);
                 main.redefine("myStrength", 200);
                 main.redefine("myRadius", 10);
-                main.redefine("myHeight", 610);
+                main.redefine("myHeight", window.innerHeight-document.getElementsByTagName("nav")[0].offsetHeight);
             }
 
             Quasar.Dark.set(true);
