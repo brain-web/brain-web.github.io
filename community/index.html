@@ -504,7 +504,8 @@
             }
 
             import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
-            import notebook from "https://api.observablehq.com/@r03ert0/circle-of-friends.js?v=3";
+            // import notebook from "https://api.observablehq.com/@r03ert0/circle-of-friends.js?v=3";
+            import notebook from "https://api.observablehq.com/@anibalsolon/circle-of-friends.js?v=3";
 
             function startForceLayout() {
                 main = new Runtime().module(notebook, (name) => {
@@ -526,7 +527,9 @@
                 main.redefine("miserable", network);
                 main.redefine("myStrength", 200);
                 main.redefine("myRadius", 10);
-                main.redefine("myHeight", document.getElementById("network").offsetHeight);
+                main.redefine("myOriginY", 250);
+                main.redefine("myOriginX", 0);
+                main.redefine("myHeight", document.getElementById("network").offsetHeight + 300);
             }
 
             Quasar.Dark.set(true);
