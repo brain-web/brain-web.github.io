@@ -69,6 +69,7 @@
                     z-index: 100;
                     position: fixed;
                     width: 100%;
+                    pointer-events: none;
                     -webkit-user-select: none;
                     -moz-user-select: none;
                         -ms-user-select: none;
@@ -527,9 +528,10 @@
                 main.redefine("miserable", network);
                 main.redefine("myStrength", 200);
                 main.redefine("myRadius", 10);
-                main.redefine("myOriginY", 250);
+                main.redefine("myOriginY", 200);
                 main.redefine("myOriginX", 0);
                 main.redefine("myHeight", document.getElementById("network").offsetHeight + 300);
+                main.redefine("myWidth", document.getElementById("network").offsetWidth);
             }
 
             Quasar.Dark.set(true);
