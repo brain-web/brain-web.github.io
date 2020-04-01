@@ -139,7 +139,7 @@
                         <!-- Person's card -->
                         <div v-if="cardPersonName !== userName">
                             <q-dialog v-model="displayCard">
-                            <q-card style="height:300px;width:300px">
+                            <q-card style="height:400px;width:400px">
                                 <q-card-section>
                                     <div class="row no-wrap items-center">
                                         <div v-cloak class="col text-h6 ellipsis">
@@ -158,7 +158,7 @@
                     
                         <div v-else>
                         <q-dialog v-model="displayCard">
-                            <q-card style="height:300px;width:300px">
+                            <q-card style="height:400px;width:400px">
                             <q-card-section>
                                 <div class="row no-wrap items-center">
                                 <div v-cloak class="col text-h6 ellipsis">
@@ -170,7 +170,7 @@
                                 <q-select
                                     label="Skills"
                                     filled
-                                    v-model="people[people.map((o)=>o.name).indexOf(userName)].skills"
+                                    v-model="people[people.map((o)=>o.uid).indexOf(uid)].skills"
                                     use-input
                                     use-chips
                                     multiple
@@ -213,17 +213,20 @@
             function initApp() {
                 firebase.auth().onAuthStateChanged((user) => {
                     if (user) {
-                        const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user;
-                        user.getIdToken().then(function(accessToken) {
-                            app.userSignedIn = true;
-                            app.userName = displayName;
-                            app.userPicture = photoURL;
-                            document.querySelector("#userAvatar img").src = photoURL;
-                            document.querySelector("#userAvatar").style.display = "inline-block";
-                            document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-                        });
+                        const {displayName, email, emailVerified, photoURL, phoneNumber, providerData} = user;
+                        const {uid} = providerData[0];
+                        app.userSignedIn = true;
+                        app.uid = uid;
+                        app.userName = displayName;
+                        app.userPicture = photoURL;
+                        document.querySelector("#userAvatar img").src = photoURL;
+                        document.querySelector("#userAvatar").style.display = "inline-block";
+                        document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
+                        // user.getIdToken().then(function(accessToken) {
+                        // });
                     } else {
                         app.userSignedIn = false;
+                        app.uid = null;
                         app.userName = null;
                         app.userPicture = null;
                         document.querySelector("#userAvatar").style.display = "none";
@@ -236,6 +239,7 @@
             }
 
             function signIn() {
+                uiConfig.signInSuccessUrl = "/community/";
                 uiAuth.start('#firebaseui-auth-container', uiConfig);
             }
             window.signIn = signIn;
@@ -248,11 +252,11 @@
             function arr2dic(arr) {
                 const dic = {};
                 for(let item of arr) {
-                    const {name} = item;
-                    dic[name] = {}
+                    const {uid} = item;
+                    dic[uid] = {}
                     for(let key of Object.keys(item)) {
-                        if(key !== "name") {
-                            dic[name][key] = item[key];
+                        if(key !== "uid") {
+                            dic[uid][key] = item[key];
                         }
                     }
                 }
@@ -261,11 +265,11 @@
 
             function dic2arr(dic) {
                 const arr = [];
-                for(let name of Object.keys(dic)) {
-                    const item = {name};
-                    for(let key of Object.keys(dic[name])) {
-                        if(key!==name) {
-                            item[key] = dic[name][key];
+                for(let uid of Object.keys(dic)) {
+                    const item = {uid};
+                    for(let key of Object.keys(dic[uid])) {
+                        if(key!==uid) {
+                            item[key] = dic[uid][key];
                         }
                     }
                     arr.push(item);
@@ -274,13 +278,14 @@
             }
 
             function update(databaseDic) {
-                const {userName} = app;
-                if(userName === null) {
+                if(app.uid === null) {
                     return;
                 }
-                const str = databaseDic[userName];
+
+                const {uid} = app;
+                const str = databaseDic[uid];
                 const obj = {};
-                obj[userName] = str;
+                obj[uid] = str;
                 firebase.database().ref(`circles/${circleName}`).update(obj)
                 .then(function(snapshot) {
                     console.log('update: success');
@@ -321,7 +326,7 @@
 
                 const incomingPeopleDic = databaseDic;
                 const incomingPeopleArr = dic2arr(incomingPeopleDic);
-                const newPeople = incomingPeopleArr.filter((person) => !(oldPeople.map((o)=>o.name).includes(person.name)));
+                const newPeople = incomingPeopleArr.filter((person) => !(oldPeople.map((o)=>o.uid).includes(person.uid)));
                 for(let p of newPeople) {
                     app.people.push(p);
                 }
@@ -346,7 +351,7 @@
 
             function peopleArrToNetwork(peopleArr) {
                 const nodes = peopleArr.map((p) => {
-                    return {id:p.name, group: 1}
+                    return {id:p.displayname, group: 1}
                 })
                 const links = [];
                 for(let i=0;i<peopleArr.length-1;i++) {
@@ -357,12 +362,10 @@
                         const trgSkills = trg.skills;
                         const common = srcSkills.filter(skill => trgSkills.includes(skill));
                         if(common.length > 0) {
-                            links.push({source:src.name, target:trg.name, value: common.length});
+                            links.push({source:src.displayname, target:trg.displayname, value: common.length});
                         }
                     }
                 }
-                // const pruned = links.filter((o)=>o.value>2);
-                // network = {nodes, links: pruned};
                 network = {nodes, links};
                 main.redefine("miserable", network);
             }
@@ -392,8 +395,8 @@
                     for(let j=0;j<N;j++) {
                         if(i!==j && matrix[i][j]>0) {
                             links.push({
-                                source: app.people[i].name,
-                                target: app.people[j].name,
+                                source: app.people[i].displayname,
+                                target: app.people[j].displayname,
                                 value: matrix[i][j]
                             });
                         }
@@ -445,38 +448,32 @@
                 }
             }
 
-            // function cluster(people) {
-            //     const matrix = peopleArrToSkillsMatrix(people);
-            //     const N = matrix.length;
-
-            //     const {agnes} = ML.HClust;
-            //     const tree = agnes(matrix, {
-            //         method: 'ward'
-            //     });
-            //     const ngroups = parseInt(Math.sqrt(N));
-            //     const groups = tree.group(ngroups);
-            //     for(let i=0;i<groups.children.length;i++) {
-            //         if(groups.children[i].constructor.name === "ClusterLeaf") {
-            //             people.nodes[groups.children[i].index].group = 0;
-            //         } else {
-            //             for(let p of groups.children[i].index) {
-            //                 people.nodes[p.index].group = i;
-            //             }
-            //         }
-            //     }
-            // }
-
             function addCurrentUser() {
-                if(app.userName === null) {
+                if(app.uid === null) {
                     return;
                 }
 
-                const index = app.people.map((o)=>o.name).indexOf(app.userName);
+                const index = app.people.map((o)=>o.uid).indexOf(app.uid);
                 if(index === -1) {
-                    app.people.push({
-                        name: app.userName,
-                        skills: []
-                    });
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', "https://api.github.com/user/" + app.uid);
+                    xhr.send(null);
+                    xhr.onreadystatechange = function () {
+                        const DONE = 4, OK = 200;
+                        if (xhr.readyState === DONE && xhr.status === OK) {
+                            const {login} = JSON.parse(xhr.responseText);
+                            app.people.push({
+                                displayname: app.userName,
+                                username: login,
+                                uid: app.uid,
+                                skills: []
+                            });
+                            document.getElementById("loginStatus").innerHTML = `${app.userName|login}`;
+                            peopleArrToDatabaseDic(app.people);
+                        } else {
+                            console.log('Error: ' + xhr.status); // An error occurred during the request.
+                        }
+                    }
                 }
             }
 
@@ -491,7 +488,7 @@
                     case "mychart":
                         return {fulfilled(value) {
                             app.displayCard = true;
-                            app.cardPersonName = app.people[value].name;
+                            app.cardPersonName = app.people[value].displayname;
                             app.cardPersonSkills = app.people[value].skills;
                         }};
                 }
@@ -499,7 +496,7 @@
 
                 network = { "nodes": [], "links": [] };
                 main.redefine("miserable", network);
-                main.redefine("myStrength", 300);
+                main.redefine("myStrength", 200);
                 main.redefine("myRadius", 10);
                 main.redefine("myHeight", 610);
             }
@@ -513,6 +510,7 @@
                         people: [],
                         options: skills,
                         userSignedIn: false,
+                        uid: null,
                         userName: null,
                         userPicture: null,
                         displayCard: false,
@@ -530,9 +528,6 @@
                     createValue (val, done) {
                         skills.push(val)
                         done(val)
-                    },
-                    addPerson (e) {
-                        this.people.push({name:"",skills:[]})
                     },
                     deletePerson (e, index) {
                         this.people.splice(index,1)

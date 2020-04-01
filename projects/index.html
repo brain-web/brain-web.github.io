@@ -295,6 +295,7 @@
             }
 
             function signIn() {
+                uiConfig.signInSuccessUrl = "/projects/";
                 uiAuth.start('#firebaseui-auth-container', uiConfig);
             }
             window.signIn = signIn;
