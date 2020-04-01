@@ -472,13 +472,14 @@
                         const DONE = 4, OK = 200;
                         if (xhr.readyState === DONE && xhr.status === OK) {
                             const {login} = JSON.parse(xhr.responseText);
+                            const userName = app.userName?app.userName:login;
                             app.people.push({
-                                displayname: app.userName,
+                                displayname: userName,
                                 username: login,
                                 uid: app.uid,
                                 skills: []
                             });
-                            document.getElementById("loginStatus").innerHTML = `${app.userName|login}`;
+                            document.getElementById("loginStatus").innerHTML = userName;
                             peopleArrToDatabaseDic(app.people);
                         } else {
                             console.log('Error: ' + xhr.status); // An error occurred during the request.
