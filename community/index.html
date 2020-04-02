@@ -332,10 +332,6 @@
                     return includes;
                 });
                 for(let p of newPeople) {
-                    app.people.push(p);
-                }
-
-                for(let p of incomingPeopleArr) {
                     if(typeof p.skills === "undefined") {
                         p.skills = [];
                     }
@@ -347,6 +343,7 @@
                             skills.push(s);
                         }
                     }
+                    app.people.push(p);
                 }
             }
 
