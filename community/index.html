@@ -347,10 +347,6 @@
                     return includes;
                 });
                 for(let p of newPeople) {
-                    app.people.push(p);
-                }
-
-                for(let p of incomingPeopleArr) {
                     if(typeof p.skills === "undefined") {
                         p.skills = [];
                     }
@@ -362,6 +358,7 @@
                             skills.push(s);
                         }
                     }
+                    app.people.push(p);
                 }
             }
 
@@ -479,7 +476,7 @@
                 }
 
                 const index = app.people.map((o)=>o.uid).indexOf(app.uid);
-                if(index === -1) {
+                if(index === -1 || typeof app.displayname === "undefined") {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', "https://api.github.com/user/" + app.uid);
                     xhr.send(null);
@@ -487,13 +484,15 @@
                         const DONE = 4, OK = 200;
                         if (xhr.readyState === DONE && xhr.status === OK) {
                             const {login} = JSON.parse(xhr.responseText);
-                            app.people.push({
-                                displayname: app.userName,
-                                username: login,
-                                uid: app.uid,
-                                skills: []
-                            });
-                            document.getElementById("loginStatus").innerHTML = `${app.userName|login}`;
+                            const userName = app.userName?app.userName:login;
+                            app.userName = userName;
+                            // app.people.push({
+                            //     displayname: userName,
+                            //     username: login,
+                            //     uid: app.uid,
+                            //     skills: []
+                            // });
+                            document.getElementById("loginStatus").innerHTML = userName;
                             peopleArrToDatabaseDic(app.people);
                         } else {
                             console.log('Error: ' + xhr.status); // An error occurred during the request.

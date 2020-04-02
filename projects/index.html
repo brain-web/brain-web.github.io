@@ -129,45 +129,60 @@
                                 v-for="pr in projects"
                                 class="my-card"
                                 q-gutter-none
+                                q-pa-none
+                                q-m-sm
                                 dark
                                 @click="goTo(pr.projectURL)"
                             >
-                                <img :src="pr.imgSrc">
-                                <q-card-section>
+                                <img :src="pr.imgSrc" />
+                                <q-card-section q-pa-sm>
                                     <q-item v-ripple>
                                         <q-item-section side>
-                                            <q-avatar rounded size="24px">
-                                                <img src="../images/logo/github.svg" />
-                                            </q-avatar>
+                                            <q-avatar rounded size="24px"><img src="../images/logo/github.svg" /></q-avatar>
                                         </q-item-section>
                                         <q-item-section>
-                                        <div class="text-h6">{{pr.projectName}}</div>
-                                        <a
-                                            :href="pr.projectInfo.homepage"
-                                            target="_blank"
-                                            style="color:lightgrey;cursor:pointer;border-style: none;"
-                                            @click="$event.stopPropagation()"
-                                        >
-                                            {{pr.projectInfo.homepage}}
-                                        </a>
+                                            <div class="text-h6">{{pr.projectName}}</div>
+                                            <a
+                                                :href="pr.projectInfo.homepage"
+                                                target="_blank"
+                                                style="color:lightgrey;cursor:pointer;border-style: none;"
+                                                @click="$event.stopPropagation()"
+                                            >
+                                                {{pr.projectInfo.homepage}}
+                                            </a>
                                         </q-item-section>
                                     </q-item>
-                                </q-card-section>
-                                <q-card-section>
-                                    <div class="text-subtitle1">
-                                        {{pr.projectInfo.description}}
+                                    <q-item v-if="pr.projectMattermost" v-ripple>
+                                        <q-item-section side>
+                                            <q-avatar rounded size="24px"><img src="../images/logo/mattermost.svg" /></q-avatar>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <a
+                                                :href="'https://mattermost.brainhack.org/brainhack/channels/'+pr.projectMattermost"
+                                                target="_blank"
+                                                style="color:lightgrey;cursor:pointer;border-style: none;"
+                                                @click="$event.stopPropagation()"
+                                            >
+                                            {{pr.projectMattermost}}
+                                            </a>
+                                        </q-item-section>
+                                    </q-item>
+                                    <div class="q-gutter-xs">
+                                        <div class="text-subtitle1">
+                                            {{pr.projectInfo.description}}
+                                        </div>
                                     </div>
-                                </q-card-section>
-                                <q-card-section>
-                                    <q-chip dense square icon-right="grade" style="background:#333">
-                                        <q-avatar color="grey" text-color="white">{{pr.projectInfo.stargazers_count}}</q-avatar> Stars
-                                    </q-chip>
-                                    <q-chip dense square v-if="pr.projectInfo.language" style="background:#333">
-                                        {{pr.projectInfo.language}}
-                                    </q-chip>
-                                    <q-chip dense square icon-right="error_outline" style="background:#333">
-                                        <q-avatar color="grey" text-color="white">{{pr.projectInfo.open_issues}}</q-avatar> Issues
-                                    </q-chip>
+                                    <div class="q-gutter-xs q-mt-md">
+                                        <q-chip dense square icon-right="grade" style="background:#333">
+                                            <q-avatar color="grey" text-color="white">{{pr.projectInfo.stargazers_count}}</q-avatar> Stars
+                                        </q-chip>
+                                        <q-chip dense square v-if="pr.projectInfo.language" style="background:#333">
+                                            {{pr.projectInfo.language}}
+                                        </q-chip>
+                                        <q-chip dense square icon-right="error_outline" style="background:#333">
+                                            <q-avatar color="grey" text-color="white">{{pr.projectInfo.open_issues}}</q-avatar> Issues
+                                        </q-chip>
+                                    </div>
                                 </q-card-section>
                             </q-card>
                         </div>
@@ -190,7 +205,7 @@
             let main;
             let app;
 
-            async function get_1st_image_from_md(url) {
+            async function get_data_from_md(url) {
                 var pr = new Promise((resolve, reject) => {
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', url);
@@ -202,33 +217,41 @@
                         if (xhr.readyState === DONE) {
                             if (xhr.status === OK) {
                                 const text = xhr.responseText;
-                                const arr = text.match(/(https:[^\) ]+)/);
-                                if(arr !== null && arr[0] !== null) {
-                                    imgSrc = arr[0];
+                                const regexImage = /\((https:[^\) ]+)\)/;
+                                const regexMattermost = /https:\/\/mattermost.brainhack.org\/brainhack\/channels\/([^"\)]+)/;
+                                const arrImage = text.match(regexImage);
+                                const arrMattermost = text.match(regexMattermost);
+                                let image, mattermost;
+                                if(arrImage !== null && arrImage[1] !== null) {
+                                    image = arrImage[1];
                                 }
+                                if(arrMattermost !== null && arrMattermost[1] !== null) {
+                                    mattermost = arrMattermost[1];
+                                }
+                                resolve({image, mattermost});
                             } else {
-                                console.log('Error: ' + xhr.status); // An error occurred during the request.
+                                // console.log('Error: ' + xhr.status); // An error occurred during the request.
+                                reject();
                             }
-                            resolve(imgSrc);
                         }
                     }
                 });
                 return pr;
             }
 
-            async function get_1st_image_from_readme(repoURL) {
+            async function get_data_from_readme(repoURL) {
                 const url = repoURL.replace("https://github.com/","https://raw.githubusercontent.com/") + "/master";
-                let imgSrc;    
-                imgSrc = await get_1st_image_from_md(url + '/README.md');
-                if(imgSrc === null) {
-                    imgSrc = await get_1st_image_from_md(url + '/ReadMe.md');
-                } else if(imgSrc === null) {
-                    imgSrc = await get_1st_image_from_md(url + '/readme.md');
-                } else if(imgSrc === null) {
-                    imgSrc = await get_1st_image_from_md(url + '/Readme.md');
+                let result;    
+                result = await get_data_from_md(url + '/README.md');
+                if(result === null) {
+                    result = await get_data_from_md(url + '/ReadMe.md');
+                } else if(result === null) {
+                    result = await get_data_from_md(url + '/readme.md');
+                } else if(result === null) {
+                    result = await get_data_from_md(url + '/Readme.md');
                 }
 
-                return imgSrc;
+                return result;
             }
 
             function get_repo_list() {
@@ -256,13 +279,15 @@
                                         language,
                                         homepage
                                     } = aRepo;
-                                    get_1st_image_from_readme(html_url).then((res) => {
+                                    get_data_from_readme(html_url).then((res) => {
+                                        const {image, mattermost} = res;
                                         app.projects.push({
-                                            imgSrc:(res)?res:defaultImages[parseInt(defaultImages.length*Math.random())],
+                                            imgSrc:(image)?image:defaultImages[parseInt(defaultImages.length*Math.random())],
                                             projectName: name,
                                             projectDescription: description,
                                             projectURL: html_url,
-                                            projectInfo: {description, html_url, open_issues, stargazers_count, language, homepage}
+                                            projectInfo: {description, html_url, open_issues, stargazers_count, language, homepage},
+                                            projectMattermost: mattermost
                                         })
                                     }).catch((e)=>console.log);
                                 })(repo);
