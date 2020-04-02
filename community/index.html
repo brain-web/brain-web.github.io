@@ -471,12 +471,12 @@
                             const {login} = JSON.parse(xhr.responseText);
                             const userName = app.userName?app.userName:login;
                             app.userName = userName;
-                            app.people.push({
-                                displayname: userName,
-                                username: login,
-                                uid: app.uid,
-                                skills: []
-                            });
+                            // app.people.push({
+                            //     displayname: userName,
+                            //     username: login,
+                            //     uid: app.uid,
+                            //     skills: []
+                            // });
                             document.getElementById("loginStatus").innerHTML = userName;
                             peopleArrToDatabaseDic(app.people);
                         } else {
