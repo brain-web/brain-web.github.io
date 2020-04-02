@@ -6,10 +6,18 @@ Join our channel on  <a href="https://mattermost.brainhack.org/brainhack/channel
 
 - [brain-web.github.io](#brain-webgithubio)
   - [Propose a project](#propose-a-project)
+    - [You are self conscious about the quality of the code in your project?](#you-are-self-conscious-about-the-quality-of-the-code-in-your-project)
+    - [You think that you won't be able to lead a team of several people to work on your project?](#you-think-that-you-wont-be-able-to-lead-a-team-of-several-people-to-work-on-your-project)
+    - [Presenting your project](#presenting-your-project)
+    - [Remove a project](#remove-a-project)
   - [How to help](#how-to-help)
     - [Our wish list](#our-wish-list)
     - [Skills required](#skills-required)
+    - [Organization of the website](#organization-of-the-website)
+      - [Network vizualization](#network-vizualization)
     - [How to run the website locally](#how-to-run-the-website-locally)
+    - [Suggesting changes](#suggesting-changes)
+  - [Getting in touch](#getting-in-touch)
 
 <!-- /TOC -->
 
@@ -19,9 +27,9 @@ A permanent space for the community to be together online, meet&amp;matcha, work
 See you in our next community call! :)
 
 <img src="./images/readme/brainweb_landing.jpg" width="900" />
-<img src="./images/readme/brainweb_brainweb.jpg" width="900" />
+<!-- <img src="./images/readme/brainweb_brainweb.jpg" width="900" />
 <img src="./images/readme/brainweb_events.jpg" width="900" />
-<img src="./images/readme/brainweb_projects.jpg" width="900" />
+<img src="./images/readme/brainweb_projects.jpg" width="900" /> -->
 
 
 ## Propose a project
@@ -81,25 +89,25 @@ If you remove the `BrainWeb` topic from your repo, then it will no longer appear
 
 Below are some of the ideas that we thought we could implement in this project. Maybe you want to help us make them real. Or maybe you have your own suggestionss, so come and chat with us on [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or open an issue.
 
-    - [ ] create a blog with regular posts ; eventually turn it into a newsletter where we present each other's projects
-    - [ ] improve the network visualization on the community page (add filtering options based on skills, vizualize only sub-networks, select users by color-coding, add a chat...)
-    - [ ] implement some matching process between the skills required for a project and the skills of the users in the community BrainWeb
-    - [ ] create a twitter bot to let every know that we have a new project listed on the BrainWeb
+- [ ] create a blog with regular posts ; eventually turn it into a newsletter where we present each other's projects
+- [ ] improve the network visualization on the community page (add filtering options based on skills, vizualize only sub-networks, select users by color-coding, add a chat...)
+- [ ] implement some matching process between the skills required for a project and the skills of the users in the community BrainWeb
+- [ ] create a twitter bot to let every know that we have a new project listed on the BrainWeb
 
 
 ### Skills required
 
 If you want to help with the website of the BrainWeb project you will need to be familiar with a bit of:
-    - git and github
-    - html
-    - css
+- git and github
+- html
+- css
 
 Moreover some of the more advanced functions require some knowledge of one or several of the following:
-    - Firebase
-    - Javascript
-    - Quasar
-    - Vue.js
-    - D3
+- Firebase
+- Javascript
+- Quasar
+- Vue.js
+- D3
 
 
 ### Organization of the website
@@ -126,9 +134,9 @@ Firebase only accept request from a known website. `Localhost` was added as a kn
 
 In practice this means:
 
-    - **CAREFUL 1**: you’ll be connected to the official DB!!! For testing, better change BrainWeb for BrainWeb2 in line 207, file `brain-web/community/index.html` (“const circleName = "BrainWeb2";”)
+- **CAREFUL 1**: you’ll be connected to the official DB!!! For testing, better change BrainWeb for BrainWeb2 in line 207, file `brain-web/community/index.html` (“const circleName = "BrainWeb2";”)
 
-    - **CAREFUL 2**: you’ll be using Roberto’s free Firebase account (which is very limited). If you really want to do some have DB-related stuff, better to open your own free Firebase account.
+- **CAREFUL 2**: you’ll be using Roberto’s free Firebase account (which is very limited). If you really want to do some have DB-related stuff, better to open your own free Firebase account.
 
 
 ### Suggesting changes
