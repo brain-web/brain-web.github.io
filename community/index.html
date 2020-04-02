@@ -461,7 +461,7 @@
                 }
 
                 const index = app.people.map((o)=>o.uid).indexOf(app.uid);
-                if(index === -1) {
+                if(index === -1 || typeof app.displayname === "undefined") {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', "https://api.github.com/user/" + app.uid);
                     xhr.send(null);
@@ -470,6 +470,7 @@
                         if (xhr.readyState === DONE && xhr.status === OK) {
                             const {login} = JSON.parse(xhr.responseText);
                             const userName = app.userName?app.userName:login;
+                            app.userName = userName;
                             app.people.push({
                                 displayname: userName,
                                 username: login,
