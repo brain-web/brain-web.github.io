@@ -461,7 +461,15 @@
                 }
 
                 const index = app.people.map((o)=>o.uid).indexOf(app.uid);
-                if(index === -1 || typeof app.displayname === "undefined") {
+                let isNewUser = false;
+                let isUserWithoutDisplayName = false;
+                if(index === -1) {
+                    isNewUser = true;
+                }
+                if(typeof app.displayname === "undefined") {
+                    isUserWithoutDisplayName = true;
+                }
+                if(isNewUser || isUserWithoutDisplayName) {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', "https://api.github.com/user/" + app.uid);
                     xhr.send(null);
@@ -471,12 +479,14 @@
                             const {login} = JSON.parse(xhr.responseText);
                             const userName = app.userName?app.userName:login;
                             app.userName = userName;
-                            // app.people.push({
-                            //     displayname: userName,
-                            //     username: login,
-                            //     uid: app.uid,
-                            //     skills: []
-                            // });
+                            if(isNewUser) {
+                                app.people.push({
+                                    displayname: userName,
+                                    username: login,
+                                    uid: app.uid,
+                                    skills: []
+                                });
+                            }
                             document.getElementById("loginStatus").innerHTML = userName;
                             peopleArrToDatabaseDic(app.people);
                         } else {
