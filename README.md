@@ -149,3 +149,13 @@ Then you can make a new branch before implementing your changes and open a pull 
 ## Getting in touch
 
 If you have any question or some information is missing in this readme, get in touch via [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or feel free to open an issue.
+
+
+## Contributors ✨
+
+Thanks to all the amazing people to the BrainWeb <img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" />
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/katjaq"><img src="https://avatars3.githubusercontent.com/u/6297454?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Katja Heuer</b></sub></a><br /></td>
+  </tr>
+</table>
