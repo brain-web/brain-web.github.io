@@ -202,11 +202,14 @@
                             <q-dialog v-model="displayCard">
                                 <q-card style="height:400px;width:400px">
                                     <q-card-section>
-                                        <div class="row no-wrap items-center">
-                                            <div v-cloak class="col text-h6 ellipsis">
+                                        <q-chip>
+                                            <q-avatar round size="48px">
+                                                <img :src="`https://avatars3.githubusercontent.com/u/${uid}?v=4`" />
+                                            </q-avatar>
+                                            <div v-cloak class="col text-h6">
                                                 {{userName}}
                                             </div>
-                                        </div>
+                                        </q-chip>
                                     </q-card-section>
                                     <q-card-section>
                                         <q-select
