@@ -14,6 +14,103 @@
         <link rel="stylesheet" type="text/css" href="/css/main.css">
     </head>
 
+    <style>
+        .userIcon {
+            width: 32px;
+            height: 32px;
+            clip-path: circle(16px at center);
+        }
+        #userAvatar {
+            display: none;
+        }
+        .auth-dialog > div:first-child {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            background: rgba(0,0,0,0.5);
+            border: thin solid #777;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+        }
+        #loginStatus a {
+            border-bottom: none;
+        }
+        #loginStatus a:hover {
+            border-bottom: 1px solid white;
+        }
+        #text {
+            padding:1em;
+            padding-top: 5em;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0))
+        }
+        #text p {
+           column-count: 2;
+           column-gap: 2em;
+        }
+        #content {
+            z-index: 100;
+            position: fixed;
+            width: 100%;
+            pointer-events: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        #network {
+            z-index: 50;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            bottom:0;
+            display: flex;
+        }
+        #network svg {
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        @keyframes shinebrightlikeadiamond {
+            0% { stroke-width: 0; stroke-opacity: 1; }
+            70% { stroke-width: 10px; stroke-opacity: 0.5; }
+            100% { stroke-width: 0; stroke-opacity: 0; }
+        } 
+        #network svg circle.logged {
+            stroke-width: 0;
+            stroke: #DDD;
+            animation: shinebrightlikeadiamond 1s ease infinite;
+        }
+        #network svg .link {
+            stroke: #fff;
+            stroke-opacity: 0.2;
+        }
+        #network svg .name {
+            fill: #fff;
+            font-size: 16px;
+        }
+        #network svg text {
+            cursor: default;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        #network svg text::selection {
+            background: none;
+        }
+        [v-cloak] {
+            display: none
+        }
+        .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .col {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+    </style>
 
     <body>
 
@@ -31,61 +128,6 @@
 
             <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;" onclick="this.blur();">
             </button>
-
-            <style>
-                .userIcon {
-                    width: 32px;
-                    height: 32px;
-                    clip-path: circle(16px at center);
-                }
-                #userAvatar {
-                    display: none;
-                }
-                .auth-dialog > div:first-child {
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    background: rgba(0,0,0,0.5);
-                    border: thin solid #777;
-                    transform: translate( -50%, -50% );
-                    z-index: 1050;
-                }
-                #loginStatus a {
-                    border-bottom: none;
-                }
-                #loginStatus a:hover {
-                    border-bottom: 1px solid white;
-                }
-                #text {
-                    position: absolute;
-                    width: 80%;
-                    max-width: 1200px;
-                    padding: 1em;
-                    top: 7rem;
-                    left: 50%;
-                    transform: translate( -50%, 0);
-                    pointer-events: none;
-                    background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0));
-                }
-                #network {
-                    position: fixed;
-                    top: calc( 50% + 32px );
-                    left: 50%;
-                    transform: translate( -50%, -50%);
-                    width: 100%;
-                }
-                [v-cloak] {
-                    display: none
-                }
-                .row {
-                    margin-left: 0 !important;
-                    margin-right: 0 !important;
-                }
-                .col {
-                    padding-left: 0 !important;
-                    padding-right: 0 !important;
-                }
-            </style>
 
             <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
                 <ul class="navbar-nav mr-4" >
@@ -114,7 +156,6 @@
         <div id="q-app">
             <!-- part 4 Community -->
             <div id="community">
-
                 <div id="network"></div>
 
                 <!-- <q-spinner-ball
@@ -135,61 +176,58 @@
                     </div>
 
                     <div v-cloak class="row">
-
                         <!-- Person's card -->
                         <div v-if="cardPersonName !== userName">
                             <q-dialog v-model="displayCard">
-                            <q-card style="height:400px;width:400px">
-                                <q-card-section>
-                                    <q-chip>
-                                        <q-avatar round size="48px">
-                                            <img :src="`https://avatars3.githubusercontent.com/u/${cardPersonUID}?v=4`" />
-                                        </q-avatar>
-                                        <div v-cloak class="col text-h6">
-                                            {{cardPersonName}}
-                                        </div>
-                                    </q-chip>
-                                </q-card-section>
-                                <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
-                                    <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
-                                        {{skill}}
-                                    </q-chip>
-                                </q-card-section>
-                            </q-card>
-                        </q-dialog>
+                                <q-card style="height:400px;width:400px">
+                                    <q-card-section>
+                                        <q-chip>
+                                            <q-avatar round size="48px">
+                                                <img :src="`https://avatars3.githubusercontent.com/u/${cardPersonUID}?v=4`" />
+                                            </q-avatar>
+                                            <div v-cloak class="col text-h6">
+                                                {{cardPersonName}}
+                                            </div>
+                                        </q-chip>
+                                    </q-card-section>
+                                    <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
+                                        <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
+                                            {{skill}}
+                                        </q-chip>
+                                    </q-card-section>
+                                </q-card>
+                            </q-dialog>
                         </div>
-                    
                         <div v-else>
-                        <q-dialog v-model="displayCard">
-                            <q-card style="height:400px;width:400px">
-                            <q-card-section>
-                                <div class="row no-wrap items-center">
-                                <div v-cloak class="col text-h6 ellipsis">
-                                    {{userName}}
-                                </div>
-                                </div>
-                            </q-card-section>
-                            <q-card-section>
-                                <q-select
-                                    label="Skills"
-                                    filled
-                                    v-model="people[people.map((o)=>o.uid).indexOf(uid)].skills"
-                                    use-input
-                                    use-chips
-                                    multiple
-                                    hide-dropdown-icon
-                                    input-debounce="0"
-                                    new-value-mode="add-unique"
-                                    :options="options"
-                                    @filter="filterFn"
-                                    @new-value="createValue"
-                                    @input="draw"
-                                ></q-select>
-                            </q-card-section>
-                            </q-card>
-                        </q-dialog>
+                            <q-dialog v-model="displayCard">
+                                <q-card style="height:400px;width:400px">
+                                    <q-card-section>
+                                        <div class="row no-wrap items-center">
+                                            <div v-cloak class="col text-h6 ellipsis">
+                                                {{userName}}
+                                            </div>
+                                        </div>
+                                    </q-card-section>
+                                    <q-card-section>
+                                        <q-select
+                                            label="Skills"
+                                            filled
+                                            v-model="people[people.map((o)=>o.uid).indexOf(uid)].skills"
+                                            use-input
+                                            use-chips
+                                            multiple
+                                            hide-dropdown-icon
+                                            input-debounce="0"
+                                            new-value-mode="add-unique"
+                                            :options="options"
+                                            @filter="filterFn"
+                                            @new-value="createValue"
+                                            @input="draw"
+                                        ></q-select>
+                                    </q-card-section>
+                                </q-card>
+                            </q-dialog>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -225,8 +263,6 @@
                         document.querySelector("#userAvatar img").src = photoURL;
                         document.querySelector("#userAvatar").style.display = "inline-block";
                         document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-                        // user.getIdToken().then(function(accessToken) {
-                        // });
                     } else {
                         app.userSignedIn = false;
                         app.uid = null;
@@ -361,7 +397,11 @@
 
             function peopleArrToNetwork(peopleArr) {
                 const nodes = peopleArr.map((p) => {
-                    return {id:p.displayname, group: 1}
+                    return {
+                        id: p.displayname,
+                        group: 1,
+                        classes: app.uid == p.uid ? "logged" : ""
+                    }
                 })
                 const links = [];
                 for(let i=0;i<peopleArr.length-1;i++) {
@@ -428,7 +468,7 @@
             }
 
             function pruneSkillsMatrixBasedOnNearestNeighbours(matrix) {
-                const kNN = 3;
+                const kNN = 4;
                 const N = matrix.length;
                 for(let i=0;i<N;i++) {
                     const sorted = [...matrix[i]].map((val,ind)=>[val,ind]).sort((a,b)=>a[0]-b[0])
@@ -508,20 +548,30 @@
                     case "viewof mychart":
                         return new Inspector(document.getElementById("network"));
                     case "mychart":
-                        return {fulfilled(value) {
-                            app.displayCard = true;
-                            app.cardPersonName = app.people[value].displayname;
-                            app.cardPersonSkills = app.people[value].skills;
-                            app.cardPersonUID = app.people[value].uid;
-                        }};
+                        return {
+                            fulfilled(value) {
+                                app.displayCard = true;
+                                app.cardPersonName = app.people[value].displayname;
+                                app.cardPersonSkills = app.people[value].skills;
+                                app.cardPersonUID = app.people[value].uid;
+                            }
+                        };
                 }
                 });
 
                 network = { "nodes": [], "links": [] };
                 main.redefine("miserable", network);
-                main.redefine("myStrength", 200);
+                main.redefine("myStrength", 950);
+                main.redefine("myLinkStrength", 0.5);
+                main.redefine("myXStrength", 0.0);
+                main.redefine("myYStrength", 0.3);
+                main.redefine("myWithinGroupStrength", 0.1);
+                main.redefine("myBetweenGroupStrength", 0.1);
                 main.redefine("myRadius", 10);
-                main.redefine("myHeight", window.innerHeight-document.getElementsByTagName("nav")[0].offsetHeight);
+                main.redefine("myOriginY", document.getElementById("text").offsetHeight + document.getElementsByTagName("nav")[0].offsetHeight - 50);
+                main.redefine("myOriginX", 0);
+                main.redefine("myHeight", document.getElementById("network").offsetHeight);
+                main.redefine("myWidth", document.getElementById("network").offsetWidth);
             }
 
             Quasar.Dark.set(true);
