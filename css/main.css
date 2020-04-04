@@ -712,7 +712,7 @@ a.btn.btn-outline-secondary.filter:hover, a.btn.btn-outline-secondary.filter:act
 /* Community picture gallery */
 #community {
     margin: 4em 0;
-    padding: 1em;
+    /* padding: 0em; */
 }
 .picgallery {
     margin:0.1em 0 0.5em 0;
