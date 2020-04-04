@@ -157,5 +157,10 @@ Thanks to all the amazing people to the BrainWeb <img src="https://github.github
 <table>
   <tr>
     <td align="center"><a href="https://github.com/katjaq"><img src="https://avatars3.githubusercontent.com/u/6297454?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Katja Heuer</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/r03ert0"><img src="https://avatars2.githubusercontent.com/u/2310732?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Roberto Toro</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/anibalsolon"><img src="https://avatars0.githubusercontent.com/u/562525?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Anibal Sólon</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/Remi-Gau"><img src="https://avatars3.githubusercontent.com/u/6961185?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Remi Gau</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/recoveringyank"><img src="https://avatars0.githubusercontent.com/u/9336717?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Austin Benn</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/complexbrains"><img src="https://avatars1.githubusercontent.com/u/45263281?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Isil Bilgin</b></sub></a><br /></td>
   </tr>
 </table>
