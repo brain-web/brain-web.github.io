@@ -13,8 +13,8 @@ Join our channel on  <a href="https://mattermost.brainhack.org/brainhack/channel
   - [How to help](#how-to-help)
     - [Our wish list](#our-wish-list)
     - [Skills required](#skills-required)
-    - [Organization of the website](#organization-of-the-website)
-      - [Network vizualization](#network-vizualization)
+    - [Organisation of the website](#organisation-of-the-website)
+      - [Network visualisation](#network-visualisation)
     - [How to run the website locally](#how-to-run-the-website-locally)
     - [Suggesting changes](#suggesting-changes)
   - [Getting in touch](#getting-in-touch)
@@ -34,12 +34,12 @@ See you in our next community call! :)
 
 ## Propose a project
 
-If you want your project to be listed on the BrainWeb project page all you need to do is to create a repository on GitHub and to add `BrainWeb` as a topic to the repo. It will then automatically be featured in the BrainWeb project pool on the website.  
+If you want your project to be listed on the BrainWeb project page, all you need to do is to create a repository on GitHub and to add `brainweb` as a topic to the repo. It will then automatically be featured in the BrainWeb project pool on the website.  
 
-Each project appears with the repo's title and description, and is linked to the GitHub repo. We will eventually add more info, like contributors, number of stars etc. If you do not have an image in your README, your project will be shown with a randomly generated pattern image.
-These patterns are lovely, but in case you'd prefer an image that shows what the project is about, here are our recommended guidelines:   
+Each project appears with the repo's title and description, and is linked to its GitHub repo. We also add a link to your website if you specify one in your README, and to your Mattermost channel for communication on your project. See below if you'd like to create a channel and indicate it in your README. We also get the number of stars and issues for your project, and which programming language it uses.  
+If you do not have an image in your README, your project will be shown with a randomly generated pattern image. These patterns are lovely, but in case you'd prefer an image that shows what the project is about, here are our recommended guidelines:   
 
-   1. Create an image that shows in small format of dimensions 300px x 200px what you'd like to show --> save it as `yourproject_card.jpg` (small format is important so it doesn't slow BrainWeb website down as number of projects will grow.  
+   1. Create an image that shows in small format of dimensions 300px x 200px what you'd like to show --> save it as `yourproject_card.jpg` (small format is important so it doesn't slow the BrainWeb website down as number of projects will grow. ;)  
 
    2. Add an image to your repo.
 
@@ -56,9 +56,8 @@ Note: BrainWeb takes the first linked image it finds in your README file. So you
 
 ### You are self conscious about the quality of the code in your project?
 
-You have this nice project you are working on, but you are keeping repo private because you think it is poorly coded.
-
-We get it. Many of us never got the training on how to code properly.
+You have this nice project you are working on, but you are keeping the repo private because you think it is poorly coded. 
+We understand. Many of us never got the training on how to code properly.
 
 Get in touch with us on [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) and we could arrange to help you go through your code and gain enough confidence to make your code public and this way find potential new collaborators.
 
@@ -72,37 +71,39 @@ Yup. Some of us have been there too. Come and [chat with us](https://mattermost.
 
 At our regular meetings, you will get the chance to present your project to other attendees. so here are some guidelines for our project pitch.
 
-   - keep it short (definitely less than 5 minutes). Yes this is short but there will be time at every meeting for people who are interested to come and ask you questions if they want to know more.
-   - if you are too shy, you can record your pitch beforehand if you want or get in touch with us if you want some one on one feedback.
+   - keep it short (definitely less than 5 minutes). This is short but there will be time at every meeting for people who are interested to come and ask you questions if they want to know more.
+   - if you are too shy, you can record your pitch beforehand if you want, or get in touch with us if you want some one-on-one feedback.
    - tell us why you are passionate about this project
    - mention what concrete goals you want to achieve through this hackathon
-   - let people know what type of skills (coding or otherwise) you are looking for. You can get some inspiration from this [template](https://github.com/OpenMRBenelux/openmrb2020-hackathon/blob/master/.github/ISSUE_TEMPLATE/hackathon-project-template.md)
+   - let people know what type of skills (coding, design, documentation, testing etc.) you are looking for. You can get some inspiration from this [template](https://github.com/OpenMRBenelux/openmrb2020-hackathon/blob/master/.github/ISSUE_TEMPLATE/hackathon-project-template.md)
 
 ### Remove a project
 
-If you remove the `BrainWeb` topic from your repo, then it will no longer appear on the BrainWeb project page.
+If you remove the `brainweb` topic from your repo, it will no longer appear on the BrainWeb project page.
 
 
 ## How to help
 
 ### Our wish list
 
-Below are some of the ideas that we thought we could implement in this project. Maybe you want to help us make them real. Or maybe you have your own suggestionss, so come and chat with us on [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or open an issue.
+Below are some of the ideas that we thought we could implement in this project. Maybe you want to help us make them real. Or maybe you have your own suggestions, so come and chat with us on [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or [open an issue](https://github.com/brain-web/brain-web.github.io/issues/new).
 
 - [ ] create a blog with regular posts ; eventually turn it into a newsletter where we present each other's projects
 - [ ] improve the network visualization on the community page (add filtering options based on skills, vizualize only sub-networks, select users by color-coding, add a chat...)
-- [ ] implement some matching process between the skills required for a project and the skills of the users in the community BrainWeb
-- [ ] create a twitter bot to let every know that we have a new project listed on the BrainWeb
+- [ ] implement some matching process between the skills required for a project and the skills of the users in the BrainWeb community
+- [ ] integrate a bot with our @TheBrainWeb twitter account to let every know that there is a new project listed on the BrainWeb
 
 
 ### Skills required
 
 If you want to help with the website of the BrainWeb project you will need to be familiar with a bit of:
-- git and github
+
+- git & github
 - html
 - css
 
 Moreover some of the more advanced functions require some knowledge of one or several of the following:
+
 - Firebase
 - Javascript
 - Quasar
@@ -110,18 +111,16 @@ Moreover some of the more advanced functions require some knowledge of one or se
 - D3
 
 
-### Organization of the website
+### Organisation of the website
 
-We use the google Firebase as the database for our users. It allows us to recreate on the fly the BrainWeb network on the community page every time a new skill is added.
+We use Google Firebase for the database for our users. It allows us to create on the fly the network for the BrainWeb community page every time a new skill is added.
 
 
-#### Network vizualization
+#### Network visualisation
 
-The network vizualization is implemented in the community page in `community/index.html`.
+The network visualisation is implemented in the community page in `community/index.html` and uses observables based on the D3 library for visualising the graph. This allows for quick and easy changes in visualisations.
 
-We use the D3 library for the visualization of the network. It allows for quick and easy changes in visualizations.
-
-There are currently two pruning functions and allow for a maximum of 10 colors to be implemented in the graph. We do a heavier pruning to actually link the dots and only links to the 3 people with most skills on common to a given dot.
+There are currently two pruning functions implemented which make that from each node, only links to the 3 people with most skills in common will be shown. Groups result from a hierarchical clustering based on the skills in common. The maximum number of clusters is 12.
 
 
 ### How to run the website locally
@@ -130,25 +129,19 @@ There are currently two pruning functions and allow for a maximum of 10 colors t
 
    2. Run an http server from inside that directory (we use https://www.npmjs.com/package/http-server)
 
-Firebase only accept request from a known website. `Localhost` was added as a known: if this is removed then each user will have to set up their own firebase to run it locally.
-
-In practice this means:
-
-- **CAREFUL 1**: you’ll be connected to the official DB!!! For testing, better change BrainWeb for BrainWeb2 in line 207, file `brain-web/community/index.html` (“const circleName = "BrainWeb2";”)
-
-- **CAREFUL 2**: you’ll be using Roberto’s free Firebase account (which is very limited). If you really want to do some have DB-related stuff, better to open your own free Firebase account.
+Create an account on Firebase and put your credentials into the file `init-firebase.js`. 
 
 
 ### Suggesting changes
 
-If you want to propose some changes: come and chat with us on [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or open an issue.
+If you want to propose some changes: come and chat with us on [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or [open an issue](https://github.com/brain-web/brain-web.github.io/issues/new).
 
-Then you can make a new branch before implementing your changes and open a pull request, so that we can see it in action, and have the possibility to suggest adaptations before merging the pull request into the master branch.
+Before implementing your changes, please make a new branch, and then send us a pull request with your changes. This gives us the opportunity to see it in action and the possibility to suggest adaptations, before merging the pull request into the master branch.
 
 
 ## Getting in touch
 
-If you have any question or some information is missing in this readme, get in touch via [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or feel free to open an issue.
+If you have any question or some information is missing in this readme, get in touch via [mattermost](https://mattermost.brainhack.org/brainhack/channels/brainweb) or feel free to [open an issue](https://github.com/brain-web/brain-web.github.io/issues/new).
 
 
 ## Contributors ✨
