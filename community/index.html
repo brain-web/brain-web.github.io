@@ -141,11 +141,14 @@
                             <q-dialog v-model="displayCard">
                             <q-card style="height:400px;width:400px">
                                 <q-card-section>
-                                    <div class="row no-wrap items-center">
-                                        <div v-cloak class="col text-h6 ellipsis">
-                                        {{cardPersonName}}
+                                    <q-chip>
+                                        <q-avatar round size="48px">
+                                            <img :src="`https://avatars3.githubusercontent.com/u/${cardPersonUID}?v=4`" />
+                                        </q-avatar>
+                                        <div v-cloak class="col text-h6">
+                                            {{cardPersonName}}
                                         </div>
-                                    </div>
+                                    </q-chip>
                                 </q-card-section>
                                 <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
                                     <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
@@ -509,6 +512,7 @@
                             app.displayCard = true;
                             app.cardPersonName = app.people[value].displayname;
                             app.cardPersonSkills = app.people[value].skills;
+                            app.cardPersonUID = app.people[value].uid;
                         }};
                 }
                 });
@@ -534,6 +538,7 @@
                         userPicture: null,
                         displayCard: false,
                         cardPersonName: "",
+                        cardPersonUID: "",
                         cardPersonSkills: []
                     }
                 },
