@@ -1,4 +1,7 @@
 <!--(https://github.com/brain-web/brain-web.github.io/raw/master/images/readme/brainweb_card.jpg)-->
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Join our channel on  <a href="https://mattermost.brainhack.org/brainhack/channels/brainweb"><img src="http://www.mattermost.org/wp-content/uploads/2016/03/logoHorizontal.png" width=100px /></a>
 
@@ -147,6 +150,18 @@ If you have any question or some information is missing in this readme, get in t
 ## Contributors ✨
 
 Thanks to all the amazing people to the BrainWeb <img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" />
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://katjaq.github.io/graphy/"><img src="https://avatars3.githubusercontent.com/u/6297454?v=4" width="100px;" alt=""/><br /><sub><b>katja heuer</b></sub></a><br /><a href="https://github.com/brain-web/brain-web.github.io/commits?author=katjaq" title="Code">💻</a> <a href="#design-katjaq" title="Design">🎨</a> <a href="#content-katjaq" title="Content">🖋</a> <a href="#ideas-katjaq" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-katjaq" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 <table>
   <tr>
     <td align="center"><a href="https://github.com/katjaq"><img src="https://avatars3.githubusercontent.com/u/6297454?v=4" width="100px;" alt=""/><br /><sub><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f578.png?v8" width="20" /><b>&nbsp;Katja Heuer</b></sub></a><br /></td>
