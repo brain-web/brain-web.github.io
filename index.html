@@ -58,6 +58,10 @@
                 #loginStatus a:hover {
                     border-bottom:1px solid white;
                 }
+                #csv {
+                    margin-top: 4em;
+                    margin-bottom: 2em;
+                }
             </style>
 
             <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
@@ -240,7 +244,10 @@
                             <br/><br/><br/>
                         </p>
                     </div>
-
+                </div>
+                <div id="csv">
+                    <h1 style="padding-bottom:2rem;">Agenda</1>
+                        <p style="padding-top:2rem; line-height:1.7em;">Please add the links to your breakout topic discussion rooms to our <a href="https://docs.google.com/spreadsheets/d/1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY/edit#gid=0">BrainWeb topic session Google sheet</a> and they will automatically appear here in real time for the community to join.</p>
                 </div>
             </div>
             <div class="row mainpageparts hide" id="CoC" style="width:100%; position:absolute; bottom:-10px; margin:0;padding:0;border:0; color:white; background:#000000;">
@@ -302,6 +309,39 @@
             }
             window.startFirebase = startFirebase;
         </script>
+
+        <script>
+            const url = "https://docs.google.com/spreadsheets/d/1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY/export?format=tsv&id=1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY&gid=0"
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url);
+            xhr.send(null);
+            xhr.onreadystatechange = function () {
+                const DONE = 4, OK = 200;
+                if (xhr.readyState === DONE && xhr.status === OK) {
+                    const txt = xhr.responseText;
+                    const rows = txt.split("\n");
+                    for(let i=0;i<2;i++) {
+                        document.getElementById("csv").innerHTML += `<p>${rows[i]}</p>`;
+                    }
+            
+                    let html = "<table border=1>\n"
+                    for(let i=2;i<rows.length;i++) {
+                        const cols = rows[i].split(/\t[ ]*/);
+                        console.log(cols);
+                        html +="<tr>";
+                        for(let j=0;j<cols.length;j++) {
+                            html += `<td>${cols[j]}</td>`;
+                        }
+                        html +="</tr>\n";
+                    }
+                    html += "</table>\n";
+                    document.getElementById("csv").innerHTML += html;
+                } else {
+                    console.log('Error: ' + xhr.status);
+                }
+            }
+        </script>
+
         <script defer src="/js/init-firebase.js"></script>
 
         <script>
