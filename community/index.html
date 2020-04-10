@@ -39,10 +39,11 @@
             border-bottom: 1px solid white;
         }
         #text {
-            padding:1em;
+            position: relative;padding:1em;
             padding-top: 5em;
             pointer-events: none;
-            background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0))
+            background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0));
+            z-index: 100;
         }
         #text p {
            column-count: 2;
@@ -86,8 +87,11 @@
             stroke-opacity: 0.2;
         }
         #network svg .name {
-            fill: #fff;
-            font-size: 12px;
+            fill: rgb(255,255,255,0.3);
+            font-size: 8px;
+        }
+        #network svg .name:hover {
+            fill: rgb(255,255,255,1);
         }
         #network svg text {
             cursor: default;
@@ -177,21 +181,21 @@
 
                     <div v-cloak class="row">
                         <!-- Person's card -->
-                        <div v-if="cardPersonName !== userName">
+                        <div v-if="cardDisplayName !== userDisplayName">
                             <q-dialog v-model="displayCard">
                                 <q-card style="height:400px;width:400px">
                                     <q-card-section>
                                         <q-chip>
                                             <q-avatar round size="48px">
-                                                <img :src="`https://avatars3.githubusercontent.com/u/${cardPersonUID}?v=4`" />
+                                                <img :src="`https://avatars3.githubusercontent.com/u/${cardUID}?v=4`" />
                                             </q-avatar>
-                                            <div v-cloak class="col text-h6">
-                                                {{cardPersonName}}
-                                            </div>
+                                            <a v-cloak class="col text-h6" :href="`https://github.com/${cardGitHubName}`">
+                                                {{cardDisplayName}}
+                                            </a>
                                         </q-chip>
                                     </q-card-section>
                                     <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
-                                        <q-chip v-cloak color="dark" v-for="skill in cardPersonSkills">
+                                        <q-chip v-cloak color="dark" v-for="skill in cardSkills">
                                             {{skill}}
                                         </q-chip>
                                     </q-card-section>
@@ -199,16 +203,16 @@
                             </q-dialog>
                         </div>
                         <div v-else>
-                            <q-dialog v-model="displayCard">
+                            <q-dialog v-model="displayCard" @hide="draw">
                                 <q-card style="height:400px;width:400px">
                                     <q-card-section>
                                         <q-chip>
                                             <q-avatar round size="48px">
                                                 <img :src="`https://avatars3.githubusercontent.com/u/${uid}?v=4`" />
                                             </q-avatar>
-                                            <div v-cloak class="col text-h6">
-                                                {{userName}}
-                                            </div>
+                                            <a v-cloak class="col text-h6" :href="`https://github.com/${userGitHubName}`">
+                                                {{userDisplayName}}
+                                            </a>
                                         </q-chip>
                                     </q-card-section>
                                     <q-card-section>
@@ -225,7 +229,6 @@
                                             :options="options"
                                             @filter="filterFn"
                                             @new-value="createValue"
-                                            @input="draw"
                                         ></q-select>
                                     </q-card-section>
                                 </q-card>
@@ -247,10 +250,13 @@
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
         <script src="https://www.lactame.com/lib/ml/4.0.0/ml.min.js"></script>
 
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/umap-js@1.3.2/lib/umap-js.min.js"></script>
+        <script src="brainweb.js"></script>
+        
         <script type="module">
             const circleName = "BrainWeb";
             let main;
-            let network;
             let app;
             const skills = [];
 
@@ -261,7 +267,7 @@
                         const {uid} = providerData[0];
                         app.userSignedIn = true;
                         app.uid = uid;
-                        app.userName = displayName;
+                        app.userDisplayName = displayName;
                         app.userPicture = photoURL;
                         document.querySelector("#userAvatar img").src = photoURL;
                         document.querySelector("#userAvatar").style.display = "inline-block";
@@ -269,7 +275,7 @@
                     } else {
                         app.userSignedIn = false;
                         app.uid = null;
-                        app.userName = null;
+                        app.userDisplayName = null;
                         app.userPicture = null;
                         document.querySelector("#userAvatar").style.display = "none";
                         document.querySelector("#userAvatar img").src = "";
@@ -345,12 +351,13 @@
                     }
                     databaseDicToPeopleArr(circle);
                     addCurrentUser();
-
-                    peopleArrToNetwork(app.people);
-                    const M = networkToSkillsMatrix(network);
-                    pruneSkillsMatrixBasedOnNearestNeighbours(M);
-                    skillsMatrixClustersToGroups(M);
-                    skillsMatrixToNetwork(M);
+                    addBrainWebToElement("#network", app.people, app.userDisplayName, (user) => {
+                        app.displayCard = true;
+                        app.cardDisplayName = app.people[user.index].displayname;
+                        app.cardGitHubName = app.people[user.index].username;
+                        app.cardUID = app.people[user.index].uid;
+                        app.cardSkills = app.people[user.index].skills;
+                    });
                 });
             }
 
@@ -398,121 +405,21 @@
                 update(dic);
             }
 
-            function peopleArrToNetwork(peopleArr) {
-                const nodes = peopleArr.map((p) => {
-                    return {
-                        id: p.displayname,
-                        group: 1,
-                        classes: app.uid == p.uid ? "logged" : ""
-                    }
-                })
-                const links = [];
-                for(let i=0;i<peopleArr.length-1;i++) {
-                    for(let j=i+1;j<peopleArr.length;j++) {
-                        const src = peopleArr[i];
-                        const trg = peopleArr[j];
-                        const srcSkills = src.skills;
-                        const trgSkills = trg.skills;
-                        const common = srcSkills.filter(skill => trgSkills.includes(skill));
-                        if(common.length > 0) {
-                            links.push({source:src.displayname, target:trg.displayname, value: common.length});
-                        }
-                    }
-                }
-                network = {nodes, links};
-                main.redefine("miserable", network);
-            }
-
-            function networkToSkillsMatrix(network) {
-                const N = network.nodes.length;
-                const matrix = [];
-                const names = network.nodes.map((o)=>o.id);
-                for(let i=0;i<N;i++) {
-                    matrix[i] = new Float32Array(N);
-                    matrix[i][i] = app.people[i].skills.length;
-                }
-                for(let e of network.links) {
-                    const i = names.indexOf(e.source);
-                    const j = names.indexOf(e.target);
-                    matrix[i][j] = e.value;
-                    matrix[j][i] = e.value;
-                }
-
-                return matrix;
-            }
-
-            function skillsMatrixToNetwork(matrix) {
-                const links = [];
-                const N = matrix.length;
-                for(let i=0;i<N;i++) {
-                    for(let j=0;j<N;j++) {
-                        if(i!==j && matrix[i][j]>0) {
-                            links.push({
-                                source: app.people[i].displayname,
-                                target: app.people[j].displayname,
-                                value: matrix[i][j]
-                            });
-                        }
-                    }
-                }
-                network.links = links;
-                main.redefine("miserable", network);
-            }
-
-            function pruneSkillsMatrixBasedOnNumberOfSkills(matrix) {
-                const minSkills = 2;
-                for(let i=0;i<N;i++) {
-                    for(let j=0;j<N;j++) {
-                        if(matrix[i][j]<minSkills) {
-                            matrix[i][j]=0;
-                        }
-                    }
-                }
-            }
-
-            function pruneSkillsMatrixBasedOnNearestNeighbours(matrix) {
-                const kNN = 4;
-                const N = matrix.length;
-                for(let i=0;i<N;i++) {
-                    const sorted = [...matrix[i]].map((val,ind)=>[val,ind]).sort((a,b)=>a[0]-b[0])
-                    for(let j=0;j<N-kNN;j++) {
-                        const [val, ind] = sorted[j];
-                        matrix[i][ind] = 0;
-                    }
-                }
-            }
-
-            function skillsMatrixClustersToGroups(matrix) {
-                const {agnes} = ML.HClust;
-                const tree = agnes(matrix, {
-                    method: 'ward'
-                });
-                const N = matrix.length;
-                const ngroups = parseInt(Math.sqrt(N));
-                const groups = tree.group(ngroups);
-                for(let i=0;i<groups.children.length;i++) {
-                    if(groups.children[i].constructor.name === "ClusterLeaf") {
-                        network.nodes[groups.children[i].index].group = 0;
-                    } else {
-                        for(let p of groups.children[i].index) {
-                            network.nodes[p.index].group = i;
-                        }
-                    }
-                }
-            }
-
             function addCurrentUser() {
                 if(app.uid === null) {
                     return;
                 }
 
                 const index = app.people.map((o)=>o.uid).indexOf(app.uid);
+
+                app.userGitHubName = app.people[index].username;
+
                 let isNewUser = false;
                 let isUserWithoutDisplayName = false;
                 if(index === -1) {
                     isNewUser = true;
                 }
-                if(typeof app.displayname === "undefined") {
+                if(typeof app.userDisplayName === "undefined") {
                     isUserWithoutDisplayName = true;
                 }
                 if(isNewUser || isUserWithoutDisplayName) {
@@ -523,58 +430,23 @@
                         const DONE = 4, OK = 200;
                         if (xhr.readyState === DONE && xhr.status === OK) {
                             const {login} = JSON.parse(xhr.responseText);
-                            const userName = app.userName?app.userName:login;
-                            app.userName = userName;
+                            const userDisplayName = app.userDisplayName?app.userDisplayName:login;
+                            app.userDisplayName = userDisplayName;
                             if(isNewUser) {
                                 app.people.push({
-                                    displayname: userName,
+                                    displayname: userDisplayName,
                                     username: login,
                                     uid: app.uid,
                                     skills: []
                                 });
                             }
-                            document.getElementById("loginStatus").innerHTML = userName;
+                            document.getElementById("loginStatus").innerHTML = displayName;
                             peopleArrToDatabaseDic(app.people);
                         } else {
                             console.log('Error: ' + xhr.status); // An error occurred during the request.
                         }
                     }
                 }
-            }
-
-            import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
-            import notebook from "https://api.observablehq.com/@r03ert0/circle-of-friends.js?v=3";
-
-            function startForceLayout() {
-                main = new Runtime().module(notebook, (name) => {
-                switch(name) {
-                    case "viewof mychart":
-                        return new Inspector(document.getElementById("network"));
-                    case "mychart":
-                        return {
-                            fulfilled(value) {
-                                app.displayCard = true;
-                                app.cardPersonName = app.people[value].displayname;
-                                app.cardPersonSkills = app.people[value].skills;
-                                app.cardPersonUID = app.people[value].uid;
-                            }
-                        };
-                }
-                });
-
-                network = { "nodes": [], "links": [] };
-                main.redefine("miserable", network);
-                main.redefine("myStrength", 650);
-                main.redefine("myLinkStrength", 0.5);
-                main.redefine("myXStrength", 0.0);
-                main.redefine("myYStrength", 0.2);
-                main.redefine("myWithinGroupStrength", 0.1);
-                main.redefine("myBetweenGroupStrength", 0.1);
-                main.redefine("myRadius", 5);
-                main.redefine("myOriginY", document.getElementById("text").offsetHeight + document.getElementsByTagName("nav")[0].offsetHeight - 50);
-                main.redefine("myOriginX", 0);
-                main.redefine("myHeight", document.getElementById("network").offsetHeight);
-                main.redefine("myWidth", document.getElementById("network").offsetWidth);
             }
 
             Quasar.Dark.set(true);
@@ -587,12 +459,14 @@
                         options: skills,
                         userSignedIn: false,
                         uid: null,
-                        userName: null,
+                        userDisplayName: null,
+                        userGitHubName: "",
                         userPicture: null,
                         displayCard: false,
-                        cardPersonName: "",
-                        cardPersonUID: "",
-                        cardPersonSkills: []
+                        cardDisplayName: "",
+                        cardGitHubName: "",
+                        cardUID: "",
+                        cardSkills: []
                     }
                 },
                 methods: {
@@ -611,19 +485,13 @@
                         event.stopPropagation()
                     },
                     draw (e) {
-                        peopleArrToNetwork(this.people);
                         peopleArrToDatabaseDic(this.people);
-                        const M = networkToSkillsMatrix(network);
-                        pruneSkillsMatrixBasedOnNearestNeighbours(M);
-                        skillsMatrixClustersToGroups(M);
-                        skillsMatrixToNetwork(M);
                     },
                     goTo (url) {
                         window.location = url
                     }
                 }
             });
-            startForceLayout();
 
         </script>
         <script defer src="/js/init-firebase.js"></script>
