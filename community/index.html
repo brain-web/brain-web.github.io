@@ -440,6 +440,8 @@
                             console.log('Error: ' + xhr.status); // An error occurred during the request.
                         }
                     }
+                } else {
+                    app.userGitHubName = app.people[index].username;
                 }
             }
 
