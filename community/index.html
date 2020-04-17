@@ -90,7 +90,7 @@
             fill: rgb(255,255,255,0.3);
             font-size: 8px;
         }
-        #network svg .name:hover {
+        #network svg circle:hover + .name{
             fill: rgb(255,255,255,1);
         }
         #network svg text {
@@ -99,6 +99,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            pointer-events: none;
         }
         #network svg text::selection {
             background: none;
