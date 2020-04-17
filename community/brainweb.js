@@ -24,14 +24,14 @@ function chart(data, {width, height, radius, clickCallback}) {
       .attr("stroke-width", d => Math.pow(d.value,1/4));
 
   function mouseover() {
-    d3.select(this).select("circle").transition()
-      .duration(100)
+    d3.select(this).transition()
+      .duration(50)
       .attr("r", radius * 2);
   }
 
   function mouseout() {
-    d3.select(this).select("circle").transition()
-      .duration(100)
+    d3.select(this).transition()
+      .duration(50)
       .attr("r", radius);
   }
 
@@ -41,19 +41,18 @@ function chart(data, {width, height, radius, clickCallback}) {
     .join("g")
       .attr('class', 'node')
       .call(drag(simulation))
-      .on("mouseover", mouseover)
-      .on("mouseout", mouseout);
-  
-  node.on("click", (d) => {
-    const {index} = d;
-    clickCallback(data.nodes[index]);
-  });
 
   const scale = d3.scaleOrdinal(d3.schemePaired);
   node.append('circle')
     .attr('class', (d) => d.classes || '')
     .attr("r", radius)
-    .attr("fill", (d)=>{return scale(d.group);});
+    .attr("fill", (d)=>{return scale(d.group);})
+    .on("click", (d) => {
+      const {index} = d;
+      clickCallback(data.nodes[index]);
+    })
+    .on("mouseover", mouseover)
+    .on("mouseout", mouseout);
   
   node.append("text")
     .attr('class', (d) => (d.classes || '') + ' name')
