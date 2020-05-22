@@ -90,7 +90,7 @@
             fill: rgb(255,255,255,0.3);
             font-size: 8px;
         }
-        #network svg .name:hover {
+        #network svg circle:hover + .name{
             fill: rgb(255,255,255,1);
         }
         #network svg text {
@@ -99,6 +99,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            pointer-events: none;
         }
         #network svg text::selection {
             background: none;
@@ -283,6 +284,7 @@
                         app.userSignedIn = false;
                         app.uid = null;
                         app.userDisplayName = null;
+                        app.userGitHubName = null;
                         app.userPicture = null;
                         document.querySelector("#userAvatar").style.display = "none";
                         document.querySelector("#userAvatar img").src = "";
@@ -439,16 +441,8 @@
 
                 const index = app.people.map((o)=>o.uid).indexOf(app.uid);
 
-                app.userGitHubName = app.people[index].username;
-
-                let isNewUser = false;
-                let isUserWithoutDisplayName = false;
-                if(index === -1) {
-                    isNewUser = true;
-                }
-                if(typeof app.userDisplayName === "undefined") {
-                    isUserWithoutDisplayName = true;
-                }
+                let isNewUser = (index === -1);
+                let isUserWithoutDisplayName = (typeof app.userDisplayName === "undefined");
                 if(isNewUser || isUserWithoutDisplayName) {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', "https://api.github.com/user/" + app.uid);
@@ -459,6 +453,7 @@
                             const {login} = JSON.parse(xhr.responseText);
                             const userDisplayName = app.userDisplayName?app.userDisplayName:login;
                             app.userDisplayName = userDisplayName;
+                            app.userGitHubName = login;
                             if(isNewUser) {
                                 app.people.push({
                                     displayname: userDisplayName,
@@ -467,12 +462,14 @@
                                     skills: []
                                 });
                             }
-                            document.getElementById("loginStatus").innerHTML = displayName;
+                            document.getElementById("loginStatus").innerHTML = `${userDisplayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
                             peopleArrToDatabaseDic(app.people);
                         } else {
                             console.log('Error: ' + xhr.status); // An error occurred during the request.
                         }
                     }
+                } else {
+                    app.userGitHubName = app.people[index].username;
                 }
             }
 
