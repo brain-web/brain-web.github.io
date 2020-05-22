@@ -148,6 +148,9 @@
                         <a class="nav-link" href="/community/">Community</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/seminar/">Seminar</a>
+                    </li>
+                    <li class="nav-item">
                         <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
                     </li>
                     <li class="nav-item" id="userAvatar">
@@ -162,11 +165,13 @@
             <div id="community">
                 <div id="network"></div>
 
-                <!-- <q-spinner-ball
+                <q-spinner-ball
                     color="white"
-                    size="2em"
-                    style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);"
-                ></q-spinner-ball> -->
+                    size="4em"
+                    v-if="spinning"
+                    style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);z-index:1000"
+                >
+                </q-spinner-ball>
 
                 <div class="container" style="margin-top: 5em">
 
@@ -248,10 +253,10 @@
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
-        <script src="https://www.lactame.com/lib/ml/4.0.0/ml.min.js"></script>
 
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/umap-js@1.3.2/lib/umap-js.min.js"></script>
+        <script src="https://www.lactame.com/lib/ml/4.0.0/ml.min.js"></script>
         <script src="brainweb.js"></script>
         
         <script type="module">
@@ -259,6 +264,8 @@
             let main;
             let app;
             const skills = [];
+            // const worker = new Worker("./brainweb.js");
+            // var worker = new Worker("./worker.js");
 
             function initApp() {
                 firebase.auth().onAuthStateChanged((user) => {
@@ -358,6 +365,26 @@
                         app.cardUID = app.people[user.index].uid;
                         app.cardSkills = app.people[user.index].skills;
                     });
+                    // worker.postMessage({
+                    //     el: "#network",
+                    //     people: app.people,
+                    //     userDisplayName: app.userDisplayName
+                    //     // clickCallBack: (user) => {
+                    //     //     app.displayCard = true;
+                    //     //     app.cardDisplayName = app.people[user.index].displayname;
+                    //     //     app.cardGitHubName = app.people[user.index].username;
+                    //     //     app.cardUID = app.people[user.index].uid;
+                    //     //     app.cardSkills = app.people[user.index].skills;
+                    //     // }
+                    // });
+                    // addBrainWebToElement("#network", app.people, app.userDisplayName, (user) => {
+                    //     app.displayCard = true;
+                    //     app.cardDisplayName = app.people[user.index].displayname;
+                    //     app.cardGitHubName = app.people[user.index].username;
+                    //     app.cardUID = app.people[user.index].uid;
+                    //     app.cardSkills = app.people[user.index].skills;
+                    // });
+                    app.spinning = false;
                 });
             }
 
@@ -456,6 +483,7 @@
                 data () {
                     return {
                         people: [],
+                        spinning: true,
                         options: skills,
                         userSignedIn: false,
                         uid: null,
@@ -485,6 +513,7 @@
                         event.stopPropagation()
                     },
                     draw (e) {
+                        app.spinning = true;
                         peopleArrToDatabaseDic(this.people);
                     },
                     goTo (url) {
@@ -493,6 +522,9 @@
                 }
             });
 
+            // worker.addEventListener("message", event => {
+            //     console.log("from worker", event.data);
+            // });
         </script>
         <script defer src="/js/init-firebase.js"></script>
 

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>BrainWeb</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+        <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
+        <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+
+        <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
+    </head>
+
+    <style>
+        html {
+            height:100%;
+        }
+        body {
+            height:100%;
+        }
+        #q-app {
+            height:100%;
+        }
+        #seminar {
+            height: 100%;
+            margin-top:4rem;
+        }
+        .userIcon {
+            width: 32px;
+            height: 32px;
+            clip-path: circle(16px at center);
+        }
+        #userAvatar {
+            display: none;
+        }
+        .auth-dialog > div:first-child {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            background: rgba(0,0,0,0.5);
+            border: thin solid #777;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+        }
+        #loginStatus a {
+            border-bottom: none;
+        }
+        #loginStatus a:hover {
+            border-bottom: 1px solid white;
+        }
+        #jitsi {
+            width: 100%;
+            height: calc( 100% - 4rem );
+        }
+
+        [v-cloak] {
+            display: none
+        }
+        .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .col {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+    </style>
+
+    <body>
+
+        <!-- Firebase authentication -->
+        <div id="firebaseui-auth-container" class="auth-dialog"></div>
+
+    <!-- navigation bar -->
+        <!-- currently, the fixed top class is added, so it sticks to the top -->
+        <!-- data value of nav bar corresponds to id in each section -->
+        <nav class="navbar navbar-expand-lg fixed-top ">
+
+            <a class="navbar-brand" href="/" >
+                <div class="logo_brainweb"><p style="padding-left:4em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p></div>
+            </a>
+
+            <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;" onclick="this.blur();">
+            </button>
+
+            <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
+                <ul class="navbar-nav mr-4" >
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">BrainWeb</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#events">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/projects/">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/community/">Community</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/seminar/">Seminar</a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
+                    </li>
+                    <li class="nav-item" id="userAvatar">
+                        <img class="userIcon"/>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="q-app">
+            <!-- part 4 Seminar -->
+            <div id="seminar">
+                <div id="jitsi"></div>
+            </div>
+
+            <style>
+              #extras {
+                display:block;
+                position: absolute;
+                top: 50%;
+                left: -5px;
+                transform: translate( 0, -50% );
+                width:53px;
+                height:250px;
+                background:black;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+              }
+              .tool {
+                margin: 10px;
+                width: 48px;
+                height: 48px;
+                font-size:38px;
+                cursor: pointer;
+              }
+              .feedback {
+                position: absolute;
+                width: 96px;
+                height: 96px;
+                font-size: 96px;
+                z-index:100;
+              }
+            </style>
+            <div id="extras">
+              <div class="tool" onclick="feedback('🧠')">🧠</div>
+              <div class="tool" onclick="feedback('🥰')">🥰</div>
+              <div class="tool" onclick="feedback('😍')">😍</div>
+              <div class="tool" onclick="feedback('🚀')">🚀</div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
+        <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
+        <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+        <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+        <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+        <script src="https://meet.jit.si/external_api.js"></script>
+
+        <script>
+        const {offsetWidth: width, offsetHeight: height} = document.querySelector("#jitsi");
+        console.log(width, height);
+        const domain = 'meet.jit.si';
+        const options = {
+            roomName: 'BrainWeb',
+            width,
+            height,
+            parentNode: document.querySelector('#jitsi')
+        };
+        const api = new JitsiMeetExternalAPI(domain, options);
+
+        function initApp() {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user;
+                    user.getIdToken().then(function(accessToken) {
+                        document.querySelector("#userAvatar img").src = photoURL;
+                        document.querySelector("#userAvatar").style.display = "inline-block";
+                        document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
+                    });
+                } else {
+                    document.querySelector("#userAvatar").style.display = "none";
+                    document.querySelector("#userAvatar img").src = "";
+                    document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
+                }
+            }, function(error) {
+                console.log(error);
+            });
+        }
+
+        function signIn() {
+            uiConfig.signInSuccessUrl = "/seminar/";
+            uiAuth.start('#firebaseui-auth-container', uiConfig);
+        }
+        window.signIn = signIn;
+
+        function signOut() {
+            firebase.auth().signOut();
+        }
+        window.signOut = signOut;
+
+        function startFirebase() {
+            uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
+            window.addEventListener('load', function() {
+                initApp();
+            });
+        }
+        function feedbackAnimationStep(timer, elem) {
+          const dx = 500 * Math.random() - 250;
+          const x = parseInt("0" + elem.style.left);
+          const y = parseInt("0" + elem.style.top);
+          const newx = 0.9*x + 0.1*(x+dx);
+          const newy = y - 25;
+          elem.style.left = newx + "px";
+          elem.style.top = newy + "px";
+          if(newy <= 0 ) {
+            clearInterval(timer);
+            elem.remove();
+          }
+        }
+        function feedbackAnimation(emoji) {
+          const elem = document.createElement('div');
+          elem.innerText = emoji;
+          elem.classList.add("feedback");
+          document.body.appendChild(elem);
+          elem.style.left = window.innerWidth/2.0 + "px";
+          elem.style.top = window.innerHeight + "px";
+          const timer = setInterval( () => {
+            feedbackAnimationStep(timer, elem);
+          }, 25);
+        }
+        function feedback(emoji) {
+          feedbackAnimation(emoji);
+          broadcastMessage({type:"feedback", emoji});
+        }
+        api.addEventListener('endpointTextMessageReceived', (rawMsg) => {
+          const text = rawMsg.data.eventData.text;
+          const msg = JSON.parse(text);
+          switch(msg.type) {
+            case "feedback":
+              const emoji = msg.emoji;
+              feedbackAnimation(emoji);
+              break;
+            case "clap":
+              playClapSound();
+              break;
+          }
+        });
+        function broadcastMessage(msg) {
+          for(const participant in api._participants) {
+            let send = true;
+            if(!{}.hasOwnProperty.call(api._participants, participant)) {
+              continue;
+            }
+            const itsme = (api._participants[participant].formattedDisplayName.slice(-5) === " (me)");
+            if(itsme) {
+              continue;
+            }
+            api.executeCommand('sendEndpointTextMessage', participant, JSON.stringify(msg));
+          }
+        }
+        </script>
+        <script defer src="/js/init-firebase.js"></script>
+
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-138729622-3');
+        </script>
+
+    </body>
+</html>
