@@ -294,13 +294,11 @@
                     console.log(error);
                 });
             }
-
             function signIn() {
                 uiConfig.signInSuccessUrl = "/community/";
                 uiAuth.start('#firebaseui-auth-container', uiConfig);
             }
             window.signIn = signIn;
-
             function signOut() {
                 firebase.auth().signOut();
             }

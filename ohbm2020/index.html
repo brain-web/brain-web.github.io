@@ -25,12 +25,18 @@
     <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
 
-    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" /> -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
     
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+    <link
+      rel="icon"
+      sizes="any"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='5' fill='grey'/%3E%3C/svg%3E"
+    >
   </head>
 
   <style>
@@ -92,7 +98,7 @@
       display: block;
       width: 100%;
       color:white;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       padding: 10px 36px;
     }
     #info > a {
@@ -112,7 +118,7 @@
     }
   </style>
 
-  <body">
+  <body>
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-lg fixed-top ">
 
@@ -190,9 +196,10 @@
 
     <div style="position:relative;display:flex;flex-direction:column;height:calc( 100% - 65px);margin-top:65px">
       <div id="info" style="flex:0 0 120px">
-        Welcome to the <a href="/" target="_blank">BrainWeb</a> visualiser for the OHBM 2020 Posters. Each square represents a poster.
-        Green squares show in real-time active posters and the number indicates how many participants
-        are connected. Many thanks to the
+        Welcome to the <a href="/" target="_blank">BrainWeb</a> visualiser for the
+        <a href="https://www.humanbrainmapping.org/i4a/pages/index.cfm?pageid=3958">OHBM 2020</a> posters. Each
+        square represents a poster. Green squares show in real-time active posters and the number indicates how
+        many participants are connected. Many thanks to the
         <a href="https://datalad-datasets.github.io/ohbm2020-posters/" target="_blank">DataLad</a> team for setting
         up all the online tracking system and poster information!
         The <a href="/" target="_blank">BrainWeb</a> aims at providing a permanent space for meeting and hacking, available all year
@@ -210,9 +217,48 @@
   </body>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
+  <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
   <script>
     let posters;
 
+    function initApp() {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user;
+            user.getIdToken().then(function(accessToken) {
+                document.querySelector("#userAvatar img").src = photoURL;
+                document.querySelector("#userAvatar").style.display = "inline-block";
+                document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
+            });
+          } else {
+            document.querySelector("#userAvatar").style.display = "none";
+            document.querySelector("#userAvatar img").src = "";
+            document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
+          }
+        }, function(error) {
+          console.log(error);
+        });
+    }
+    function signIn() {
+      uiConfig.signInSuccessUrl = "/ohbm2020/";
+      uiAuth.start('#firebaseui-auth-container', uiConfig);
+    }
+    window.signIn = signIn;
+    function signOut() {
+      firebase.auth().signOut();
+    }
+    window.signOut = signOut;
+    function startFirebase() {
+      uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
+      window.addEventListener('load', function() {
+          initApp();
+      });
+    }
+      
     async function getPosters() {
       let res = await fetch("posters.json");
       const data = await res.json();
@@ -272,9 +318,14 @@
 
     function websocketDump(dump) {
       for(key in dump) {
-        if({}.hasOwnProperty.call(dump, key)) {
+        if(key !== "" &&  {}.hasOwnProperty.call(dump, key)) {
           const el = document.getElementById(`${key}`);
-          el.classList.add("connected");
+          try {
+            el.classList.add("connected");
+          } catch (e) {
+            console.log(e);
+            console.log(`key: [${key}]`, dump);
+          }
           el.innerText=dump[key];
           el.dataset.connected = dump[key];
         }
@@ -347,4 +398,5 @@
 
     main();
   </script>
+  <script defer src="/js/init-firebase.js"></script>
 </html>

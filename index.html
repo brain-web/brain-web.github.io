@@ -301,12 +301,47 @@
     <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
 
-    <script type="module">
+    <!-- <script type="module">
         const circleName = "MiserableSkills"; function initApp() { firebase.auth().onAuthStateChanged((user) => { if (user) { const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user; user.getIdToken().then(function(accessToken)
         { document.querySelector("#userAvatar img").src = photoURL; document.querySelector("#userAvatar").style.display = "inline-block"; document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
         }); // prompt("Copy/paste this information:","Go to: https://www.crowdcast.io/e/brainweb\nUse this: BrainWebKickOff!") } else { document.querySelector("#userAvatar").style.display = "none"; document.querySelector("#userAvatar img").src = ""; document.getElementById("loginStatus").innerHTML
         = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`; } }, function(error) { console.log(error); }); } function signIn() { uiAuth.start('#firebaseui-auth-container', uiConfig); } window.signIn = signIn; function signOut() { firebase.auth().signOut();
         } window.signOut = signOut; function startFirebase() { uiAuth = new firebaseui.auth.AuthUI(firebase.auth()); window.addEventListener('load', function() { initApp(); }); } window.startFirebase = startFirebase;
+    </script> -->
+    <script>
+    function initApp() {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user;
+            user.getIdToken().then(function(accessToken) {
+                document.querySelector("#userAvatar img").src = photoURL;
+                document.querySelector("#userAvatar").style.display = "inline-block";
+                document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
+            });
+          } else {
+            document.querySelector("#userAvatar").style.display = "none";
+            document.querySelector("#userAvatar img").src = "";
+            document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
+          }
+        }, function(error) {
+          console.log(error);
+        });
+    }
+    function signIn() {
+      uiConfig.signInSuccessUrl = "/";
+      uiAuth.start('#firebaseui-auth-container', uiConfig);
+    }
+    window.signIn = signIn;
+    function signOut() {
+      firebase.auth().signOut();
+    }
+    window.signOut = signOut;
+    function startFirebase() {
+      uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
+      window.addEventListener('load', function() {
+          initApp();
+      });
+    }        
     </script>
 
     <script>

@@ -195,24 +195,22 @@
                 console.log(error);
             });
         }
-
         function signIn() {
             uiConfig.signInSuccessUrl = "/videoconference/";
             uiAuth.start('#firebaseui-auth-container', uiConfig);
         }
         window.signIn = signIn;
-
         function signOut() {
             firebase.auth().signOut();
         }
         window.signOut = signOut;
-
         function startFirebase() {
             uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
             window.addEventListener('load', function() {
                 initApp();
             });
         }
+
         function feedbackAnimationStep(timer, elem) {
           const dx = 500 * Math.random() - 250;
           const x = parseInt("0" + elem.style.left);
