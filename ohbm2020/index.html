@@ -46,13 +46,34 @@
       margin:0;
       padding:0;
     }
-    @keyframes example {
+    @keyframes colour {
       from {background-color: white;}
       to {background-color: #00ff00;}
     }
+    @keyframes circle {
+      from {width: 40px; height: 40px; border-color: rgba(255,255,255,1)}
+      to {width: 80px; height: 80px; border-color: rgba(255,255,255,0)}
+    }
+    .dot.connected::before {
+      content: "";
+      background: none;
+      border: 1px solid;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border-color: rgba(255,255,255,0);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      animation-name: circle;
+      animation-duration: 1s;
+    }
     .dot.connected {
       background: #00ff00;
-      animation-name: example;
+      border-radius: 50%;
+      position: relative;
+      animation-name: colour;
       animation-duration: 3s;
     }
     #poster {
