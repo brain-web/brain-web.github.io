@@ -1,0 +1,199 @@
+<html>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+  <style>
+    .dot {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      /* border-radius: 50%; */
+      background: #bbaaaa;
+      margin:1px;
+      font-size: 12px;
+      font-family: sans-serif;
+      vertical-align: middle;
+      text-align: center;
+    }
+    .dot.connected {
+      background: #00ff00;
+    }
+    #poster {
+      display:none;
+      position: absolute;
+      top:50%;
+      left:50%;
+      transform: translate( -50%, -50%);
+      width:33%;
+      font-family: sans-serif;
+      background: white;
+      padding: 16px;
+      box-shadow: 5px 5px 10px grey;
+    }
+    .small {
+      display: block;
+      margin-bottom: 1rem;
+      color:#999;
+      font-size: 0.8rem;
+    }
+    .medium {
+      display: block;
+      margin-bottom: 1rem;
+      color:#555;
+      font-size: 1rem;
+    }
+    .title {
+      display: block;
+      margin-bottom: 1rem;
+      color: #000;
+      font-size: 1.2rem;
+    }
+    .pdf, .video {
+      display: inline-block;
+      padding:5px 10px;
+      background:#ddd;
+      border-radius:3px;
+      font-size: 1rem;
+      border: thin solid #777;
+      box-shadow: 2px 2px 2px #ddd;
+    }
+    .pdf > a, .video > a {
+      color: #444;
+    }
+    .pdf > a:hover, .video > a:hover {
+      color: rgb(75, 183, 233);
+    }
+  </style>
+
+<div id="room">
+  </div>
+
+  <div id="poster" onclick="closePoster()">
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+<script>
+  let posters;
+
+  async function getPosters() {
+    let res = await fetch("posters.json");
+    const data = await res.json();
+
+    res = await fetch("posters-overrides.json");
+    const override = await res.json();
+    override.posters.forEach(o => {
+        let p = data.posters.find(p=>p.number === o.number);
+        const {videochat, pdf} = o;
+        if(videochat) {
+          p.videochat = `<a href=\"https://meet.jit.si/${videochat}\" target=\"_${videochat}\">${videochat}</a>`;
+        }
+        if(pdf) {
+          p.pdf = o.pdf;
+        }
+    });
+    return data.posters;
+  }
+
+  function displayPosters(el) {
+    let str = ""
+    for(p of posters) {
+      str += `<div class="dot" id="${p.number}" title="[${p.number}] ${p.title}"></div>`;
+    }
+    el.innerHTML = str;
+  }
+
+  function displayPoster(p) {
+    const el = document.getElementById("poster");
+    const dot = document.getElementById(p.number);
+    const {connected} = dot.dataset;
+    const roomName = p.videochat.match(/>([^<]+)</)[1].replace("jitsi:","");
+    const roomLink = `<a href="#" onclick="openJit('${p.number}', '${roomName}')"><i class="fas fa-video"></i></a>`;
+    const videoLink = 
+    el.innerHTML = `
+<div class="small">Poster #${p.number} [${connected|0} connected]</div>
+<div class="title">${p.title}</div>
+<div class="medium">${p.authors.join(", ")}</div>
+<div class="pdf"><a href="${p.pdf}"><i class="far fa-file-pdf"></i></a></div>
+<div class="video">${roomLink}</div>
+`;
+    el.style.display="inline-block";
+  }
+
+  function closePoster() {
+    document.getElementById("poster").style.display="none";
+  }
+
+  function websocketDump(dump) {
+    for(key in dump) {
+      if({}.hasOwnProperty.call(dump, key)) {
+        const el = document.getElementById(`${key}`);
+        el.classList.add("connected");
+        el.innerText=dump[key];
+        el.dataset.connected = dump[key];
+      }
+    }
+  }
+
+  function websocketUpdate(update) {
+    const {id: key, count} = update;
+    const el = document.getElementById(`${key}`);
+    if(count === 0) {
+      el.classList.remove("connected");
+      el.innerText = "";
+      delete el.dataset.connected;
+    } else {
+      el.classList.add("connected");
+      el.innerText = count;
+      el.dataset.connected = count;
+    }
+  }
+
+  function websocketOnMessage(e) {
+    let msg = JSON.parse(e.data);
+    if(msg.dump) {
+      websocketDump(msg.dump);
+    }
+    if(msg.update) {
+      websocketUpdate(msg.update);
+    }
+  }
+
+  function connectToWebsocket() {
+    wss = new ReconnectingWebSocket("wss://dev1.soichi.us/ohbm2020/");
+    // wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
+    wss.onopen = () => {
+      console.log("send dump");
+        wss.send(JSON.stringify({action: "dump"}));
+    }
+    wss.onmessage = websocketOnMessage;
+  }
+
+  function clickHandler(e) {
+    const {id} = e.target;
+    console.log(id);
+
+    if(document.getElementById("poster").style.display !== "none") {
+      document.getElementById("poster").style.display = "none";
+      return;
+    }
+
+    const poster = posters.filter((o)=>o.number === parseInt(id));
+    if(poster.length) {
+      displayPoster(poster[0]);
+    }
+  }
+
+  function openJit(id, name) {
+    window.open("room.html#"+id+"."+name);
+  }
+
+  async function main() {
+    posters = await getPosters();
+    const room = document.querySelector("#room");
+    displayPosters(room);
+    document.getElementById("poster").style.display = "none";
+    document.addEventListener('click', clickHandler);
+    connectToWebsocket();
+  }
+
+  main();
+</script>
+</html>
