@@ -1,17 +1,44 @@
-<html>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <style>
+      .dot {
+        display:inline-block;
+        width: 14px;
+        height: 14px;
+        margin: 1px;
+        background: #3f3737;
+        color:black;
+        font-family: 'Raleway', sans-serif;
+        font-size: 10px;
+        vertical-align: middle;
+        text-align: center;
+        box-sizing: border-box;
+      }
+    </style>
+    <title>BrainWeb Poster room</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+  </head>
+
   <style>
-    .dot {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      /* border-radius: 50%; */
-      background: #bbaaaa;
-      margin:1px;
-      font-size: 12px;
-      font-family: sans-serif;
-      vertical-align: middle;
-      text-align: center;
+    html,body {
+      width:100%;
+      height:100%;
+      margin:0;
+      padding:0;
     }
     .dot.connected {
       background: #00ff00;
@@ -23,177 +50,304 @@
       left:50%;
       transform: translate( -50%, -50%);
       width:33%;
-      font-family: sans-serif;
-      background: white;
+      font-family: 'Raleway', sans-serif;
+      background: #222;
+      color: white;
       padding: 16px;
       box-shadow: 5px 5px 10px grey;
     }
     .small {
       display: block;
       margin-bottom: 1rem;
-      color:#999;
+      color: #ffffff;
       font-size: 0.8rem;
     }
     .medium {
       display: block;
       margin-bottom: 1rem;
-      color:#555;
+      color: lightgrey;
       font-size: 1rem;
     }
     .title {
       display: block;
       margin-bottom: 1rem;
-      color: #000;
+      color: #ffffff;
       font-size: 1.2rem;
     }
     .pdf, .video {
       display: inline-block;
       padding:5px 10px;
-      background:#ddd;
+      background:#aaa;
       border-radius:3px;
       font-size: 1rem;
       border: thin solid #777;
-      box-shadow: 2px 2px 2px #ddd;
+      box-shadow: 0px 0px 0px #ddd;
     }
     .pdf > a, .video > a {
       color: #444;
     }
     .pdf > a:hover, .video > a:hover {
-      color: rgb(75, 183, 233);
+      color: rgb(255, 255, 255);
+    }
+    #info {
+      display: block;
+      margin-top: 65px;
+      width: 100%;
+      height: 120px;
+      color:white;
+      columns: 2;
+      font-size: 1rem;
+      padding: 10px 80px;
+    }
+    #info > a {
+      text-decoration: none;
+      font-weight: 600;
+      border:none;
+    }
+    #info > a:hover {
+      text-decoration: none;
+      font-weight: 600;
+      border:none;
+      color: #348ea5;
+    }
+    #room {
+      width: 100%;
+      height:calc( 100% - 65px - 120px );
+      font-size:0;
     }
   </style>
 
-<div id="room">
-  </div>
+  <body>
+    <!-- navigation bar -->
+    <nav class="navbar navbar-expand-lg fixed-top ">
 
-  <div id="poster" onclick="closePoster()">
-  </div>
+      <a class="navbar-brand" href="/">
+        <div class="logo_brainweb">
+            <p style="padding-left:4em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p>
+        </div>
+      </a>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
-<script>
-  let posters;
+      <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;"
+        onclick="this.blur();">
+      </button>
 
-  async function getPosters() {
-    let res = await fetch("posters.json");
-    const data = await res.json();
-
-    res = await fetch("posters-overrides.json");
-    const override = await res.json();
-    override.posters.forEach(o => {
-        let p = data.posters.find(p=>p.number === o.number);
-        const {videochat, pdf} = o;
-        if(videochat) {
-          p.videochat = `<a href=\"https://meet.jit.si/${videochat}\" target=\"_${videochat}\">${videochat}</a>`;
+      <style>
+        .userIcon {
+          width: 32px;
+          height: 32px;
+          clip-path: circle(16px at center);
         }
-        if(pdf) {
-          p.pdf = o.pdf;
+        
+        #userAvatar {
+          display: none;
         }
-    });
-    return data.posters;
-  }
+        
+        .auth-dialog>div:first-child {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          background: rgba(0, 0, 0, 0.5);
+          border: thin solid #777;
+          transform: translate( -50%, -50%);
+          z-index: 1050;
+        }
+        
+        #loginStatus a {
+          border-bottom: none;
+        }
+        
+        #loginStatus a:hover {
+          border-bottom: 1px solid white;
+        }
+        
+        #csv {
+          margin-top: 4em;
+          margin-bottom: 2em;
+        }
+      </style>
 
-  function displayPosters(el) {
-    let str = ""
-    for(p of posters) {
-      str += `<div class="dot" id="${p.number}" title="[${p.number}] ${p.title}"></div>`;
+      <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
+        <ul class="navbar-nav mr-4">
+          <li class="nav-item">
+            <a class="nav-link" data-value="home" href="#">BrainWeb</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-value="events" href="#">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/projects/">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/community/">Community</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/videoconference/">Videoconference</a>
+          </li>
+          <li class="nav-item">
+            <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
+          </li>
+          <li class="nav-item" id="userAvatar">
+            <img class="userIcon" />
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="info">
+      Welcome to the <a href="/" target="_blank">BrainWeb</a> visualiser for the OHBM 2020 Posters. Each square represents a poster.
+      Green squares show in real-time active posters and the number indicates how many participants
+      are connected. Many thanks to the
+      <a href="https://datalad-datasets.github.io/ohbm2020-posters/" target="_blank">DataLad</a> team for setting
+      up all the online tracking system and poster information!
+      The <a href="/" target="_blank">BrainWeb</a> aims at providing a permanent space for meeting and hacking, available all year
+      round. To keep updated, follow us on <a href="https://twitter.com/TheBrainWeb" target="_blank">Twitter</a>, join our <a href="https://mattermost.brainhack.org/brainhack/channels/brainweb" target="_blank">Mattermost</a> channel, read
+      our 1st <a href="https://brain-web.github.io/gazette/1/index.html" target="_blank">newsletter</a>, and sign-up with your
+      GitHub account.
+    </div>
+
+    <div id="room">
+    </div>
+
+    <div id="poster" onclick="closePoster()">
+    </div>
+  </body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+  <script>
+    let posters;
+
+    async function getPosters() {
+      let res = await fetch("posters.json");
+      const data = await res.json();
+
+      res = await fetch("posters-overrides.json");
+      const override = await res.json();
+      override.posters.forEach(o => {
+          let p = data.posters.find(p=>p.number === o.number);
+          const {videochat, pdf} = o;
+          if(videochat) {
+            p.videochat = `<a href=\"https://meet.jit.si/${videochat}\" target=\"_${videochat}\">${videochat}</a>`;
+          }
+          if(pdf) {
+            p.pdf = o.pdf;
+          }
+      });
+      return data.posters;
     }
-    el.innerHTML = str;
-  }
 
-  function displayPoster(p) {
-    const el = document.getElementById("poster");
-    const dot = document.getElementById(p.number);
-    const {connected} = dot.dataset;
-    const roomName = p.videochat.match(/>([^<]+)</)[1].replace("jitsi:","");
-    const roomLink = `<a href="#" onclick="openJit('${p.number}', '${roomName}')"><i class="fas fa-video"></i></a>`;
-    const videoLink = 
-    el.innerHTML = `
-<div class="small">Poster #${p.number} [${connected|0} connected]</div>
-<div class="title">${p.title}</div>
-<div class="medium">${p.authors.join(", ")}</div>
-<div class="pdf"><a href="${p.pdf}"><i class="far fa-file-pdf"></i></a></div>
-<div class="video">${roomLink}</div>
-`;
-    el.style.display="inline-block";
-  }
+    function displayPosters(el) {
+      let str = ""
+      for(p of posters) {
+        str += `<div class="dot" id="${p.number}" title="[${p.number}] ${p.title}"></div>`;
+      }
+      el.innerHTML = str;
+    }
 
-  function closePoster() {
-    document.getElementById("poster").style.display="none";
-  }
+    function displayPoster(p) {
+      const el = document.getElementById("poster");
+      const dot = document.getElementById(p.number);
+      const {connected} = dot.dataset;
+      const roomName = p.videochat.match(/>([^<]+)</)[1].replace("jitsi:","");
+      const roomLink = `<a href="#" onclick="openJit('${p.number}', '${roomName}')"><i class="fas fa-video"></i></a>`;
+      const videoLink = 
+      el.innerHTML = `
+  <div class="small">Poster #${p.number} [${connected|0} connected]</div>
+  <div class="title">${p.title}</div>
+  <div class="medium">${p.authors.join(", ")}</div>
+  <div class="pdf"><a href="${p.pdf}"><i class="far fa-file-pdf"></i></a></div>
+  <div class="video">${roomLink}</div>
+  `;
+      el.style.display="inline-block";
+    }
 
-  function websocketDump(dump) {
-    for(key in dump) {
-      if({}.hasOwnProperty.call(dump, key)) {
-        const el = document.getElementById(`${key}`);
-        el.classList.add("connected");
-        el.innerText=dump[key];
-        el.dataset.connected = dump[key];
+    function resize() {
+      const room = document.getElementById("room");
+      const H = room.clientHeight;
+      const W = room.clientWidth;
+      let S = Math.floor(((Math.sqrt(W*H/posters.length))-2.7));
+      document.styleSheets[0].cssRules[0].style.width=`${S}px`;
+      document.styleSheets[0].cssRules[0].style.height=`${S}px`;
+    }
+
+    function closePoster() {
+      document.getElementById("poster").style.display="none";
+    }
+
+    function websocketDump(dump) {
+      for(key in dump) {
+        if({}.hasOwnProperty.call(dump, key)) {
+          const el = document.getElementById(`${key}`);
+          el.classList.add("connected");
+          el.innerText=dump[key];
+          el.dataset.connected = dump[key];
+        }
       }
     }
-  }
 
-  function websocketUpdate(update) {
-    const {id: key, count} = update;
-    const el = document.getElementById(`${key}`);
-    if(count === 0) {
-      el.classList.remove("connected");
-      el.innerText = "";
-      delete el.dataset.connected;
-    } else {
-      el.classList.add("connected");
-      el.innerText = count;
-      el.dataset.connected = count;
-    }
-  }
-
-  function websocketOnMessage(e) {
-    let msg = JSON.parse(e.data);
-    if(msg.dump) {
-      websocketDump(msg.dump);
-    }
-    if(msg.update) {
-      websocketUpdate(msg.update);
-    }
-  }
-
-  function connectToWebsocket() {
-    wss = new ReconnectingWebSocket("wss://dev1.soichi.us/ohbm2020/");
-    // wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
-    wss.onopen = () => {
-      console.log("send dump");
-        wss.send(JSON.stringify({action: "dump"}));
-    }
-    wss.onmessage = websocketOnMessage;
-  }
-
-  function clickHandler(e) {
-    const {id} = e.target;
-    console.log(id);
-
-    if(document.getElementById("poster").style.display !== "none") {
-      document.getElementById("poster").style.display = "none";
-      return;
+    function websocketUpdate(update) {
+      const {id: key, count} = update;
+      const el = document.getElementById(`${key}`);
+      if(count === 0) {
+        el.classList.remove("connected");
+        el.innerText = "";
+        delete el.dataset.connected;
+      } else {
+        el.classList.add("connected");
+        el.innerText = count;
+        el.dataset.connected = count;
+      }
     }
 
-    const poster = posters.filter((o)=>o.number === parseInt(id));
-    if(poster.length) {
-      displayPoster(poster[0]);
+    function websocketOnMessage(e) {
+      let msg = JSON.parse(e.data);
+      if(msg.dump) {
+        websocketDump(msg.dump);
+      }
+      if(msg.update) {
+        websocketUpdate(msg.update);
+      }
     }
-  }
 
-  function openJit(id, name) {
-    window.open("room.html#"+id+"."+name);
-  }
+    function connectToWebsocket() {
+      wss = new ReconnectingWebSocket("wss://dev1.soichi.us/ohbm2020/");
+      // wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
+      wss.onopen = () => {
+        console.log("send dump");
+          wss.send(JSON.stringify({action: "dump"}));
+      }
+      wss.onmessage = websocketOnMessage;
+    }
 
-  async function main() {
+    function clickHandler(e) {
+      const {id} = e.target;
+      console.log(id);
+
+      if(document.getElementById("poster").style.display !== "none") {
+        document.getElementById("poster").style.display = "none";
+        return;
+      }
+
+      const poster = posters.filter((o)=>o.number === parseInt(id));
+      if(poster.length) {
+        displayPoster(poster[0]);
+      }
+    }
+
+    function openJit(id, name) {
+      window.open("room.html#"+id+"."+name);
+    }
+
+    async function main() {
     posters = await getPosters();
     const room = document.querySelector("#room");
     displayPosters(room);
     document.getElementById("poster").style.display = "none";
     document.addEventListener('click', clickHandler);
+    window.onresize = resize;
+    resize();
     connectToWebsocket();
   }
 
-  main();
-</script>
+    main();
+  </script>
 </html>
