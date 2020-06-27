@@ -90,12 +90,10 @@
     }
     #info {
       display: block;
-      margin-top: 65px;
       width: 100%;
-      height: 120px;
       color:white;
-      font-size: 1rem;
-      padding: 10px 80px;
+      font-size: 0.8rem;
+      padding: 10px 36px;
     }
     #info > a {
       text-decoration: none;
@@ -110,12 +108,11 @@
     }
     #room {
       width: 100%;
-      height:calc( 100% - 65px - 120px );
       font-size:0;
     }
   </style>
 
-  <body>
+  <body">
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-lg fixed-top ">
 
@@ -191,19 +188,21 @@
       </div>
     </nav>
 
-    <div id="info">
-      Welcome to the <a href="/" target="_blank">BrainWeb</a> visualiser for the OHBM 2020 Posters. Each square represents a poster.
-      Green squares show in real-time active posters and the number indicates how many participants
-      are connected. Many thanks to the
-      <a href="https://datalad-datasets.github.io/ohbm2020-posters/" target="_blank">DataLad</a> team for setting
-      up all the online tracking system and poster information!
-      The <a href="/" target="_blank">BrainWeb</a> aims at providing a permanent space for meeting and hacking, available all year
-      round. To keep updated, follow us on <a href="https://twitter.com/TheBrainWeb" target="_blank">Twitter</a>, join our <a href="https://mattermost.brainhack.org/brainhack/channels/brainweb" target="_blank">Mattermost</a> channel, read
-      our 1st <a href="https://brain-web.github.io/gazette/1/index.html" target="_blank">newsletter</a>, and sign-up with your
-      GitHub account.
-    </div>
+    <div style="position:relative;display:flex;flex-direction:column;height:calc( 100% - 65px);margin-top:65px">
+      <div id="info" style="flex:0 0 120px">
+        Welcome to the <a href="/" target="_blank">BrainWeb</a> visualiser for the OHBM 2020 Posters. Each square represents a poster.
+        Green squares show in real-time active posters and the number indicates how many participants
+        are connected. Many thanks to the
+        <a href="https://datalad-datasets.github.io/ohbm2020-posters/" target="_blank">DataLad</a> team for setting
+        up all the online tracking system and poster information!
+        The <a href="/" target="_blank">BrainWeb</a> aims at providing a permanent space for meeting and hacking, available all year
+        round. To keep updated, follow us on <a href="https://twitter.com/TheBrainWeb" target="_blank">Twitter</a>, join our <a href="https://mattermost.brainhack.org/brainhack/channels/brainweb" target="_blank">Mattermost</a> channel, read
+        our 1st <a href="https://brain-web.github.io/gazette/1/index.html" target="_blank">newsletter</a>, and sign-up with your
+        GitHub account.
+      </div>
 
-    <div id="room">
+      <div id="room" style="flex:1">
+      </div>
     </div>
 
     <div id="poster" onclick="closePoster()">
