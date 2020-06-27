@@ -46,8 +46,14 @@
       margin:0;
       padding:0;
     }
+    @keyframes example {
+      from {background-color: white;}
+      to {background-color: #00ff00;}
+    }
     .dot.connected {
       background: #00ff00;
+      animation-name: example;
+      animation-duration: 3s;
     }
     #poster {
       display:none;
