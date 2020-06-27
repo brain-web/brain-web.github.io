@@ -197,10 +197,10 @@
       <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
         <ul class="navbar-nav mr-4">
           <li class="nav-item">
-            <a class="nav-link" data-value="home" href="#">BrainWeb</a>
+            <a class="nav-link" href="/">BrainWeb</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-value="events" href="#">Events</a>
+            <a class="nav-link" href="/#events">Events</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/projects/">Projects</a>
@@ -417,7 +417,7 @@
     const room = document.querySelector("#room");
     displayPosters(room);
     document.getElementById("poster").style.display = "none";
-    document.addEventListener('click', clickHandler);
+    document.getElementById("room").addEventListener('click', clickHandler);
     window.onresize = resize;
     resize();
     connectToWebsocket();
