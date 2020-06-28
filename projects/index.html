@@ -32,6 +32,9 @@
             </button>
 
             <style>
+                .container {
+                    max-width: 86%;
+                }
                 .userIcon {
                     width:32px;
                     height:32px;
@@ -126,7 +129,8 @@
                         During our meetings, you are invited to pitch your project, find enthusiasts, break out into smaller meetings in parallel, and continue to work in teams after the online BrainWeb meeting.
                     </p>
 
-                    <div v-cloak class="row">
+                    <!-- <div v-cloak class="row"> -->
+                    <div v-cloak >
                         <div class="q-pa-md row items-start q-gutter-xl">
                             <q-card
                                 v-for="pr in projects"
