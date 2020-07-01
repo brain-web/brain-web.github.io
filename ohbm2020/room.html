@@ -60,22 +60,25 @@
         let hash = location.hash.substring(1); //jitsi room name
         let id = hash.split(".")[0];
         let roomName = hash.split(".")[1];
-        console.log(id,roomName);
         let cid = Math.random().toString(); //client id
+        let timer;
+        let wss = new ReconnectingWebSocket("wss://dev1.soichi.us/ohbm2020/");
+        // let wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
 
+        console.log(id, roomName);
         if(!roomName) alert("no room name set in hash");
 
-        console.log(roomName);
         const api = new JitsiMeetExternalAPI("meet.jit.si", {
             roomName,
             parentNode: document.querySelector('#meet')
-        })
-
-        let wss = new ReconnectingWebSocket("wss://dev1.soichi.us/ohbm2020/");
-        // let wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
+        }).addEventListener("readyToClose", () => {
+            clearInterval(timer);
+            wss.send(JSON.stringify({action: "jitclose", id, cid}));
+        });
+        
         wss.onopen = () => {
           wss.send(JSON.stringify({action: "jit", id, cid}));
-          setInterval(()=>{
+          timer = setInterval(()=>{
             wss.send(JSON.stringify({action: "jit", id, cid}));
           }, 1000*30);
         };
