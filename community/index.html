@@ -166,13 +166,13 @@
             <div id="community">
                 <div id="network"></div>
 
-                <!-- <q-spinner-ball
+                <q-spinner-ball
                     color="white"
                     size="4em"
                     v-if="spinning"
                     style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);z-index:1000"
                 >
-                </q-spinner-ball> -->
+                </q-spinner-ball>
 
                 <div class="container" style="margin-top: 5em">
 
@@ -355,14 +355,14 @@
 
             function listen() {
                 var circles = firebase.database().ref(`circles/${circleName}`);
-                circles.on('value', (s) => {
+                circles.on('value', async (s) => {
                     const circle = s.val();
                     if(circle === null) {
                         return;
                     }
                     databaseDicToPeopleArr(circle);
                     addCurrentUser();
-                    addBrainWebToElement("#network", app.people, app.userDisplayName, (user) => {
+                    await addBrainWebToElement("#network", app.people, app.userDisplayName, (user) => {
                         app.displayCard = true;
                         app.cardDisplayName = app.people[user.index].displayname;
                         app.cardGitHubName = app.people[user.index].username;
