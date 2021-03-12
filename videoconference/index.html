@@ -156,6 +156,7 @@
             </div>
         </div>
 
+        <script src="/js/sentry.min.js" data-lazy="no"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
@@ -176,40 +177,6 @@
             parentNode: document.querySelector('#jitsi')
         };
         const api = new JitsiMeetExternalAPI(domain, options);
-
-        function initApp() {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user;
-                    user.getIdToken().then(function(accessToken) {
-                        document.querySelector("#userAvatar img").src = photoURL;
-                        document.querySelector("#userAvatar").style.display = "inline-block";
-                        document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-                    });
-                } else {
-                    document.querySelector("#userAvatar").style.display = "none";
-                    document.querySelector("#userAvatar img").src = "";
-                    document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
-                }
-            }, function(error) {
-                console.log(error);
-            });
-        }
-        function signIn() {
-            uiConfig.signInSuccessUrl = "/videoconference/";
-            uiAuth.start('#firebaseui-auth-container', uiConfig);
-        }
-        window.signIn = signIn;
-        function signOut() {
-            firebase.auth().signOut();
-        }
-        window.signOut = signOut;
-        function startFirebase() {
-            uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
-            window.addEventListener('load', function() {
-                initApp();
-            });
-        }
 
         function feedbackAnimationStep(timer, elem) {
           const dx = 500 * Math.random() - 250;
