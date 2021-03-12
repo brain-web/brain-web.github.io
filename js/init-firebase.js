@@ -14,7 +14,7 @@ function initApp() {
       document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
     }
   }, function (error) {
-    console.log(error);
+    Sentry.captureException(error);
   });
 }
 function signIn() {
