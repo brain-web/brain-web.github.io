@@ -242,50 +242,18 @@
     <div id="poster" onclick="closePoster()">
     </div>
   </body>
-
+  
+  <script src="/js/sentry.min.js" data-lazy="no"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
   <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+
+  <script defer src="/js/init-firebase.js"></script>
   <script>
     let posters;
-
-    function initApp() {
-        firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            const {displayName, email, emailVerified, photoURL, uid, phoneNumber, providerData} = user;
-            user.getIdToken().then(function(accessToken) {
-                document.querySelector("#userAvatar img").src = photoURL;
-                document.querySelector("#userAvatar").style.display = "inline-block";
-                document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-            });
-          } else {
-            document.querySelector("#userAvatar").style.display = "none";
-            document.querySelector("#userAvatar img").src = "";
-            document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
-          }
-        }, function(error) {
-          console.log(error);
-        });
-    }
-    function signIn() {
-      uiConfig.signInSuccessUrl = "/ohbm2020/";
-      uiAuth.start('#firebaseui-auth-container', uiConfig);
-    }
-    window.signIn = signIn;
-    function signOut() {
-      firebase.auth().signOut();
-    }
-    window.signOut = signOut;
-    function startFirebase() {
-      uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
-      window.addEventListener('load', function() {
-          initApp();
-      });
-    }
-      
     async function getPosters() {
       let res = await fetch("posters.json");
       const data = await res.json();
@@ -425,5 +393,4 @@
 
     main();
   </script>
-  <script defer src="/js/init-firebase.js"></script>
 </html>
