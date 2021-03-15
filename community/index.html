@@ -521,10 +521,9 @@
                     }
                 }
             });
-
-            // worker.addEventListener("message", event => {
-            //     console.log("from worker", event.data);
-            // });
+            window.addEventListener('load', () => {
+                listen()
+            })
         </script>
         <script defer src="/js/init-firebase.js"></script>
 
