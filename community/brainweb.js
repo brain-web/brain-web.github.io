@@ -105,7 +105,7 @@ function openUserCard(user) {
   return user;
 }
 
-const worker = new Worker('worker.js')
+const worker = new Worker('./worker.js')
 
 function getUuid(){
     return crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
