@@ -18,17 +18,11 @@ function initApp(app) {
       }
       app.userPicture = photoURL;
     } else {
-    //   app.userSignedIn = false;
-    //   app.uid = null;
-    //   app.userDisplayName = null;
-    //   app.userGitHubName = null;
-    //   app.userPicture = null;
-
-      app.uid = '562525';
-      app.userDisplayName = 'Anibal Sólon';
-      app.userGitHubName = 'anibalsolon';
+      app.userSignedIn = false;
+      app.uid = null;
+      app.userDisplayName = null;
+      app.userGitHubName = null;
       app.userPicture = null;
-      app.userSignedIn = true;
       document.querySelector("#userAvatar").style.display = "none";
       document.querySelector("#userAvatar img").src = "";
       document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
