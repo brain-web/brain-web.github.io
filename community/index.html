@@ -255,58 +255,14 @@
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
         <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+        <script defer src="/js/init-firebase.js"></script>
 
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="brainweb.js"></script>
         
         <script type="module">
             const circleName = "BrainWeb";
-            let main;
-            let app;
             const skills = [];
-            // const worker = new Worker("./brainweb.js");
-            // var worker = new Worker("./worker.js");
-
-            function initApp() {
-                firebase.auth().onAuthStateChanged(async (user) => {
-                    if (user) {
-                        const {displayName, email, emailVerified, photoURL, phoneNumber, providerData} = user;
-                        const {uid} = providerData[0];
-                        app.userSignedIn = true;
-                        app.uid = uid;
-                        if(displayName) {
-                            app.userDisplayName = displayName;
-                        } else {
-                            const json = await fetchUserInfoFromGitHub(uid);
-                            app.userDisplayName = json.login;
-                        }
-                        app.userPicture = photoURL;
-                        document.querySelector("#userAvatar img").src = photoURL;
-                        document.querySelector("#userAvatar").style.display = "inline-block";
-                        document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-                    } else {
-                        app.userSignedIn = false;
-                        app.uid = null;
-                        app.userDisplayName = null;
-                        app.userGitHubName = null;
-                        app.userPicture = null;
-                        document.querySelector("#userAvatar").style.display = "none";
-                        document.querySelector("#userAvatar img").src = "";
-                        document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
-                    }
-                }, function(error) {
-                    console.log(error);
-                });
-            }
-            function signIn() {
-                uiConfig.signInSuccessUrl = "/community/";
-                uiAuth.start('#firebaseui-auth-container', uiConfig);
-            }
-            window.signIn = signIn;
-            function signOut() {
-                firebase.auth().signOut();
-            }
-            window.signOut = signOut;
 
             function arr2dic(arr) {
                 const dic = {};
@@ -341,16 +297,18 @@
                     return;
                 }
 
-                const {uid} = app;
+                const { uid } = app;
                 const str = databaseDic[uid];
                 const obj = {};
                 obj[uid] = str;
-                firebase.database().ref(`circles/${circleName}`).update(obj)
-                .then(function(snapshot) {
-                    console.log('update: success');
-                }, function(error) {
-                    console.log('update: error', error);
-                });
+                firebase.database().ref(`circles/${circleName}`)
+                    .update(obj)
+                    .then(function(snapshot) {
+                        console.log('update: success');
+                    }, function(error) {
+                        Sentry.captureException(error);
+                        console.log('update: error', error);
+                    });
             }
 
             function listen() {
@@ -414,7 +372,7 @@
             async function fetchUserInfoFromGitHub(uid) {
                 let json, res;
                 try {
-                    res = await fetch(`https://api.github.com/user/${uid}`);
+                    res = await fetch(`https://api.github.com/users/${uid}`);
                     json = await res.json();
                 } catch (err) {
                     throw new Error(err);
@@ -431,12 +389,12 @@
 
                 let isNewUser = (index === -1);
                 let isUserWithoutDisplayName = (typeof app.userDisplayName === "undefined");
-                if(isNewUser || isUserWithoutDisplayName) {
+                if (isNewUser || isUserWithoutDisplayName) {
                     const {login} = await fetchUserInfoFromGitHub(app.uid);
-                    const userDisplayName = app.userDisplayName?app.userDisplayName:login;
+                    const userDisplayName = app.userDisplayName || login;
                     app.userDisplayName = userDisplayName;
                     app.userGitHubName = login;
-                    if(isNewUser) {
+                    if (isNewUser) {
                         app.people.push({
                             displayname: userDisplayName,
                             username: login,
@@ -446,31 +404,6 @@
                     }
                     document.getElementById("loginStatus").innerHTML = `${userDisplayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
                     peopleArrToDatabaseDic(app.people);
-
-                    // const xhr = new XMLHttpRequest();
-                    // xhr.open('GET', "https://api.github.com/user/" + app.uid);
-                    // xhr.send(null);
-                    // xhr.onreadystatechange = function () {
-                    //     const DONE = 4, OK = 200;
-                    //     if (xhr.readyState === DONE && xhr.status === OK) {
-                    //         const {login} = JSON.parse(xhr.responseText);
-                    //         const userDisplayName = app.userDisplayName?app.userDisplayName:login;
-                    //         app.userDisplayName = userDisplayName;
-                    //         app.userGitHubName = login;
-                    //         if(isNewUser) {
-                    //             app.people.push({
-                    //                 displayname: userDisplayName,
-                    //                 username: login,
-                    //                 uid: app.uid,
-                    //                 skills: []
-                    //             });
-                    //         }
-                    //         document.getElementById("loginStatus").innerHTML = `${userDisplayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-                    //         peopleArrToDatabaseDic(app.people);
-                    //     } else {
-                    //         console.log('Error: ' + xhr.status); // An error occurred during the request.
-                    //     }
-                    // }
                 } else {
                     app.userGitHubName = app.people[index].username;
                 }
@@ -478,7 +411,7 @@
 
             Quasar.Dark.set(true);
 
-            app = new Vue({
+            const app = window.app = new Vue({
                 el: '#q-app',
                 data () {
                     return {
@@ -525,8 +458,6 @@
                 listen()
             })
         </script>
-        <script defer src="/js/init-firebase.js"></script>
-
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>

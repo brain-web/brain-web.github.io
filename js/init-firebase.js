@@ -1,14 +1,28 @@
 
-function initApp() {
-  firebase.auth().onAuthStateChanged((user) => {
+function initApp(app) {
+  firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
-      const { displayName, photoURL } = user;
-      user.getIdToken().then(function (accessToken) {
-        document.querySelector("#userAvatar img").src = photoURL;
-        document.querySelector("#userAvatar").style.display = "inline-block";
-        document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-      });
+      const { displayName, photoURL, providerData } = user;
+      document.querySelector("#userAvatar img").src = photoURL;
+      document.querySelector("#userAvatar").style.display = "inline-block";
+      document.getElementById("loginStatus").innerHTML = `${displayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
+
+      const { uid } = providerData[0];
+      app.userSignedIn = true;
+      app.uid = uid;
+      if (displayName) {
+        app.userDisplayName = displayName;
+      } else {
+        const json = await fetchUserInfoFromGitHub(uid);
+        app.userDisplayName = json.login;
+      }
+      app.userPicture = photoURL;
     } else {
+      app.userSignedIn = false;
+      app.uid = null;
+      app.userDisplayName = null;
+      app.userGitHubName = null;
+      app.userPicture = null;
       document.querySelector("#userAvatar").style.display = "none";
       document.querySelector("#userAvatar img").src = "";
       document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
@@ -29,7 +43,7 @@ window.signOut = signOut;
 function startFirebase() {
   uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
   window.addEventListener('load', function () {
-    initApp();
+    initApp(window.app || {});
   });
 }
 
