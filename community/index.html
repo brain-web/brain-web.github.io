@@ -305,9 +305,11 @@
                     .update(obj)
                     .then(function(snapshot) {
                         console.log('update: success');
+                        app.spinning = false;
                     }, function(error) {
                         Sentry.captureException(error);
                         console.log('update: error', error);
+                        app.spinning = false;
                     });
             }
 
@@ -402,11 +404,21 @@
                             skills: []
                         });
                     }
-                    document.getElementById("loginStatus").innerHTML = `${userDisplayName} (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
                     peopleArrToDatabaseDic(app.people);
                 } else {
                     app.userGitHubName = app.people[index].username;
                 }
+
+                document.getElementById('user').addEventListener(
+                    'click',
+                    function () {
+                        app.displayCard = true;
+                        app.cardDisplayName = app.people[index].displayname;
+                        app.cardGitHubName = app.people[index].username;
+                        app.cardUID = app.people[index].uid;
+                        app.cardSkills = app.people[index].skills;
+                    }
+                )
             }
 
             Quasar.Dark.set(true);
