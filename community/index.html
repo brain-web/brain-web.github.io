@@ -374,7 +374,7 @@
             async function fetchUserInfoFromGitHub(uid) {
                 let json, res;
                 try {
-                    res = await fetch(`https://api.github.com/users/${uid}`);
+                    res = await fetch(`https://api.github.com/user/${uid}`);
                     json = await res.json();
                 } catch (err) {
                     throw new Error(err);
