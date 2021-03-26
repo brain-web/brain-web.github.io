@@ -381,6 +381,8 @@
                 }
                 return json;
             }
+            // add function to window element so that init-firebase.js can see it
+            window.fetchUserInfoFromGitHub = fetchUserInfoFromGitHub;
 
             async function addCurrentUser() {
                 if(app.uid === null) {
