@@ -330,6 +330,7 @@
     function websocketUpdate(update) {
       const {id: key, count} = update;
       const el = document.getElementById(`${key}`);
+      if(!el) { return; }
       if(count === 0) {
         el.classList.remove("connected");
         el.innerText = "";
