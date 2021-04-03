@@ -62,7 +62,7 @@
         let roomName = hash.split(".")[1];
         let cid = Math.random().toString(); //client id
         let timer;
-        let wss = new ReconnectingWebSocket("wss://dev1.soichi.us/ohbm2020/");
+        wss = new ReconnectingWebSocket("wss://brainspell.org/vcrooms");
         // let wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
 
         console.log(id, roomName);
