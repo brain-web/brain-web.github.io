@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BrainWeb Posters</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+    <link rel="stylesheet" type="text/css" href="./posters.css">
+
+    <link
+      rel="icon"
+      sizes="any"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='5' fill='grey'/%3E%3C/svg%3E"
+    >
+
+    <style id="dot-style">
+      .dot {
+        r: 6;
+        fill:rgba(0,0,0,0.5);
+        stroke: rgba(255,255,255,0.5);
+        stroke-width: 1px;
+        pointer-events: all;
+      }
+    </style>
+    <style id="text-style">
+      .text {
+        fill: black;
+        font-size: 8px;
+      }
+    </style>
+    <style id="svg-style">
+      .g {
+        transform: scale(1);
+      }
+    </style>
+  </head>
+
+  <!-- multires posters -->
+  <script src="https://cdn.jsdelivr.net/npm/openseadragon@2.4/build/openseadragon/openseadragon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/openseadragon/bookmark-url/openseadragon-bookmark-url.js"></script>
+
+  <!-- video bubbles -->
+  <script src="libs/jquery-2.1.1.min.js"></script>
+  <script src="libs/strophe/strophe.js"></script>
+  <script src="libs/strophe/strophe.disco.min.js?v=1"></script>
+  <script src="./lib-jitsi-meet.min.js"></script>
+  <script src="index.js" ></script>
+
+  <!-- websocket rooms -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+
+  <body>
+    <div style="position:relative;display:flex;flex-direction:column;height:100%">
+
+      <!-- navigation bar -->
+      <nav class="navbar navbar-expand-lg" style="flex:0 0 65px">
+
+        <a class="navbar-brand" href="/">
+          <div class="logo_brainweb">
+              <p style="padding-left:4em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p>
+          </div>
+        </a>
+
+        <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;"
+          onclick="this.blur();">
+        </button>
+
+        <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
+          <ul class="navbar-nav mr-4">
+            <li class="nav-item">
+              <a class="nav-link" href="/">BrainWeb</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/#events">Events</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/projects/">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/community/">Community</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/videoconference/">Videoconference</a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
+            </li>
+            <li class="nav-item" id="userAvatar">
+              <img class="userIcon" />
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- welcome message -->
+      <div id="info" style="flex:0 1 0px">
+        <div style="padding:20px 100px;font-size: 1rem;">
+          Welcome to the <a href="/" target="_blank">BrainWeb</a> poster hall. The green discs show
+          in real-time which posters have active videoconferences, and the number indicates how
+          many participants are connected. Click on the camera icon to join. The <a href="/" target="_blank">BrainWeb</a> aims at providing a permanent space for meeting and hacking, available all year
+          round. To keep updated, follow us on <a href="https://twitter.com/TheBrainWeb" target="_blank">Twitter</a>, join our <a href="https://mattermost.brainhack.org/brainhack/channels/brainweb" target="_blank">Mattermost</a> channel
+          and read our <a href="https://brain-web.github.io/gazette/1/index.html" target="_blank">newsletter</a>. Sign-up with your GitHub account.
+        </div>
+      </div>
+
+      <!-- posters -->
+      <div style="flex:1 1 auto;position:relative">
+        <div id="openseadragon1" style="width:100%;height:100%">
+        </div>
+        <svg id="svg" viewbox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="100" fill="red" />
+        </svg>    
+      </div>
+    </div>
+
+    <!-- video bubbles-->
+    <div id="video-bubbles">
+    </div>
+
+    <!-- toolbar -->
+    <!-- <div id="toolbar">
+      <div class="toolbar-item">
+        One
+      </div>
+      <div class="toolbar-item">
+        Two
+      </div>
+      <div class="toolbar-item">
+        Three
+      </div>
+    </div> -->
+
+  </body>
+
+
+  <script type="text/javascript">
+    function addDots() {
+      let dots = "";
+      for(let i=0;i<40;i++) {
+        for(let j=0;j<40;j++) {
+          dots += `
+          <g transform="translate(${1000*i/40}, ${1000*j/40})">
+            <g class="g">
+              <circle id="c${j*40+i+1}" class="dot" />
+              <text class="text" id="t${j*40+i+1}" text-anchor="middle"></text>
+            </g>
+          </g>
+            `;
+        }
+      }
+      document.querySelector("#svg").innerHTML = dots;
+    }
+
+    function updateUrl() {
+      const zoom = viewer.viewport.getZoom();
+      const pan = viewer.viewport.getCenter();
+      const svg = document.querySelector("#svg");
+      const display = document.querySelector("#openseadragon1").getBoundingClientRect();
+      const wsvg = 1000/zoom;
+      const hsvg = 1000/zoom;
+      const x = -(wsvg - 1000)/2 + 1000*(pan.x - 0.5);
+      const y = -(hsvg*display.height/display.width - 1000)/2 + 1000*(pan.y - 0.5);
+      svg.setAttribute('viewBox', `${x} ${y} ${wsvg} ${hsvg}`);
+
+      // document.querySelector("#dot-style").sheet.rules[0].style.r = 5/zoom;
+      // document.querySelector("#text-style").sheet.rules[0].style["font-size"] = `${7/zoom}px`;
+      document.querySelector("#svg-style").sheet.rules[0].style["transform"] = `scale(${1/zoom})`;
+    }
+
+    const viewer = OpenSeadragon({
+      animationTime: 0,
+      maxZoomPixelRatio: 3,
+      showNavigator: false,
+      id: "openseadragon1",
+      showNavigationControl: false,
+      tileSources: [
+        "https://microdraw.pasteur.fr/ohbm2020/dzi.js"
+      ],
+      visibilityRatio: 0,
+      zoomPerScroll: 1.2
+    });
+    viewer.addHandler('animation', updateUrl);
+    viewer.bookmarkUrl();
+
+    function websocketDump(dump) {
+      for(const key in dump) {
+        if(key === "" ||  {}.hasOwnProperty.call(dump, key) ===false) {
+          continue;
+        }
+
+        const dot = document.getElementById(`c${key}`);
+        if(dot === null) {
+          continue;
+        }
+
+        const text = document.getElementById(`t${key}`);
+        try {
+          dot.classList.add("connected");
+        } catch (e) {
+          console.log(e);
+          console.log(`key: [${key}]`, dump);
+        }
+        text.textContent=dump[key];
+        text.dataset.connected = dump[key];
+      }
+    }
+
+    function websocketUpdate(update) {
+      const {id: key, count} = update;
+      console.log("websocketUpdate", key);
+
+      const dot = document.getElementById(`c${key}`);
+      if(dot === null) {
+        return;
+      }
+
+      const text = document.getElementById(`t${key}`);
+      if(count === 0) {
+        dot.classList.remove("connected");
+        text.textContent = "";
+        delete text.dataset.connected;
+      } else {
+        dot.classList.add("connected");
+        text.textContent = count;
+        text.dataset.connected = count;
+      }
+    }
+    function websocketOnMessage(e) {
+      let msg = JSON.parse(e.data);
+      if(msg.dump) {
+        websocketDump(msg.dump);
+      }
+      if(msg.update) {
+        websocketUpdate(msg.update);
+      }
+    }
+    let wss;
+    function connectToWebsocket() {
+      wss = new ReconnectingWebSocket("wss://brainspell.org/vcrooms");
+      wss.onopen = () => {
+        console.log("send dump");
+          wss.send(JSON.stringify({action: "dump"}));
+      }
+      wss.onmessage = websocketOnMessage;
+    }
+    async function getPosters() {
+      let res = await fetch("./posters.json");
+      const data = await res.json();
+      return data.posters;
+    }
+    let posters;
+    async function main() {
+      addDots();
+      posters = await getPosters();
+      connectToWebsocket();
+    }
+    main();
+    document.body.addEventListener("click", (e) => {
+      if(e.target.nodeName === "circle") {
+        console.log(e.target.id);
+        const roomNumber = e.target.id.slice(1);
+        const roomName = `ohbm2020-${roomNumber}`
+
+        let cid = Math.random().toString(); //client id
+        let timer;
+        console.log(roomNumber, cid);
+        wss.send(JSON.stringify({action: "jit", id: roomNumber, cid}));
+        timer = setInterval(()=>{
+          wss.send(JSON.stringify({action: "jit", id: roomNumber, cid}));
+        }, 1000*30);
+
+        initVideoBubbles(roomName);
+
+
+
+        e.stopPropagation();
+      }
+
+    });
+</script>
+
+</html>
