@@ -265,7 +265,9 @@
                 }
 
                 BrainWeb.once('update', ({ error }) => {
-                    console.log(error);
+                    if (error) {
+                        Sentry.captureException(error);
+                    }
                     app.spinning = false;
                 });
 
@@ -299,8 +301,8 @@
                 methods: {
                     filterFn(val, update, abort) {
                         update(() => {
-                            const needle = val.toLowerCase()
-                            this.options = skills.filter(v => v.toLowerCase().indexOf(needle) > -1)
+                            const needle = val.toLowerCase();
+                            this.options = skills.filter(v => v.toLowerCase().indexOf(needle) > -1);
                         })
                     },
                     createValue(val, done) {
@@ -336,9 +338,9 @@
                 const d3 = BrainWeb.vis.d3;
 
                 const clampedEuclidian = (zoom) => {
-                    const dist = d3.distances.euclidean(zoom)
-                    return (link) => Math.min(dist(link), 3 * zoom)
-                }
+                    const dist = d3.distances.euclidean(zoom);
+                    return (link) => Math.min(dist(link), 3 * zoom);
+                };
 
                 BrainWeb.vis.buildNetwork(app.people, {
                     graph: {
@@ -353,7 +355,7 @@
                                 .force('link', d3.forceLink(links).id((d) => d.id).strength(0.01 * zoom).distance(clampedEuclidian(zoom)))
                                 .force('collision', d3.forceCollide(10 * zoom).iterations(10).strength(0.1 * zoom))
                                 .force('charge', d3.forceManyBody().distanceMin(10 * zoom).strength(-0.5 * zoom))
-                                .force('y', d3.forceY(55).strength(0.003))
+                                .force('y', d3.forceY(55).strength(0.003));
                         },
 
                         onClick: (e, user) => {
@@ -366,7 +368,7 @@
                     },
                     embedding: {
                         clusters: 10,
-                        clusterEmbeddingComponents: 10,
+                        clusterEmbeddingComponents: 5,
                         clusterPreventIsolated: false,
                     }
                 })
@@ -376,7 +378,7 @@
                         updateLogged();
                         app.spinning = false;
                     })
-                    .catch(console.log);
+                    .catch(Sentry.captureException);
             }
 
             window.addEventListener('load', () => {
@@ -391,22 +393,19 @@
                 BrainWeb.once(
                     'auth',
                     ({ error, logged, uid, username, displayname }) => {
-                        app.userSignedIn = logged;
-                        app.uid = uid;
-                        app.userDisplayName = displayname;
-                        app.userGitHubName = username;
+                        if (error) {
+                            Sentry.captureException(error);
+                        } else {
+                            app.userSignedIn = logged;
+                            app.uid = uid;
+                            app.userDisplayName = displayname;
+                            app.userGitHubName = username;
+                        }
                         updateLogged();
                     }
                 );
 
                 BrainWeb.init();
-
-                BrainWeb.events.dispatch('auth', {
-                    logged: true, uid: '562525',
-                    username: 'anibalsolon', 
-                    displayname: 'Anibal Solon',
-                    photoURL: '',
-                });
             });
         </script>
 
