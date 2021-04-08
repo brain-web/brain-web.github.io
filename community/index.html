@@ -76,14 +76,19 @@
             0% { stroke-width: 0; stroke-opacity: 1; }
             70% { stroke-width: 10px; stroke-opacity: 0.5; }
             100% { stroke-width: 0; stroke-opacity: 0; }
-        } 
+        }
         #network svg circle {
             r: 6;
         }
         #network svg circle.logged {
             stroke-width: 0;
             stroke: #DDD;
-            animation: shinebrightlikeadiamond 1s ease infinite;
+            animation: 1s ease infinite shinebrightlikeadiamond;
+        }
+        #network svg circle.found {
+            stroke-width: 5px;
+            stroke: #ffd500;
+            animation: 1s linear infinite alternate shinebrightlikeadiamond;
         }
         #network svg .link {
             stroke: #fff;
@@ -107,6 +112,16 @@
         #network svg text::selection {
             background: none;
         }
+
+        #search-field {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            z-index: 51;
+        }
+
         [v-cloak] {
             display: none
         }
@@ -164,8 +179,12 @@
         <div id="q-app">
             <!-- part 4 Community -->
             <div id="community">
-                <div id="network"></div>
 
+                <div id="search-field">
+                    <q-input outlined type="search" v-model="search" :value="search" debounce="500" label="Search for someone" @input="searchNames" color="white" />
+                </div>
+                <div id="network"></div>
+                
                 <q-spinner-ball
                     color="white"
                     size="4em"
@@ -272,8 +291,8 @@
                 });
 
                 BrainWeb.db.update({
-                    userName: app.userName,
-                    displayName: app.displayName, 
+                    username: app.username,
+                    displayname: app.displayname, 
                     skills: app.cardSkills
                 });
             }
@@ -295,7 +314,9 @@
                         cardDisplayName: "",
                         cardGitHubName: "",
                         cardUID: "",
-                        cardSkills: []
+                        cardSkills: [],
+
+                        search: '',
                     }
                 },
                 methods: {
@@ -312,6 +333,32 @@
                     update(e) {
                         app.spinning = true;
                         update();
+                    },
+                    searchNames() {
+                        const val = app.search;
+                        Array.prototype.forEach.call(
+                            el.getElementsByClassName('found'),
+                            (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.remove('found')
+                        );
+
+                        const terms = val.split(/\s+/).map((t) => t.toLowerCase());
+                        Object.keys(app.people).forEach(
+                            (k) => {
+                                const p = app.people[k];
+                                if (terms.some(
+                                    (t) => (
+                                        p.displayname.toLowerCase().includes(t) ||
+                                        p.username.toLowerCase().includes(t)
+                                    ))) {
+                                    const className = `bw-${k}`;
+                                    Array.prototype.forEach.call(
+                                        el.getElementsByClassName(className),
+                                        (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.add('found')
+                                    );
+
+                                }
+                            }
+                        )
                     },
                 }
             });
@@ -355,6 +402,7 @@
                                 .force('link', d3.forceLink(links).id((d) => d.id).strength(0.01 * zoom).distance(clampedEuclidian(zoom)))
                                 .force('collision', d3.forceCollide(10 * zoom).iterations(10).strength(0.1 * zoom))
                                 .force('charge', d3.forceManyBody().distanceMin(10 * zoom).strength(-0.5 * zoom))
+                                .force('x', d3.forceX(0).strength(0.00001))
                                 .force('y', d3.forceY(55).strength(0.003));
                         },
 
