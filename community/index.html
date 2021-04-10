@@ -76,11 +76,19 @@
             0% { stroke-width: 0; stroke-opacity: 1; }
             70% { stroke-width: 10px; stroke-opacity: 0.5; }
             100% { stroke-width: 0; stroke-opacity: 0; }
-        } 
+        }
+        #network svg circle {
+            r: 6;
+        }
         #network svg circle.logged {
             stroke-width: 0;
             stroke: #DDD;
-            animation: shinebrightlikeadiamond 1s ease infinite;
+            animation: 1s ease infinite shinebrightlikeadiamond;
+        }
+        #network svg circle.found {
+            stroke-width: 5px;
+            stroke: #ffd500;
+            animation: 1s linear infinite alternate shinebrightlikeadiamond;
         }
         #network svg .link {
             stroke: #fff;
@@ -88,7 +96,7 @@
         }
         #network svg .name {
             fill: rgb(255,255,255,0.3);
-            font-size: 8px;
+            font-size: 12px;
         }
         #network svg circle:hover + .name{
             fill: rgb(255,255,255,1);
@@ -104,6 +112,16 @@
         #network svg text::selection {
             background: none;
         }
+
+        #search-field {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            z-index: 51;
+        }
+
         [v-cloak] {
             display: none
         }
@@ -118,9 +136,6 @@
     </style>
 
     <body>
-
-        <!-- Firebase authentication -->
-        <div id="firebaseui-auth-container" class="auth-dialog"></div>
 
     <!-- navigation bar -->
         <!-- currently, the fixed top class is added, so it sticks to the top -->
@@ -164,8 +179,12 @@
         <div id="q-app">
             <!-- part 4 Community -->
             <div id="community">
-                <div id="network"></div>
 
+                <div id="search-field">
+                    <q-input outlined type="search" v-model="search" :value="search" debounce="500" label="Search for someone" @input="searchNames" color="white" />
+                </div>
+                <div id="network"></div>
+                
                 <q-spinner-ball
                     color="white"
                     size="4em"
@@ -187,7 +206,7 @@
 
                     <div v-cloak class="row">
                         <!-- Person's card -->
-                        <div v-if="cardDisplayName !== userDisplayName">
+                        <div v-if="cardUID !== uid">
                             <q-dialog v-model="displayCard">
                                 <q-card style="height:400px;width:400px">
                                     <q-card-section>
@@ -209,7 +228,7 @@
                             </q-dialog>
                         </div>
                         <div v-else>
-                            <q-dialog v-model="displayCard" @hide="draw">
+                            <q-dialog v-model="displayCard" @hide="update">
                                 <q-card style="height:400px;width:400px">
                                     <q-card-section>
                                         <q-chip>
@@ -225,7 +244,7 @@
                                         <q-select
                                             label="Skills"
                                             filled
-                                            v-model="people[people.map((o)=>o.uid).indexOf(uid)].skills"
+                                            v-model="people[uid].skills"
                                             use-input
                                             use-chips
                                             multiple
@@ -247,189 +266,42 @@
         </div>
 
         <script src="/js/sentry.min.js" data-lazy="no"></script>
+        <script src="https://unpkg.com/brain-web@nightly/dist/brain-web.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
-        <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
-        <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
-        <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
-        <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
-        <script defer src="/js/init-firebase.js"></script>
-
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="brainweb.js"></script>
         
         <script type="module">
-            const circleName = "BrainWeb";
-            const skills = [];
-
-            function arr2dic(arr) {
-                const dic = {};
-                for(let item of arr) {
-                    const {uid} = item;
-                    dic[uid] = {}
-                    for(let key of Object.keys(item)) {
-                        if(key !== "uid") {
-                            dic[uid][key] = item[key];
-                        }
-                    }
-                }
-                return dic;
-            }
-
-            function dic2arr(dic) {
-                const arr = [];
-                for(let uid of Object.keys(dic)) {
-                    const item = {uid};
-                    for(let key of Object.keys(dic[uid])) {
-                        if(key!==uid) {
-                            item[key] = dic[uid][key];
-                        }
-                    }
-                    arr.push(item);
-                }
-                return arr;
-            }
-
-            function update(databaseDic) {
-                if(app.uid === null) {
-                    return;
-                }
-
-                const { uid } = app;
-                const str = databaseDic[uid];
-                const obj = {};
-                obj[uid] = str;
-                firebase.database().ref(`circles/${circleName}`)
-                    .update(obj)
-                    .then(function(snapshot) {
-                        console.log('update: success');
-                        app.spinning = false;
-                    }, function(error) {
-                        Sentry.captureException(error);
-                        console.log('update: error', error);
-                        app.spinning = false;
-                    });
-            }
-
-            function listen() {
-                var circles = firebase.database().ref(`circles/${circleName}`);
-                circles.on('value', async (s) => {
-                    const circle = s.val();
-                    if(circle === null) {
-                        return;
-                    }
-                    databaseDicToPeopleArr(circle);
-                    addCurrentUser();
-                    await addBrainWebToElement("#network", app.people, app.userDisplayName, (user) => {
-                        app.displayCard = true;
-                        app.cardDisplayName = app.people[user.index].displayname;
-                        app.cardGitHubName = app.people[user.index].username;
-                        app.cardUID = app.people[user.index].uid;
-                        app.cardSkills = app.people[user.index].skills;
-                    });
-                    app.spinning = false;
-                });
-            }
-
-            function databaseDicToPeopleArr(databaseDic) {
-                const oldPeople = app.people;
-
-                const incomingPeopleDic = databaseDic;
-                const incomingPeopleArr = dic2arr(incomingPeopleDic);
-                const newPeople = incomingPeopleArr.filter((person) => {
-                    const oldUIDs = oldPeople.map((o)=> o.uid);
-                    const includes = !(oldUIDs.includes(person.uid));
-                    return includes;
-                });
-                for(let p of newPeople) {
-                    if(typeof p.skills === "undefined") {
-                        p.skills = [];
-                    }
-                    if(typeof p.displayname === "undefined") {
-                        p.displayname = p.username;
-                    }
-                    for(let s of p.skills) {
-                        if(!skills.includes(s)) {
-                            skills.push(s);
-                        }
-                    }
-                    app.people.push(p);
-                }
-            }
-
-            function peopleArrToDatabaseDic(peopleArr) {
-                const arr = [];
-                for(let p of peopleArr) {
-                    arr.push(JSON.parse(JSON.stringify(p)));
-                }
-                const dic = arr2dic(peopleArr)
-                update(dic);
-            }
-
-            /**
-             * fetch user information given the GitHub user id number
-             */
-            async function fetchUserInfoFromGitHub(uid) {
-                let json, res;
-                try {
-                    res = await fetch(`https://api.github.com/user/${uid}`);
-                    json = await res.json();
-                } catch (err) {
-                    throw new Error(err);
-                }
-                return json;
-            }
-            // add function to window element so that init-firebase.js can see it
-            window.fetchUserInfoFromGitHub = fetchUserInfoFromGitHub;
-
-            async function addCurrentUser() {
-                if(app.uid === null) {
-                    return;
-                }
-
-                const index = app.people.map((o)=>o.uid).indexOf(app.uid);
-
-                let isNewUser = (index === -1);
-                let isUserWithoutDisplayName = (typeof app.userDisplayName === "undefined");
-                if (isNewUser || isUserWithoutDisplayName) {
-                    const {login} = await fetchUserInfoFromGitHub(app.uid);
-                    const userDisplayName = app.userDisplayName || login;
-                    app.userDisplayName = userDisplayName;
-                    app.userGitHubName = login;
-                    if (isNewUser) {
-                        app.people.push({
-                            displayname: userDisplayName,
-                            username: login,
-                            uid: app.uid,
-                            skills: []
-                        });
-                    }
-                    peopleArrToDatabaseDic(app.people);
-                } else {
-                    app.userGitHubName = app.people[index].username;
-                }
-
-                document.getElementById('user').addEventListener(
-                    'click',
-                    function () {
-                        app.displayCard = true;
-                        app.cardDisplayName = app.people[index].displayname;
-                        app.cardGitHubName = app.people[index].username;
-                        app.cardUID = app.people[index].uid;
-                        app.cardSkills = app.people[index].skills;
-                    }
-                )
-            }
+            
+            let el;
+            let skills = [];
 
             Quasar.Dark.set(true);
 
+            function update() {
+                if (app.cardUID !== app.uid) {
+                    return;
+                }
+
+                BrainWeb.once('update', ({ error }) => {
+                    if (error) {
+                        Sentry.captureException(error);
+                    }
+                    app.spinning = false;
+                });
+
+                BrainWeb.db.update({
+                    username: app.username,
+                    displayname: app.displayname, 
+                    skills: app.cardSkills
+                });
+            }
+
             const app = window.app = new Vue({
                 el: '#q-app',
-                data () {
+                data() {
                     return {
-                        people: [],
+                        people: {},
                         spinning: true,
                         options: skills,
                         userSignedIn: false,
@@ -437,40 +309,152 @@
                         userDisplayName: null,
                         userGitHubName: "",
                         userPicture: null,
+
                         displayCard: false,
                         cardDisplayName: "",
                         cardGitHubName: "",
                         cardUID: "",
-                        cardSkills: []
+                        cardSkills: [],
+
+                        search: '',
                     }
                 },
                 methods: {
-                    filterFn (val, update, abort) {
+                    filterFn(val, update, abort) {
                         update(() => {
-                            const needle = val.toLowerCase()
-                            this.options = skills.filter(v => v.toLowerCase().indexOf(needle) > -1)
+                            const needle = val.toLowerCase();
+                            this.options = skills.filter(v => v.toLowerCase().indexOf(needle) > -1);
                         })
                     },
-                    createValue (val, done) {
-                        skills.push(val)
-                        done(val)
+                    createValue(val, done) {
+                        skills.push(val);
+                        done(val);
                     },
-                    deletePerson (e, index) {
-                        this.people.splice(index,1)
-                        event.stopPropagation()
-                    },
-                    draw (e) {
+                    update(e) {
                         app.spinning = true;
-                        peopleArrToDatabaseDic(this.people);
+                        update();
                     },
-                    goTo (url) {
-                        window.location = url
-                    }
+                    searchNames() {
+                        const val = app.search;
+                        Array.prototype.forEach.call(
+                            el.getElementsByClassName('found'),
+                            (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.remove('found')
+                        );
+
+                        const terms = val.split(/\s+/).map((t) => t.toLowerCase());
+                        Object.keys(app.people).forEach(
+                            (k) => {
+                                const p = app.people[k];
+                                if (terms.some(
+                                    (t) => (
+                                        p.displayname.toLowerCase().includes(t) ||
+                                        p.username.toLowerCase().includes(t)
+                                    ))) {
+                                    const className = `bw-${k}`;
+                                    Array.prototype.forEach.call(
+                                        el.getElementsByClassName(className),
+                                        (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.add('found')
+                                    );
+
+                                }
+                            }
+                        )
+                    },
                 }
             });
+
+            function updateLogged() {
+                Array.prototype.forEach.call(
+                    el.getElementsByClassName('logged'),
+                    (el) => el.classList.remove('logged')
+                );
+                if (app.userSignedIn) {
+                    const className = `bw-${app.uid}`;
+                    Array.prototype.forEach.call(
+                        el.getElementsByClassName(className),
+                        (el) => el.classList.add('logged')
+                    );
+                }
+            }
+
+            function draw() {
+                if (!app.people) {
+                    return;
+                }
+
+                const d3 = BrainWeb.vis.d3;
+
+                const clampedEuclidian = (zoom) => {
+                    const dist = d3.distances.euclidean(zoom);
+                    return (link) => Math.min(dist(link), 3 * zoom);
+                };
+
+                BrainWeb.vis.buildNetwork(app.people, {
+                    graph: {
+                        width: el.clientWidth,
+                        height: el.clientHeight,
+                        zoom: 2,
+
+                        simulation: (nodes, links, origin) => {
+                            const { zoom } = origin;
+                            return BrainWeb.vis.defaultSimulation(nodes, links, origin)
+                                .alphaMin(0.1).alphaTarget(0.1)
+                                .force('link', d3.forceLink(links).id((d) => d.id).strength(0.01 * zoom).distance(clampedEuclidian(zoom)))
+                                .force('collision', d3.forceCollide(10 * zoom).iterations(10).strength(0.1 * zoom))
+                                .force('charge', d3.forceManyBody().distanceMin(10 * zoom).strength(-0.5 * zoom))
+                                .force('x', d3.forceX(0).strength(0.00001))
+                                .force('y', d3.forceY(55).strength(0.003));
+                        },
+
+                        onClick: (e, user) => {
+                            app.displayCard = true;
+                            app.cardDisplayName = user.displayname;
+                            app.cardGitHubName = user.username;
+                            app.cardUID = user.id;
+                            app.cardSkills = user.skills;
+                        }
+                    },
+                    embedding: {
+                        clusters: 10,
+                        clusterEmbeddingComponents: 5,
+                        clusterPreventIsolated: false,
+                    }
+                })
+                    .then((svg) => {
+                        el.innerHTML = '';
+                        el.appendChild(svg);
+                        updateLogged();
+                        app.spinning = false;
+                    })
+                    .catch(Sentry.captureException);
+            }
+
             window.addEventListener('load', () => {
-                listen()
-            })
+                el = document.getElementById('network');
+
+                BrainWeb.on('data', function ({ people, skills: s }) {
+                    app.people = people;
+                    skills = s;
+                    draw();
+                });
+
+                BrainWeb.once(
+                    'auth',
+                    ({ error, logged, uid, username, displayname }) => {
+                        if (error) {
+                            Sentry.captureException(error);
+                        } else {
+                            app.userSignedIn = logged;
+                            app.uid = uid;
+                            app.userDisplayName = displayname;
+                            app.userGitHubName = username;
+                        }
+                        updateLogged();
+                    }
+                );
+
+                BrainWeb.init();
+            });
         </script>
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
