@@ -121,6 +121,9 @@
             width: 100%;
             z-index: 51;
         }
+        #search-field > * {
+            min-width: 200px;
+        }
 
         [v-cloak] {
             display: none
@@ -167,7 +170,9 @@
                         <a class="nav-link" href="/videoconference/">Videoconference</a>
                     </li>
                     <li class="nav-item">
-                        <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
+                        <span class="nav-link" id="loginStatus" style="border-bottom:none">
+                            Sign In
+                        </span>
                     </li>
                     <li class="nav-item" id="userAvatar">
                         <img class="userIcon"/>
@@ -336,10 +341,14 @@
                     },
                     searchNames() {
                         const val = app.search;
-                        Array.prototype.forEach.call(
-                            el.getElementsByClassName('found'),
-                            (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.remove('found')
-                        );
+                        const founds = el.getElementsByClassName('found');
+                        while (founds.length > 0) {
+                            founds[0].classList.remove('found');
+                        }
+
+                        if (val.trim() === '') {
+                            return;
+                        }
 
                         const terms = val.split(/\s+/).map((t) => t.toLowerCase());
                         Object.keys(app.people).forEach(
@@ -351,11 +360,12 @@
                                         p.username.toLowerCase().includes(t)
                                     ))) {
                                     const className = `bw-${k}`;
-                                    Array.prototype.forEach.call(
-                                        el.getElementsByClassName(className),
-                                        (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.add('found')
-                                    );
-
+                                    const founds = el.getElementsByClassName(className);
+                                    for (let circle of founds) {
+                                        if (circle.tagName.toUpperCase() === 'CIRCLE') {
+                                            circle.classList.add('found');
+                                        }
+                                    }
                                 }
                             }
                         )
@@ -432,28 +442,65 @@
             window.addEventListener('load', () => {
                 el = document.getElementById('network');
 
+                const loginStatus = document.getElementById('loginStatus');
+
                 BrainWeb.on('data', function ({ people, skills: s }) {
                     app.people = people;
                     skills = s;
                     draw();
                 });
 
-                BrainWeb.once(
+                BrainWeb.on(
                     'auth',
-                    ({ error, logged, uid, username, displayname }) => {
-                        if (error) {
-                            Sentry.captureException(error);
-                        } else {
+                    function ({ error, logged, uid, username, displayname }) {
+                        if (logged && !error) {
                             app.userSignedIn = logged;
                             app.uid = uid;
                             app.userDisplayName = displayname;
                             app.userGitHubName = username;
+
+                            document.querySelector("#userAvatar img").src = `https://avatars3.githubusercontent.com/u/${uid}?v=4`;
+                            document.querySelector("#userAvatar").style.display = "inline-block";
+                            loginStatus.innerHTML = `<span id="user">${displayname}<span> (<a style="color:white" href="#">Sign Out</a>)`;
+
+                            loginStatus.getElementsByTagName('a')[0].addEventListener('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                BrainWeb.db.signOut();
+
+                                app.userSignedIn = false;
+                                app.uid = null;
+                                app.userDisplayName = null;
+                                app.userGitHubName = null;
+
+                                return false;
+                            });
+                        } else {
+                            if (error) {
+                                Sentry.captureException(error);
+                            }
+                            document.querySelector("#userAvatar").style.display = "none";
+                            document.querySelector("#userAvatar img").src = "";
+                            loginStatus.innerHTML = 'Sign In';
                         }
                         updateLogged();
                     }
                 );
 
                 BrainWeb.init();
+
+                loginStatus.addEventListener('click', function () {
+                    if (app.userSignedIn) {
+                        app.displayCard = true;
+                        app.cardDisplayName = app.userDisplayName;
+                        app.cardGitHubName = app.userGitHubName;
+                        app.cardUID = app.uid;
+                        app.cardSkills = app.people[app.uid].skills;
+                        return;
+                    }
+                    BrainWeb.db.signIn();
+                });
             });
         </script>
 
