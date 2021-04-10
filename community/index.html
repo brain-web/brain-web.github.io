@@ -344,6 +344,10 @@
                             (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.remove('found')
                         );
 
+                        if (val.trim() === '') {
+                            return;
+                        }
+
                         const terms = val.split(/\s+/).map((t) => t.toLowerCase());
                         Object.keys(app.people).forEach(
                             (k) => {
