@@ -341,10 +341,10 @@
                     },
                     searchNames() {
                         const val = app.search;
-                        Array.prototype.forEach.call(
-                            el.getElementsByClassName('found'),
-                            (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.remove('found')
-                        );
+                        const founds = el.getElementsByClassName('found');
+                        while (founds.length > 0) {
+                            founds[0].classList.remove('found');
+                        }
 
                         if (val.trim() === '') {
                             return;
@@ -360,11 +360,12 @@
                                         p.username.toLowerCase().includes(t)
                                     ))) {
                                     const className = `bw-${k}`;
-                                    Array.prototype.forEach.call(
-                                        el.getElementsByClassName(className),
-                                        (circle) => circle.tagName.toUpperCase() === 'CIRCLE' && circle.classList.add('found')
-                                    );
-
+                                    const founds = el.getElementsByClassName(className);
+                                    for (let circle of founds) {
+                                        if (circle.tagName.toUpperCase() === 'CIRCLE') {
+                                            circle.classList.add('found');
+                                        }
+                                    }
                                 }
                             }
                         )
