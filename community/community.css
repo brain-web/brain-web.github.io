@@ -1,0 +1,122 @@
+.userIcon {
+    width: 32px;
+    height: 32px;
+    clip-path: circle(16px at center);
+}
+#userAvatar {
+    display: none;
+}
+.auth-dialog > div:first-child {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: rgba(0,0,0,0.5);
+    border: thin solid #777;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+}
+#loginStatus a {
+    border-bottom: none;
+}
+#loginStatus a:hover {
+    border-bottom: 1px solid white;
+}
+#text {
+    position: relative;
+    padding-top: 3em;
+    pointer-events: none;
+    background: linear-gradient(0deg, rgba(20,20,20,0) 0%, rgba(20,20,20,0.8) 20%, rgba(20,20,20,0.8) 80%, rgba(20,20,20,0) 100%);
+    z-index: 100;
+}
+#text p {
+   column-count: 2;
+   column-gap: 2em;
+   background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.5), rgba(20,20,20,0.75), rgba(20,20,20,0.5),rgba(20,20,20,0));
+}
+#content {
+    z-index: 100;
+    position: fixed;
+    width: 100%;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#network {
+    z-index: 50;
+    position: fixed;
+    width: 100%;
+    top: 65px;
+    bottom:0;
+    display: flex;
+}
+#network svg {
+    width: 100%;
+    flex-grow: 1;
+}
+
+@keyframes shinebrightlikeadiamond {
+    0% { stroke-width: 0; stroke-opacity: 1; }
+    70% { stroke-width: 10px; stroke-opacity: 0.5; }
+    100% { stroke-width: 0; stroke-opacity: 0; }
+}
+#network svg circle {
+    r: 6;
+}
+#network svg circle.logged {
+    stroke-width: 0;
+    stroke: #DDD;
+    animation: 1s ease infinite shinebrightlikeadiamond;
+}
+#network svg circle.found {
+    stroke-width: 5px;
+    stroke: #ffd500;
+    animation: 1s linear infinite alternate shinebrightlikeadiamond;
+}
+#network svg .link {
+    stroke: #fff;
+    stroke-opacity: 0.2;
+}
+#network svg .name {
+    fill: rgb(255,255,255,0.3);
+    font-size: 12px;
+}
+#network svg circle:hover + .name{
+    fill: rgb(255,255,255,1);
+}
+#network svg text {
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+#network svg text::selection {
+    background: none;
+}
+
+#search-field {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    z-index: 51;
+}
+#search-field > * {
+    min-width: 200px;
+}
+
+[v-cloak] {
+    display: none
+}
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.col {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}

@@ -1,518 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>BrainWeb</title>
+  <head>
+    <title>BrainWeb</title>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
-        <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
-        <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="./community.css">
+  </head>
 
-        <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
-
-        <link rel="stylesheet" type="text/css" href="/css/main.css">
-    </head>
-
-    <style>
-        .userIcon {
-            width: 32px;
-            height: 32px;
-            clip-path: circle(16px at center);
-        }
-        #userAvatar {
-            display: none;
-        }
-        .auth-dialog > div:first-child {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            background: rgba(0,0,0,0.5);
-            border: thin solid #777;
-            transform: translate(-50%, -50%);
-            z-index: 1050;
-        }
-        #loginStatus a {
-            border-bottom: none;
-        }
-        #loginStatus a:hover {
-            border-bottom: 1px solid white;
-        }
-        #text {
-            position: relative;padding:1em;
-            padding-top: 5em;
-            pointer-events: none;
-            background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.25), rgba(20,20,20,0.75), rgba(20,20,20,0.75),rgba(20,20,20,0));
-            z-index: 100;
-        }
-        #text p {
-           column-count: 2;
-           column-gap: 2em;
-        }
-        #content {
-            z-index: 100;
-            position: fixed;
-            width: 100%;
-            pointer-events: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        #network {
-            z-index: 50;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            bottom:0;
-            display: flex;
-        }
-        #network svg {
-            width: 100%;
-            flex-grow: 1;
-        }
-
-        @keyframes shinebrightlikeadiamond {
-            0% { stroke-width: 0; stroke-opacity: 1; }
-            70% { stroke-width: 10px; stroke-opacity: 0.5; }
-            100% { stroke-width: 0; stroke-opacity: 0; }
-        }
-        #network svg circle {
-            r: 6;
-        }
-        #network svg circle.logged {
-            stroke-width: 0;
-            stroke: #DDD;
-            animation: 1s ease infinite shinebrightlikeadiamond;
-        }
-        #network svg circle.found {
-            stroke-width: 5px;
-            stroke: #ffd500;
-            animation: 1s linear infinite alternate shinebrightlikeadiamond;
-        }
-        #network svg .link {
-            stroke: #fff;
-            stroke-opacity: 0.2;
-        }
-        #network svg .name {
-            fill: rgb(255,255,255,0.3);
-            font-size: 12px;
-        }
-        #network svg circle:hover + .name{
-            fill: rgb(255,255,255,1);
-        }
-        #network svg text {
-            cursor: default;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            pointer-events: none;
-        }
-        #network svg text::selection {
-            background: none;
-        }
-
-        #search-field {
-            position: absolute;
-            bottom: 10px;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            z-index: 51;
-        }
-        #search-field > * {
-            min-width: 200px;
-        }
-
-        [v-cloak] {
-            display: none
-        }
-        .row {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-        }
-        .col {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-    </style>
-
-    <body>
+  <body>
+    <div id="firebaseui-auth-container" class="auth-dialog"></div>
 
     <!-- navigation bar -->
-        <!-- currently, the fixed top class is added, so it sticks to the top -->
-        <!-- data value of nav bar corresponds to id in each section -->
-        <nav class="navbar navbar-expand-lg fixed-top ">
+    <!-- currently, the fixed top class is added, so it sticks to the top -->
+    <!-- data value of nav bar corresponds to id in each section -->
+    <nav class="navbar navbar-expand-lg fixed-top ">
 
-            <a class="navbar-brand" href="/" >
-                <div class="logo_brainweb"><p style="padding-left:4em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p></div>
-            </a>
-
-            <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;" onclick="this.blur();">
-            </button>
-
-            <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
-                <ul class="navbar-nav mr-4" >
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">BrainWeb</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#events">Events</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/projects/">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/community/">Community</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/videoconference/">Videoconference</a>
-                    </li>
-                    <li class="nav-item">
-                        <span class="nav-link" id="loginStatus" style="border-bottom:none">
-                            Sign In
-                        </span>
-                    </li>
-                    <li class="nav-item" id="userAvatar">
-                        <img class="userIcon"/>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div id="q-app">
-            <!-- part 4 Community -->
-            <div id="community">
-
-                <div id="search-field">
-                    <q-input outlined type="search" v-model="search" :value="search" debounce="500" label="Search for someone" @input="searchNames" color="white" />
-                </div>
-                <div id="network"></div>
-                
-                <q-spinner-ball
-                    color="white"
-                    size="4em"
-                    v-if="spinning"
-                    style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);z-index:1000"
-                >
-                </q-spinner-ball>
-
-                <div class="container" style="margin-top: 5em">
-
-                    <div id="text">
-                        <h1>Community</h1>
-                        <p style="column-count: 2;column-gap: 2em; background-image: linear-gradient(rgba(20,20,20,0), rgba(20,20,20,0.5), rgba(20,20,20,0.75), rgba(20,20,20,0.5),rgba(20,20,20,0))">
-                            This is the BrainWeb. If you just logged in, your name should be an isolated dot flying around. Find it, click on it, and add your skills. That will
-                            start creating links with others, and you'll become part of the cluster of people sharing similar skills. You can learn more about them by
-                            clicking on their dots.
-                        </p>
-                    </div>
-
-                    <div v-cloak class="row">
-                        <!-- Person's card -->
-                        <div v-if="cardUID !== uid">
-                            <q-dialog v-model="displayCard">
-                                <q-card style="height:400px;width:400px">
-                                    <q-card-section>
-                                        <q-chip>
-                                            <q-avatar round size="48px">
-                                                <img :src="`https://avatars3.githubusercontent.com/u/${cardUID}?v=4`" />
-                                            </q-avatar>
-                                            <a v-cloak class="col text-h6" :href="`https://github.com/${cardGitHubName}`">
-                                                {{cardDisplayName}}
-                                            </a>
-                                        </q-chip>
-                                    </q-card-section>
-                                    <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
-                                        <q-chip v-cloak color="dark" v-for="skill in cardSkills">
-                                            {{skill}}
-                                        </q-chip>
-                                    </q-card-section>
-                                </q-card>
-                            </q-dialog>
-                        </div>
-                        <div v-else>
-                            <q-dialog v-model="displayCard" @hide="update">
-                                <q-card style="height:400px;width:400px">
-                                    <q-card-section>
-                                        <q-chip>
-                                            <q-avatar round size="48px">
-                                                <img :src="`https://avatars3.githubusercontent.com/u/${uid}?v=4`" />
-                                            </q-avatar>
-                                            <a v-cloak class="col text-h6" :href="`https://github.com/${userGitHubName}`">
-                                                {{userDisplayName}}
-                                            </a>
-                                        </q-chip>
-                                    </q-card-section>
-                                    <q-card-section>
-                                        <q-select
-                                            label="Skills"
-                                            filled
-                                            v-model="people[uid].skills"
-                                            use-input
-                                            use-chips
-                                            multiple
-                                            hide-dropdown-icon
-                                            input-debounce="0"
-                                            new-value-mode="add-unique"
-                                            :options="options"
-                                            @filter="filterFn"
-                                            @new-value="createValue"
-                                        ></q-select>
-                                    </q-card-section>
-                                </q-card>
-                            </q-dialog>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+      <a class="navbar-brand" href="/" >
+        <div class="logo_brainweb">
+          <p style="padding-left:4em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p>
         </div>
+      </a>
 
-        <script src="/js/sentry.min.js" data-lazy="no"></script>
-        <script src="https://unpkg.com/brain-web@nightly/dist/brain-web.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.umd.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
-        
-        <script type="module">
+      <button
+        class="navbar-toggler landing-page myCollapsedMenuBarIcon"
+        id="myMenuBtn"
+        type="button"
+        data-toggle="collapse"
+        data-target="#myMenu"
+        aria-controls="myMenu"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        style="padding:0;border:none; width:1.5em;height:1.5em;"
+        onclick="this.blur();"
+      ></button>
+
+      <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
+        <ul class="navbar-nav mr-4" >
+          <li class="nav-item">
+            <a class="nav-link" href="/">BrainWeb</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#events">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/projects/">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/community/">Community</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/videoconference/">Videoconference</a>
+          </li>
+          <li class="nav-item">
+            <span class="nav-link" id="loginStatus" style="border-bottom:none">
+              Sign In
+            </span>
+          </li>
+          <li class="nav-item" id="userAvatar">
+            <img class="userIcon"/>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- main -->
+      <div id="q-app">
+        <!-- part 4 Community -->
+        <div id="community">
+
+          <!--  
+          <div id="search-field">
+                <q-input outlined type="search" v-model="search" :value="search" debounce="500" label="Search for someone" @input="searchNames" color="white" />
+            </div>
+          -->
+
+          <!-- network -->
+          <div id="network"></div>
             
-            let el;
-            let skills = [];
+          <!-- spinner -->
+          <q-spinner-ball
+            color="white"
+            size="4em"
+            v-if="spinning"
+            style="position:absolute;top:50%;left:50%;transform: translate( -50%, -50%);z-index:1000"
+          ></q-spinner-ball>
 
-            Quasar.Dark.set(true);
+          <div class="container" style="margin-top: 1em">
 
-            function update() {
-                if (app.cardUID !== app.uid) {
-                    return;
-                }
+            <!-- text -->
+            <div id="text">
+              <h1>Community</h1>
+              <p>
+                This is the BrainWeb. If you just logged in, your name should be an isolated dot flying
+                around. Find it, click on it, and add your skills. That will start creating links with
+                others, and you'll become part of the cluster of people sharing similar skills. You can
+                learn more about them by clicking on their dots.
+              </p>
+            </div>
 
-                BrainWeb.once('update', ({ error }) => {
-                    if (error) {
-                        Sentry.captureException(error);
-                    }
-                    app.spinning = false;
-                });
+            <!--
+            <my-polite
+              :card-github-name="userGitHubName"
+              :card-display-name="userDisplayName"
+              :card-skills="people[people.map((o)=>o.uid).indexOf(uid)].skills"
+            ></my-polite>
+            -->
 
-                BrainWeb.db.update({
-                    username: app.username,
-                    displayname: app.displayname, 
-                    skills: app.cardSkills
-                });
-            }
+            <!-- skills card -->
+            <div v-cloak class="row">
+              <!-- other person's card -->
+              <div v-if="cardUID !== uid">
+                <q-dialog v-model="displayCard">
+                  <q-card style="height:400px;width:400px">
+                    <q-card-section>
+                      <q-chip>
+                        <q-avatar round size="48px">
+                          <img :src="cardImgSrc" />
+                        </q-avatar>
+                        <a v-cloak class="col text-h6" :href="cardGitHubURL">
+                          {{cardDisplayName}}
+                        </a>
+                      </q-chip>
+                    </q-card-section>
+                    <q-card-section style="background: hsla(0,0%,100%,0.07);border-radius:4px 4px 0 0;margin:16px">
+                      <q-chip v-cloak color="dark" v-for="skill in cardSkills">
+                        {{skill}}
+                      </q-chip>
+                    </q-card-section>
+                  </q-card>
+                </q-dialog>
+              </div>
 
-            const app = window.app = new Vue({
-                el: '#q-app',
-                data() {
-                    return {
-                        people: {},
-                        spinning: true,
-                        options: skills,
-                        userSignedIn: false,
-                        uid: null,
-                        userDisplayName: null,
-                        userGitHubName: "",
-                        userPicture: null,
+              <!-- logged person's card -->
+              <div v-else>
+                <q-dialog v-model="displayCard" @hide="updateUser">
+                  <q-card style="height:400px;width:400px">
+                    <q-card-section>
+                      <q-chip>
+                        <q-avatar round size="48px">
+                          <img :src="`https://avatars3.githubusercontent.com/u/${uid}?v=4`" />
+                        </q-avatar>
+                        <a v-cloak class="col text-h6" :href="`https://github.com/${userGitHubName}`">
+                          {{userDisplayName}}
+                        </a>
+                      </q-chip>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-select
+                        label="Skills"
+                        filled
+                        v-model="people[people.map((o)=>o.uid).indexOf(uid)].skills"
+                        use-input
+                        use-chips
+                        multiple
+                        hide-dropdown-icon
+                        input-debounce="0"
+                        new-value-mode="add-unique"
+                        :options="skills"
+                        @filter="filterFn"
+                        @new-value="createValue"
+                      ></q-select>
+                    </q-card-section>
+                  </q-card>
+                </q-dialog>
+              </div>
+            </div>
 
-                        displayCard: false,
-                        cardDisplayName: "",
-                        cardGitHubName: "",
-                        cardUID: "",
-                        cardSkills: [],
+          </div>
+        </div>
+      </div>
 
-                        search: '',
-                    }
-                },
-                methods: {
-                    filterFn(val, update, abort) {
-                        update(() => {
-                            const needle = val.toLowerCase();
-                            this.options = skills.filter(v => v.toLowerCase().indexOf(needle) > -1);
-                        })
-                    },
-                    createValue(val, done) {
-                        skills.push(val);
-                        done(val);
-                    },
-                    update(e) {
-                        app.spinning = true;
-                        update();
-                    },
-                    searchNames() {
-                        const val = app.search;
-                        const founds = el.getElementsByClassName('found');
-                        while (founds.length > 0) {
-                            founds[0].classList.remove('found');
-                        }
+      <!-- sentry -->
+      <script src="/js/sentry.min.js" data-lazy="no"></script>
 
-                        if (val.trim() === '') {
-                            return;
-                        }
+      <!-- Vue and Quasar -->
+      <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.umd.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
 
-                        const terms = val.split(/\s+/).map((t) => t.toLowerCase());
-                        Object.keys(app.people).forEach(
-                            (k) => {
-                                const p = app.people[k];
-                                if (terms.some(
-                                    (t) => (
-                                        p.displayname.toLowerCase().includes(t) ||
-                                        p.username.toLowerCase().includes(t)
-                                    ))) {
-                                    const className = `bw-${k}`;
-                                    const founds = el.getElementsByClassName(className);
-                                    for (let circle of founds) {
-                                        if (circle.tagName.toUpperCase() === 'CIRCLE') {
-                                            circle.classList.add('found');
-                                        }
-                                    }
-                                }
-                            }
-                        )
-                    },
-                }
-            });
+      <!-- Firebase -->
+      <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+      <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
+      <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+      <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+      <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+      <script defer src="/js/init-firebase.js"></script>
 
-            function updateLogged() {
-                Array.prototype.forEach.call(
-                    el.getElementsByClassName('logged'),
-                    (el) => el.classList.remove('logged')
-                );
-                if (app.userSignedIn) {
-                    const className = `bw-${app.uid}`;
-                    Array.prototype.forEach.call(
-                        el.getElementsByClassName(className),
-                        (el) => el.classList.add('logged')
-                    );
-                }
-            }
+      <!-- D3 and BrainWeb graph -->
+      <script src="https://d3js.org/d3.v5.min.js"></script>
 
-            function draw() {
-                if (!app.people) {
-                    return;
-                }
+      <script type="module">
+        import * as BW from "./brainweb.js";
 
-                const d3 = BrainWeb.vis.d3;
+        const circleSkill = null;
+        const filterSkills = null;
+        // const filterSkills = [ "graph theory", "Network Neuroscience", "multiplex", "Multilayer",
+        //     "Networkx", "Complex networks", "Network theory",
+        //     "Circuit dynamics", "Systems neuroscience"];
+        // if(circleSkill) {
+        //     filterSkills.push(circleSkill);
+        // }
 
-                const clampedEuclidian = (zoom) => {
-                    const dist = d3.distances.euclidean(zoom);
-                    return (link) => Math.min(dist(link), 3 * zoom);
-                };
+        BW.init({
+          appSel: "#q-app",
+          networkSel: "#network",
+          circleName: "BrainWeb",
+          circleSkill,
+          filterSkills
+        });
+      </script>
 
-                BrainWeb.vis.buildNetwork(app.people, {
-                    graph: {
-                        width: el.clientWidth,
-                        height: el.clientHeight,
-                        zoom: 2,
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <!--
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-                        simulation: (nodes, links, origin) => {
-                            const { zoom } = origin;
-                            return BrainWeb.vis.defaultSimulation(nodes, links, origin)
-                                .alphaMin(0.1).alphaTarget(0.1)
-                                .force('link', d3.forceLink(links).id((d) => d.id).strength(0.01 * zoom).distance(clampedEuclidian(zoom)))
-                                .force('collision', d3.forceCollide(10 * zoom).iterations(10).strength(0.1 * zoom))
-                                .force('charge', d3.forceManyBody().distanceMin(10 * zoom).strength(-0.5 * zoom))
-                                .force('x', d3.forceX(0).strength(0.00001))
-                                .force('y', d3.forceY(55).strength(0.003));
-                        },
-
-                        onClick: (e, user) => {
-                            app.displayCard = true;
-                            app.cardDisplayName = user.displayname;
-                            app.cardGitHubName = user.username;
-                            app.cardUID = user.id;
-                            app.cardSkills = user.skills;
-                        }
-                    },
-                    embedding: {
-                        clusters: 10,
-                        clusterEmbeddingComponents: 5,
-                        clusterPreventIsolated: false,
-                    }
-                })
-                    .then((svg) => {
-                        el.innerHTML = '';
-                        el.appendChild(svg);
-                        updateLogged();
-                        app.spinning = false;
-                    })
-                    .catch(Sentry.captureException);
-            }
-
-            window.addEventListener('load', () => {
-                el = document.getElementById('network');
-
-                const loginStatus = document.getElementById('loginStatus');
-
-                BrainWeb.on('data', function ({ people, skills: s }) {
-                    app.people = people;
-                    skills = s;
-                    draw();
-                });
-
-                BrainWeb.on(
-                    'auth',
-                    function ({ error, logged, uid, username, displayname }) {
-                        if (logged && !error) {
-                            app.userSignedIn = logged;
-                            app.uid = uid;
-                            app.userDisplayName = displayname;
-                            app.userGitHubName = username;
-
-                            document.querySelector("#userAvatar img").src = `https://avatars3.githubusercontent.com/u/${uid}?v=4`;
-                            document.querySelector("#userAvatar").style.display = "inline-block";
-                            loginStatus.innerHTML = `<span id="user">${displayname}<span> (<a style="color:white" href="#">Sign Out</a>)`;
-
-                            loginStatus.getElementsByTagName('a')[0].addEventListener('click', function (e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-
-                                BrainWeb.db.signOut();
-
-                                app.userSignedIn = false;
-                                app.uid = null;
-                                app.userDisplayName = null;
-                                app.userGitHubName = null;
-
-                                return false;
-                            });
-                        } else {
-                            if (error) {
-                                Sentry.captureException(error);
-                            }
-                            document.querySelector("#userAvatar").style.display = "none";
-                            document.querySelector("#userAvatar img").src = "";
-                            loginStatus.innerHTML = 'Sign In';
-                        }
-                        updateLogged();
-                    }
-                );
-
-                BrainWeb.init();
-
-                loginStatus.addEventListener('click', function () {
-                    if (app.userSignedIn) {
-                        app.displayCard = true;
-                        app.cardDisplayName = app.userDisplayName;
-                        app.cardGitHubName = app.userGitHubName;
-                        app.cardUID = app.uid;
-                        app.cardSkills = app.people[app.uid].skills;
-                        return;
-                    }
-                    BrainWeb.db.signIn();
-                });
-            });
-        </script>
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'UA-138729622-3');
-        </script>
+        gtag('config', 'UA-138729622-3');
+      </script>
+      -->
 
     </body>
 </html>

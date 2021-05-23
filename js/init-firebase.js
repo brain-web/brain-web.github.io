@@ -1,50 +1,29 @@
 
-function initApp(app) {
+function initApp({loginUserFn, logoutUserFn}) {
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
-      const { displayName, photoURL, providerData } = user;
-      document.querySelector("#userAvatar img").src = photoURL;
-      document.querySelector("#userAvatar").style.display = "inline-block";
-      document.getElementById("loginStatus").innerHTML = `<span id="user">${displayName}<span> (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
-
-      const { uid } = providerData[0];
-      app.userSignedIn = true;
-      app.uid = uid;
-      if (displayName) {
-        app.userDisplayName = displayName;
-      } else {
-        const json = await fetchUserInfoFromGitHub(uid);
-        app.userDisplayName = json.login;
-      }
-      app.userPicture = photoURL;
+      loginUserFn(user);
     } else {
-      app.userSignedIn = false;
-      app.uid = null;
-      app.userDisplayName = null;
-      app.userGitHubName = null;
-      app.userPicture = null;
-      document.querySelector("#userAvatar").style.display = "none";
-      document.querySelector("#userAvatar img").src = "";
-      document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
+      logoutUserFn(user);
     }
   }, function (error) {
     Sentry.captureException(error);
   });
 }
+
 function signIn() {
   uiConfig.signInSuccessUrl = location.pathname;
   uiAuth.start('#firebaseui-auth-container', uiConfig);
 }
 window.signIn = signIn;
+
 function signOut() {
   firebase.auth().signOut();
 }
 window.signOut = signOut;
+
 function startFirebase() {
   uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
-  window.addEventListener('load', function () {
-    initApp(window.app || {});
-  });
 }
 
 const config = {
@@ -55,19 +34,22 @@ const config = {
   storageBucket: "",
   messagingSenderId: "489953549172"
 };
+
 var uiConfig = {
   signInSuccessUrl: '/',
   signInOptions: [
     firebase.auth.GithubAuthProvider.PROVIDER_ID
   ],
   signInFlow: 'popup',
-  tosUrl: 'tos.html'
+  tosUrl: 'tos.html',
+  callbacks: {
+    signInSuccess: () => { return false; }
+  }
 };
 window.uiConfig = uiConfig;
+
 var uiAuth;
 window.uiAuth = uiAuth;
 
 console.log("firebase.initializeApp");
 firebase.initializeApp(config);
-
-startFirebase();
