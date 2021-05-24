@@ -1,0 +1,28 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "katjaq",
+      "name": "katja heuer",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6297454?v=4",
+      "profile": "https://katjaq.github.io/graphy/",
+      "contributions": [
+        "code",
+        "design",
+        "content",
+        "ideas",
+        "infra"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "brain-web.github.io",
+  "projectOwner": "brain-web",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
