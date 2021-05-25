@@ -230,8 +230,9 @@ export const init = ({appSel, circleName, updateUserFn}) => {
     methods: {
       filterFn (val, update) {
         update(() => {
-          const needle = val.toLowerCase();
-          this.options = app.skills.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+          const needle = val.trim().toLowerCase();
+          this.options = app.skills.filter((v) => v.trim().toLowerCase()
+            .indexOf(needle) > -1);
         });
       },
       createValue (val, done) {
@@ -250,14 +251,33 @@ export const init = ({appSel, circleName, updateUserFn}) => {
         window.location = url;
       },
 
+      /**
+       * Function called everytime a key is pressed in the search field
+       * @param {string} val Characters typed thus far
+       * @param {function} update Function called to update the options
+       * @returns {void}
+       */
       searchFn (val, update) {
         update(() => {
-          const needle = val.toLowerCase();
-          this.searchOptions = app.skills.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+          const needle = val.trim().toLowerCase();
+          const options = app.skills.filter((v) => v.trim().toLowerCase()
+            .indexOf(needle) > -1).map((s) => s.trim());
+          const uniqueOptions = [];
+          for(const op of options) {
+            if(!uniqueOptions.map((o) => o.trim().toLowerCase()).includes(op.toLowerCase())) {
+              uniqueOptions.push(op);
+            }
+          }
+          this.searchOptions = uniqueOptions;
         });
       },
+
+      /**
+       * Function called when a new skill is entered in the search field
+       * @param {array} filterSkills Array of skills entered in the search field
+       * @returns {void}
+       */
       searchAdd (filterSkills) {
-        console.log(">", filterSkills);
         showPeopleBySkills(filterSkills);
       }
     }

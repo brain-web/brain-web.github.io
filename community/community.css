@@ -100,8 +100,9 @@
 #search-field {
     position: absolute;
     bottom: 10px;
+    right: 10px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     width: 100%;
     z-index: 51;
 }
