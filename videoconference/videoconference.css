@@ -1,0 +1,80 @@
+html {
+  height:100%;
+}
+body {
+  height:100%;
+}
+#q-app {
+  height:100%;
+}
+#videoconference {
+  height: 100%;
+  margin-top:4rem;
+}
+.userIcon {
+  width: 32px;
+  height: 32px;
+  clip-path: circle(16px at center);
+}
+#userAvatar {
+  display: none;
+}
+.auth-dialog > div:first-child {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: rgba(0,0,0,0.5);
+  border: thin solid #777;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+}
+#loginStatus a {
+  border-bottom: none;
+}
+#loginStatus a:hover {
+  border-bottom: 1px solid white;
+}
+#jitsi {
+  width: 100%;
+  height: calc( 100% - 4rem );
+}
+
+[v-cloak] {
+  display: none
+}
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.col {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+#extras {
+  display:block;
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  transform: translate( 0, -50% );
+  width:53px;
+  height:250px;
+  background:black;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+}
+.tool {
+  margin: 10px;
+  width: 48px;
+  height: 48px;
+  font-size:38px;
+  cursor: pointer;
+}
+.feedback {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  font-size: 96px;
+  z-index:100;
+}
