@@ -174,13 +174,24 @@ const matrixToNetwork = (matrix, embedding, width, height, Z, names, loggedUser)
   const links = [];
   const N = matrix.length;
   for(let i=0; i<N; i++) {
-    nodes[i] = {id: names[i], x: width/2+Z*embedding[i][0], y: height/2+Z*embedding[i][1], vx:0, vy:0};
+    nodes[i] = {
+      id: names[i],
+      x: width/2+Z*embedding[i][0],
+      y: height/2+Z*embedding[i][1],
+      vx: 0,
+      vy: 0
+    };
+
     if(loggedUser === names[i]) {
       nodes[i].classes = "logged";
     }
+
     for(let j=0; j<N; j++) {
       if(i!==j && matrix[i][j]>0) {
-        links.push({source: names[i], target: names[j], value: matrix[i][j]});
+        links.push({
+          source: names[i],
+          target: names[j],
+          value: matrix[i][j]});
       }
     }
   }
@@ -192,7 +203,6 @@ const matrixToNetwork = (matrix, embedding, width, height, Z, names, loggedUser)
 const addBrainWebToElementWorkerFn = (people, userDisplayName, width, height) => {
   const names = people.map((o) => o.displayname);
   const radius = 5;
-  let Z = 1;
   const maj = width/height;
 
   const fullNetwork = peopleArrToNetwork(people);
@@ -232,8 +242,7 @@ const addBrainWebToElementWorkerFn = (people, userDisplayName, width, height) =>
     minY = Math.min(minY, embedding[i][1]);
     maxY = Math.max(maxY, embedding[i][1]);
   }
-
-  Z = 0.95 * Math.min(width/(maxX-minX), height/(maxY-minY));
+  const Z = 0.95 * Math.min(width/(maxX-minX), height/(maxY-minY));
 
   // center embedding
   for(let i=0; i<embedding.length; i++) {
@@ -274,10 +283,7 @@ const addBrainWebToElementWorkerFn = (people, userDisplayName, width, height) =>
   // cluster groups
   skillsMatrixClustersToGroups(matrix, prunedNetwork);
 
-  return {
-    prunedNetwork,
-    radius
-  };
+  return {prunedNetwork, radius};
 };
 
 self.onmessage = (message) => {
@@ -285,17 +291,10 @@ self.onmessage = (message) => {
     const { id, param } = message.data;
     const { people, userDisplayName, width, height } = param;
     try {
-
       const result = addBrainWebToElementWorkerFn(people, userDisplayName, width, height);
-      postMessage({
-        id,
-        result
-      });
+      postMessage({id, result});
     } catch (error) {
-      postMessage({
-        id,
-        error
-      });
+      postMessage({id, error});
     }
   }
 };

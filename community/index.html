@@ -74,11 +74,24 @@
         <!-- part 4 Community -->
         <div id="community">
 
-          <!--  
           <div id="search-field">
-                <q-input outlined type="search" v-model="search" :value="search" debounce="500" label="Search for someone" @input="searchNames" color="white" />
-            </div>
-          -->
+            <q-select
+              rounded outlined
+              color="white"
+              v-model="searchItems"
+              use-input
+              use-chips
+              multiple
+              hide-dropdown-icon
+              input-debounce="0"
+              new-value-mode="add-unique"
+              :options="searchOptions"
+              @filter="searchFn"
+              @input="searchAdd"
+            >
+              <q-icon name="search" @click.stop style="font-size: 24px; height: inherit"/>
+            </q-select>
+          </div>
 
           <!-- network -->
           <div id="network"></div>

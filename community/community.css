@@ -105,9 +105,6 @@
     width: 100%;
     z-index: 51;
 }
-#search-field > * {
-    min-width: 200px;
-}
 
 [v-cloak] {
     display: none

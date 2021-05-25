@@ -50,6 +50,12 @@ export const peopleArrToDatabaseDic = ({circleName, uid, updateUserFn}) => {
   updateUserFn({databaseDic, circleName, uid});
 };
 
+/**
+ * Takes a dictionary with people (as provided by Firebase) and pushes
+ * it to the people array app.people used for display.
+ * @param {object} incomingPeopleDic Dictionary with people and their skills
+ * @returns {void}
+ */
 export const databaseDicToPeopleArr = (incomingPeopleDic) => {
   const incomingPeopleArr = BWData.dic2arr(incomingPeopleDic);
   const newPeople = incomingPeopleArr.filter((person) => {
@@ -58,6 +64,7 @@ export const databaseDicToPeopleArr = (incomingPeopleDic) => {
 
     return includes;
   });
+
   for(const p of newPeople) {
     if(typeof p.skills === "undefined") {
       p.skills = [];
@@ -74,6 +81,11 @@ export const databaseDicToPeopleArr = (incomingPeopleDic) => {
   }
 };
 
+/**
+ * Display user data
+ * @param {object} user User data
+ * @returns {void}
+ */
 export const displayUserCard = (user) => {
   app.cardDisplayName = user.displayname;
   app.cardGitHubName = user.username;
@@ -163,8 +175,23 @@ export const logoutUser = () => {
   document.querySelectorAll(".logged").forEach((el) => { el.classList.remove("logged"); });
 };
 
-export const init = ({appSel, circleName, updateUserFn}) => {
+const findPeopleBySkills = (filterSkills) => {
+  const people = BWData.filterPeople({
+    people: app.people,
+    filterSkills
+  });
 
+  return people;
+};
+
+const showPeopleBySkills = (filterSkills) => {
+  console.log(filterSkills);
+  const filteredPeople = findPeopleBySkills(filterSkills).map((p) => p.displayname);
+  window.updateNetwork(filteredPeople);
+};
+
+
+export const init = ({appSel, circleName, updateUserFn}) => {
   Quasar.Dark.set(true);
 
   app = new Vue({
@@ -187,7 +214,9 @@ export const init = ({appSel, circleName, updateUserFn}) => {
         cardUID: "",
         cardSkills: [],
 
-        search: ""
+        search: "",
+        searchItems: [],
+        searchOptions: []
       };
     },
     computed: {
@@ -219,7 +248,34 @@ export const init = ({appSel, circleName, updateUserFn}) => {
       },
       goTo (url) {
         window.location = url;
+      },
+
+      searchFn (val, update) {
+        update(() => {
+          const needle = val.toLowerCase();
+          this.searchOptions = app.skills.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+        });
+      },
+      searchAdd (filterSkills) {
+        console.log(">", filterSkills);
+        showPeopleBySkills(filterSkills);
       }
     }
   });
+};
+
+window.saveSkills = () => {
+  const text = JSON.stringify(app.skills, null, 2);
+  const elem = document.createElement("a");
+  elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+  elem.setAttribute("download", "skills.json");
+  elem.click();
+};
+
+window.savePeople = () => {
+  const text = JSON.stringify(app.people, null, 2);
+  const elem = document.createElement("a");
+  elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+  elem.setAttribute("download", "people.json");
+  elem.click();
 };

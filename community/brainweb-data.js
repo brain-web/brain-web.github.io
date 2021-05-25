@@ -40,9 +40,8 @@ export const filterPeople = ({people, filterSkills}) => {
     return people;
   }
 
-  const filteredPeople = people.filter(
-    (p) => (p.skills || []).some((s) => filterSkills.includes(s.toLowerCase())||false)
-  );
+  const lowerCaseFilterSkills = filterSkills.map((ss) => ss.toLowerCase());
+  const filteredPeople = people.filter((p) => (p.skills||[]).some((s) => lowerCaseFilterSkills.includes(s.toLowerCase())));
 
   return filteredPeople;
 };

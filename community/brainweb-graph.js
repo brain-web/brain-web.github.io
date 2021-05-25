@@ -28,31 +28,21 @@ const drag = (simulation) => {
 
 const chart = (data, {width, height, radius, userClickFn}) => {
   const zoom = 1;
-  const {nodes} = data;
-  const {links} = data;
+  const {nodes, links} = data;
+
   const simulation = d3.forceSimulation(nodes)
     .velocityDecay(0.1)
-    .force("link", d3.forceLink(links).id((d) => d.id)
-      .distance((link) => {
-        const dist = Math.sqrt((link.source.x - link.target.x)**2 + (link.source.y - link.target.y)**2);
+    .force(
+      "link",
+      d3.forceLink(links)
+        .id((d) => d.id)
+        .distance((link) => {
+          const dist = Math.sqrt((link.source.x - link.target.x)**2 + (link.source.y - link.target.y)**2);
 
-        return dist;
-      }))
+          return dist;
+        }))
     .force("collision", d3.forceCollide(5));
-
-  const svg = d3.create("svg")
-    .attr("viewBox", [0, 0, width, height])
-    .attr("style", "background-color: rgba(0,0,0,0)");
-
-  const link = svg
-    .append("g")
-    .attr("stroke", "#faa")
-    .attr("stroke-opacity", 0.3)
-    .selectAll("line")
-    .data(links)
-    .join("line")
-    .attr('class', 'link')
-    .attr("stroke-width", (d) => zoom * d.value**(1/4));
+  window.theSimulation = simulation;
 
   const mouseover = () => {
     d3.select(this).transition()
@@ -65,6 +55,20 @@ const chart = (data, {width, height, radius, userClickFn}) => {
       .duration(50)
       .attr("r", radius * zoom);
   };
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "background-color: rgba(0,0,0,0)");
+  window.theSVG = svg;
+
+  const link = svg.append("g")
+    .attr("stroke", "#faa")
+    .attr("stroke-opacity", 0.3)
+    .selectAll("line")
+    .data(links)
+    .join("line")
+    .attr('class', 'link')
+    .attr("stroke-width", (d) => zoom * d.value**(1/4));
 
   const node = svg.append("g")
     .selectAll(".node")
@@ -106,9 +110,7 @@ const chart = (data, {width, height, radius, userClickFn}) => {
 };
 
 const getUuid = () => crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
-
 const worker = new Worker('./worker.js');
-
 const workerFnWrapper = (method, param) => new Promise((resolve, reject) => {
   const uuid = getUuid();
   worker.postMessage({
@@ -172,5 +174,16 @@ export const addBrainWebToElement = async ({
     elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
     elem.setAttribute("download", "network.json");
     elem.click();
+  };
+
+  window.updateNetwork = (filterPeople) => {
+    window.theSVG
+      .selectAll(".node")
+      .filter((d) => !filterPeople.includes(d.id))
+      .attr("visibility", "hidden");
+    window.theSVG
+      .selectAll(".node")
+      .filter((d) => filterPeople.includes(d.id))
+      .attr("visibility", "visible");
   };
 };
