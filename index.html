@@ -309,37 +309,60 @@
 
     <script defer src="/js/init-firebase.js"></script>
 
-    <script>
+    <script type="module">
+      const fetchEventsSpreadsheet = () => {
         const url = "https://docs.google.com/spreadsheets/d/1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY/export?format=tsv&id=1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY&gid=0"
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.send(null);
         xhr.onreadystatechange = function() {
-            const DONE = 4,
-                OK = 200;
-            if (xhr.readyState === DONE && xhr.status === OK) {
-                const txt = xhr.responseText;
-                const rows = txt.split("\n");
-                for (let i = 0; i < 2; i++) {
-                    document.getElementById("csv").innerHTML += `<p>${rows[i]}</p>`;
-                }
-
-                let html = "<table border=1>\n"
-                for (let i = 2; i < rows.length; i++) {
-                    const cols = rows[i].split(/\t[ ]*/);
-                    console.log(cols);
-                    html += "<tr>";
-                    for (let j = 0; j < cols.length; j++) {
-                        html += `<td>${cols[j]}</td>`;
-                    }
-                    html += "</tr>\n";
-                }
-                html += "</table>\n";
-                document.getElementById("csv").innerHTML += html;
-            } else {
-                console.log('Error: ' + xhr.status);
+          const DONE=4, OK=200;
+          if (xhr.readyState === DONE && xhr.status === OK) {
+            const txt = xhr.responseText;
+            const rows = txt.split("\n");
+            for (let i = 0; i < 2; i++) {
+              document.getElementById("csv").innerHTML += `<p>${rows[i]}</p>`;
             }
+
+            let html = "<table border=1>\n"
+            for (let i = 2; i < rows.length; i++) {
+              const cols = rows[i].split(/\t[ ]*/);
+              html += "<tr>";
+              for (let j = 0; j < cols.length; j++) {
+                  html += `<td>${cols[j]}</td>`;
+              }
+              html += "</tr>\n";
+            }
+            html += "</table>\n";
+            document.getElementById("csv").innerHTML += html;
+          } else {
+            console.log('Error: ' + xhr.status);
+          }
         }
+      };
+
+      // eslint-disable-next-line no-undef
+      startFirebase();
+      console.log("startFirebase");
+      window.addEventListener('load', () => {
+        // eslint-disable-next-line no-undef
+        initApp({
+          loginUserFn: (user) => {
+            const { displayName, photoURL } = user;
+            document.querySelector("#userAvatar img").src = photoURL;
+            document.querySelector("#userAvatar").style.display = "inline-block";
+            document.getElementById("loginStatus").innerHTML = `<span id="user">${displayName}</span> (<a style="color:white" href="#" onclick="signOut()">Sign Out</a>)`;
+          },
+          logoutUserFn: () => {
+            document.querySelector("#userAvatar").style.display = "none";
+            document.querySelector("#userAvatar img").src = "";
+            document.getElementById("loginStatus").innerHTML = `<a style="color:white" href="#" onclick="signIn()">Sign In</a>`;
+            document.querySelectorAll(".logged").forEach((el) => { el.classList.remove("logged"); });
+          }
+        });
+      });
+
+      fetchEventsSpreadsheet();
     </script>
 
     <script>
@@ -348,30 +371,24 @@
 
     <!-- ObservableHQ 1 -->
     <script type="module">
-        import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"; import notebook from "https://api.observablehq.com/@katjaq/voronoi-update.js?v=3"; if(selectedChart == 0) { const main = new Runtime().module(notebook,
-        (name) => { if(name === "chart") { console.log(name); setTimeout(unhide,1000); return new Inspector(document.getElementById("chart")); } }); main.redefine("height",window.innerHeight); main.redefine("width",window.innerWidth); }
+      import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"; import notebook from "https://api.observablehq.com/@katjaq/voronoi-update.js?v=3"; if(selectedChart == 0) { const main = new Runtime().module(notebook,
+      (name) => { if(name === "chart") { console.log(name); setTimeout(unhide,1000); return new Inspector(document.getElementById("chart")); } }); main.redefine("height",window.innerHeight); main.redefine("width",window.innerWidth); }
     </script>
 
     <!-- ObservableHQ 2 -->
     <script type="module">
-        import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"; import notebook from "https://api.observablehq.com/@katjaq/voronoi-update/2.js?v=3"; if(selectedChart > 0) { const main = new Runtime().module(notebook,
-        (name) => { if(name === "chart") { console.log(name); setTimeout(unhide,1000); return new Inspector(document.getElementById("chart2")); } }); main.redefine("height",window.innerHeight); main.redefine("width",window.innerWidth); }
+      import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"; import notebook from "https://api.observablehq.com/@katjaq/voronoi-update/2.js?v=3"; if(selectedChart > 0) { const main = new Runtime().module(notebook,
+      (name) => { if(name === "chart") { console.log(name); setTimeout(unhide,1000); return new Inspector(document.getElementById("chart2")); } }); main.redefine("height",window.innerHeight); main.redefine("width",window.innerWidth); }
     </script>
-
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-138729622-3');
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-138729622-3');
     </script>
-
 </body>
 
 </html>
