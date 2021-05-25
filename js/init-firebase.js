@@ -1,6 +1,21 @@
+/* globals firebase firebaseui Sentry */
 
-function initApp({loginUserFn, logoutUserFn}) {
-  firebase.auth().onAuthStateChanged(async (user) => {
+var uiConfig = {
+  signInSuccessUrl: '/',
+  signInOptions: [firebase.auth.GithubAuthProvider.PROVIDER_ID],
+  signInFlow: 'popup',
+  tosUrl: 'tos.html',
+  callbacks: {
+    signInSuccess: () => false
+  }
+};
+window.uiConfig = uiConfig;
+
+var uiAuth;
+window.uiAuth = uiAuth;
+
+const initApp = ({loginUserFn, logoutUserFn}) => {
+  firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       loginUserFn(user);
     } else {
@@ -9,22 +24,22 @@ function initApp({loginUserFn, logoutUserFn}) {
   }, function (error) {
     Sentry.captureException(error);
   });
-}
+};
 
-function signIn() {
+const signIn = () => {
   uiConfig.signInSuccessUrl = location.pathname;
   uiAuth.start('#firebaseui-auth-container', uiConfig);
-}
+};
 window.signIn = signIn;
 
-function signOut() {
+const signOut = () => {
   firebase.auth().signOut();
-}
+};
 window.signOut = signOut;
 
-function startFirebase() {
+const startFirebase = () => {
   uiAuth = new firebaseui.auth.AuthUI(firebase.auth());
-}
+};
 
 const config = {
   apiKey: "AIzaSyD1q8d3i0jikA5jRQKcDydFbIw8v2bFRc0",
@@ -34,22 +49,6 @@ const config = {
   storageBucket: "",
   messagingSenderId: "489953549172"
 };
-
-var uiConfig = {
-  signInSuccessUrl: '/',
-  signInOptions: [
-    firebase.auth.GithubAuthProvider.PROVIDER_ID
-  ],
-  signInFlow: 'popup',
-  tosUrl: 'tos.html',
-  callbacks: {
-    signInSuccess: () => { return false; }
-  }
-};
-window.uiConfig = uiConfig;
-
-var uiAuth;
-window.uiAuth = uiAuth;
 
 console.log("firebase.initializeApp");
 firebase.initializeApp(config);
