@@ -1,0 +1,56 @@
+.container {
+  max-width: 86%;
+}
+.userIcon {
+  width:32px;
+  height:32px;
+  clip-path: circle(16px at center);
+}
+#userAvatar {
+  display: none;
+}
+.auth-dialog > div:first-child {
+  position:absolute;
+  left:50%;
+  top:50%;
+  background:rgba(0,0,0,0.5);
+  border: thin solid #777;
+  transform: translate( -50%, -50% );
+  z-index: 1050;
+}
+#loginStatus a {
+  border-bottom:none;
+}
+#loginStatus a:hover {
+  border-bottom:1px solid white;
+}
+.q-pa-md {
+  padding: 16px 10px;
+}
+.q-gutter-x-xl, .q-gutter-xl {
+  margin-left: -24px;
+}
+.q-gutter-x-xl>*, .q-gutter-xl>* {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+.column, .flex, .row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.q-item__section--side {
+  padding-right: 0px;
+  padding-left: 16px;
+}
+.q-chip .row {
+  margin-left:-4px !important;
+  margin-right:-6px !important;
+}
+.q-chip > .col {
+  padding-left:5.6px !important;
+  padding-right:5.6px !important;
+}
+[v-cloak] {
+  display: none;
+}
