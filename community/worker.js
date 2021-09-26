@@ -216,12 +216,14 @@ const addBrainWebToElementWorkerFn = (people, userDisplayName, width, height) =>
   const N = matrix2.length;
   for(let i=0; i<N; i++) {
     for(let j=i; j<N; j++) {
-      matrix2[i][j] += 0.1;
+      matrix2[i][j] += 0.5;
     }
   }
 
   // 2d embedding for display
-  const umap2 = new UMAP();
+  const umap2 = new UMAP({
+    minDist: 0.2
+  });
   const embedding = umap2.fit(matrix2);
 
   // align embedding axes
@@ -251,7 +253,10 @@ const addBrainWebToElementWorkerFn = (people, userDisplayName, width, height) =>
   }
 
   // 5d embedding for clustering
-  const umap5 = new UMAP({nComponents:5});
+  const umap5 = new UMAP({
+    nComponents:5,
+    nNeighbors: 10
+  });
   const embedding5 = umap5.fit(matrix2);
   pruneSkillsMatrixBasedOnEmbeddingNearestNeighbours(matrix2, embedding5);
 
