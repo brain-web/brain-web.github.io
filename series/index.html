@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>BrainWeb</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^3.5.2/animate.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="./series.css">
+</head>
+
+
+<body>
+
+    <!-- Firebase authentication -->
+    <div id="firebaseui-auth-container" class="auth-dialog"></div>
+
+    <!-- navigation bar -->
+    <!-- currently, the fixed top class is added, so it sticks to the top -->
+    <!-- data value of nav bar corresponds to id in each section -->
+    <nav class="navbar navbar-expand-lg fixed-top ">
+
+        <a class="navbar-brand" href="/" >
+            <div class="logo_brainweb"><p style="padding-left:4em;color:white;cursor:pointer;font-size:14px;font-weight:300;line-height:2.7;vertical-align: middle;">BrainWeb</p></div>
+        </a>
+
+        <button class="navbar-toggler landing-page myCollapsedMenuBarIcon" id="myMenuBtn" type="button" data-toggle="collapse" data-target="#myMenu" aria-controls="myMenu" aria-expanded="false" aria-label="Toggle navigation" style="padding:0;border:none; width:1.5em;height:1.5em;"
+            onclick="this.blur();">
+        </button>
+
+        <style>
+            .userIcon {
+                width: 32px;
+                height: 32px;
+                clip-path: circle(16px at center);
+            }
+            
+            #userAvatar {
+                display: none;
+            }
+            
+            .auth-dialog>div:first-child {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                background: rgba(0, 0, 0, 0.5);
+                border: thin solid #777;
+                transform: translate( -50%, -50%);
+                z-index: 1050;
+            }
+            
+            #loginStatus a {
+                border-bottom: none;
+            }
+            
+            #loginStatus a:hover {
+                border-bottom: 1px solid white;
+            }
+            
+            #csv {
+                margin-top: 4em;
+                margin-bottom: 2em;
+            }
+        </style>
+
+        <div class="collapse navbar-collapse" id="myMenu" style="width:100%;">
+            <ul class="navbar-nav mr-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">BrainWeb</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#events">Events</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/series/">Series</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/projects/">Projects</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/community/">Community</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/videoconference/">Videoconference</a>
+                  </li>
+                  <li class="nav-item">
+                    <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
+                  </li>
+                  <li class="nav-item" id="userAvatar">
+                    <img class="userIcon"/>
+                  </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!-- part 2 Events -->
+    <div class="row mainpageparts hide" id="events">
+        <div class="container">
+            <h1>Past Seminars</h1>
+            <!-- visual head image of section -->
+            <!-- <div class="row">
+                <div data-aos="fade-in" data-aos-duration="3000" data-aos-offset="0">
+                    <img src="./images/landing/brainweb-connectome-in-a-sphere.png" style="padding-left:1em;padding-right:1em;padding-bottom:2em;filter:grayscale(80%) contrast(100%) opacity(90%); -webkit-filter:grayscale(80%) contrast(100%) opacity(90%);" class="img-fluid"
+                        alt="">
+                </div>
+            </div> -->
+            <div class="row">
+                <!-- two-spilt part -->
+                <!-- left side 1 -->
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div data-aos="fade-in" data-aos-duration="3000" data-aos-offset="0">
+                        <img src="https://www.bathspa.ac.uk/media/bathspaacuk/our-people/Alexandra-de-Sousa.jpg" style="width:60%;margin-left:30%;filter:grayscale(0%) contrast(100%) opacity(90%); -webkit-filter:grayscale(0%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
+                    </div>
+                    <div>
+                        <p><br></p>
+                    </div>
+                </div>
+                <!-- right side 1 -->
+                <div class="col-lg-8 col-md-8 col-sm-12 desc">
+                    <h3>BrainWeb Series #1</h3>
+                    <p>25.04.2022. 3pm UTC</p>
+                    <p2 style="font-weight:900;font-size:16px;padding-top:0px;padding-bottom:0px;">Alexandra de Sousa &nbsp;&nbsp;</p2>
+                    <a href="https://twitter.com/AleAliSousa"><img src="/images/logo/twitter.png" style="width:17px;padding:0px;"></img>AleAliSousa</a>
+                    
+                        <p>
+                            <b style="font-weight:900;">Four questions about brain and behaviour</b><br/> 
+                        Tinbergen encouraged ethologists to address animal behaviour by answering four questions, covering physiology, adaptation, phylogeny, and development. This broad approach has implications for neuroscience and psychology, yet, questions about phylogeny are rarely considered in these fields. Here I describe how phylogeny can shed light on our understanding of brain structure and function. Further, I show that we now have or are developing the data and analytical methods necessary to study the natural history of the human mind. <br />
+                        <br />
+                        <a href="https://www.youtube.com/channel/UCcu7c8bn6mU1YtwnRK7gQwQ"
+                            target="_blank" style="color:white; cursor: pointer">Rewatch the talk on the BrainWeb Youtube channel (will be uploaded soon)!</a><br><br>
+                        <b style="font-weight:900;">Biosketch</b><br/> 
+                        Dr Alexandra A. de Sousa is a Senior Lecturer in Psychology at Bath Spa University and is also a visiting researcher at the University of Bath. She is interested in the biological basis of behaviour in general and the origin of the human mind in particular.  Dr. de Sousa is committed to diverse interdisciplinary approaches within her research area, which led her to found the European Network for Brain Evolution Research. She is involved in public outreach through Brain Evolution in the News. Her research also applies evolutionary theory to understanding contemporary human-environmental interactions. 
+                        <br/><br/><br/>
+                        <!-- <br> Let's discuss together no matter where we are! -->
+                    </p>
+                </div>
+            </div>
+            <!-- Agenda -->
+            <!-- <div id="csv">
+                <h1 style="padding-bottom:2rem;">Agenda</h1>
+                    <p style="padding-top:2rem; line-height:1.7em;">Please add the links to your breakout topic discussion rooms to our <a href="https://docs.google.com/spreadsheets/d/1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY/edit#gid=0">BrainWeb topic session Google sheet</a> and they will automatically
+                        appear here in real time for the community to join.</p>
+            </div> -->
+        </div>
+        <div class="row mainpageparts hide" id="CoC" style="width:100%; position:absolute; bottom:-10px; margin:0;padding:0;border:0; color:white; background:#000000;">
+            <p style="font-size:14px;position:absolute;left:50%;transform: translate(-50%,0);">Made with love &nbsp; ❤ &nbsp; Please respect the <a href="https://github.com/brain-web/brain-web.github.io/blob/master/CoC.md" target="_blank">BrainWeb Code of Conduct.</a></p>
+        </div>
+    </div>
+    <!-- <footer class="page-footer font-small special-color-dark pt-4 hide">
+            <div class="footer-copyright text-center py-3">Made with love ❤ Please respect the
+                <a href="https://github.com/brain-web/brain-web.github.io/blob/master/CoC.md"> BrainWeb Code of Conduct.</a>
+            </div>
+        </footer> -->
+
+    <script src="/js/sentry.min.js" data-lazy="no"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/quasar.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@1.9.10/dist/icon-set/svg-material-icons.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/js/main.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
+    <script defer src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+
+    <script defer src="/js/init-firebase.js"></script>
+    <script type="module" src="./index.js"></script>
+
+    <script>
+        AOS.init();
+    </script>
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-138729622-3');
+    </script>
+</body>
+
+</html>
+
+<!--
+    References
+    1. https://bl.ocks.org/puzzler10/4438752bb93f45dc5ad5214efaa12e4a
+-->
