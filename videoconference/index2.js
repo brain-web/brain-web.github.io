@@ -57,8 +57,10 @@ window.addEventListener('load', () => {
 const roomRename = (ev) => {
   const key = ev.parentElement.id;
   const value = ev.value;
+  const object = {};
+  object[key] = value;
   console.log(`roomRename id=${key} value=${value}`);
   ev.blur();
-  rooms.update({key: value});
+  rooms.update(object);
 };
 window.roomRename = roomRename;
