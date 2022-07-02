@@ -13,6 +13,75 @@
 
         <link rel="stylesheet" type="text/css" href="/css/main.css">
         <link rel="stylesheet" type="text/css" href="./videoconference.css">
+
+        <style>
+          #q-app {
+            margin-top:70px;
+          }
+          .room {
+            color: #ccc;
+            display: inline-block;
+            width: 280px;
+            height: 220px;
+            background: #1d1d1d;
+            border: thin solid #333;
+            border-radius: 5px;
+            margin: 14px 10px;
+            text-align: center;
+            transition: border 0.5s;
+          }
+          .room:hover {
+            border: thin solid white;
+          }
+          .animal {
+            font-size: 3rem;
+            filter: saturate(0.1) contrast(1.3);
+            margin-top: -16px;
+            margin-bottom: 12px;
+            margin-left: 120px;
+            margin-right: 120px;
+            background: #77f;
+            border-radius: 50px;
+            width: 50px;
+            height: 50px;
+          }
+          .camera {
+            margin: 3px;
+          }
+          .subject {
+            color: white;
+            width: calc( 100% - 20px);
+            margin: 10px;
+            padding: 12px;
+            font-weight: bold;
+            background: none;
+            border: none;
+          }
+          .subject:placeholder-shown {
+            opacity: 50%;
+            border: 1px dashed #555;
+            font-weight: normal;
+          }
+          .button {
+            border: thin solid #555;
+            color: white;
+            background: #373737;
+            padding: 5px 24px;
+            border-radius: 20px;
+          }
+          .button:hover {
+            background: #222;
+          }
+          #container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            max-width: 940px;
+            text-align: center;
+            transform: translate(-50%, -50%);
+          }
+        </style>
       </head>
 
     <body>
@@ -60,17 +129,16 @@
       </nav>
 
       <div id="q-app">
-        <!-- part 4 Videoconference -->
-        <div id="videoconference">
-          <div id="jitsi"></div>
+        <!-- part 4 Videoconference rooms -->
+        <div id="container">
+          <div class="room" id="orangutan"><div class="animal">🦧</div><b>Orangutan</b> Room<input type=""text class="subject" placeholder="Enter Room Subject" onchange="roomRename(this);"/><button class="button" onclick="openJit('bw-orangutan', 'Orangutan');">Enter</button></div>
+          <div class="room" id="hippo"><div class="animal">🦛</div><b>Hippo</b> Room<input type="text" class="subject" placeholder="Enter Room Subject" onchange="roomRename(this);"/><button class="button" onclick="openJit('bw-hippo', 'hippo');">Enter</button></div>
+          <div class="room" id="squid"><div class="animal">🦑</div><b>Squid</b> Room<input type="text" class="subject" placeholder="Enter Room Subject" onchange="roomRename(this);"/><button class="button" onclick="openJit('bw-squid', 'squid');">Enter</button></div>
+          <div class="room" id="trex"><div class="animal">🦖</div><b>T-Rex</b> Room<input type="text" class="subject" placeholder="Enter Room Subject" onchange="roomRename(this);"/><button class="button" onclick="openJit('bw-trex', 'trex');">Enter</button></div>
+          <div class="room" id="elephant"><div class="animal">🐘</div><b>Elephant</b> Room<input type="text" class="subject" placeholder="Enter Room Subject" onchange="roomRename(this);"/><button class="button" onclick="openJit('bw-elephant', 'elephant');">Enter</button></div>
+          <div class="room" id="sloth"><div class="animal">🦥</div><b>Sloth</b> Room<input type="text" class="subject" placeholder="Enter Room Subject" onchange="roomRename(this);"/><button class="button" onclick="openJit('bw-sloth', 'sloth');">Enter</button></div>
         </div>
 
-        <div id="extras">
-          <div class="tool" onclick="feedback('🧠')">🧠</div>
-          <div class="tool" onclick="feedback('🥰')">🥰</div>
-          <div class="tool" onclick="feedback('🦦')">🦦</div>
-          <div class="tool" onclick="feedback('🚀')">🚀</div>
-        </div>
       </div>
 
       <script src="/js/sentry.min.js" data-lazy="no"></script>
@@ -84,7 +152,70 @@
       <script src="https://meet.jit.si/external_api.js"></script>
 
       <script defer src="/js/init-firebase.js"></script>
-      <script type="module" src="./index.js"></script>
+      <script type="module" src="./index2.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+      <script>
+        function openJit(id, name) {
+          window.open("room.html#"+id+"."+name);
+        }
+
+        const updateVideochatIcon = (sel, count) => {
+          const el = document.querySelector(sel);
+          if(!el) {
+            return;
+          }
+
+          if (count === 0) {
+            el.querySelector("text").innerHTML = "";
+            el.querySelector(".bubble").setAttribute("fill", "rgba(255,255,255,0.4)");
+            el.classList.remove("connected");
+          } else {
+            el.querySelector("text").innerHTML = count;
+            el.querySelector(".bubble").setAttribute("fill", "rgb(0, 220, 0)");
+            el.classList.add("connected");
+          }
+        }
+
+        function websocketDump(dump) {
+          for(key in dump) {
+            if(key !== "" &&  {}.hasOwnProperty.call(dump, key)) {
+              console.log("dump", key, dump[key]);
+              updateVideochatIcon(`#${key}`, parseInt(dump[key]));
+            }
+          }
+        }
+
+        function websocketUpdate(update) {
+          const {id: key, count} = update;
+
+          if (key.split("-")[0] !== "bw") {
+            return;
+          }
+
+          console.log("update", key, count);
+          updateVideochatIcon(`#${key}`, parseInt(count));
+        }
+
+        function websocketOnMessage(e) {
+          let msg = JSON.parse(e.data);
+          if(msg.dump) {
+            websocketDump(msg.dump);
+          }
+          if(msg.update) {
+            websocketUpdate(msg.update);
+          }
+        }
+
+        function connectToWebsocket() {
+          wss = new ReconnectingWebSocket("wss://brainspell.org/vcrooms");
+          wss.onopen = () => {
+            console.log("send dump request");
+              wss.send(JSON.stringify({action: "dump"}));
+          }
+          wss.onmessage = websocketOnMessage;
+        }
+        connectToWebsocket();
+      </script>
 
       <!-- Global site tag (gtag.js) - Google Analytics -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138729622-3"></script>
