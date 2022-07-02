@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <title>Network Neuroscience 2021</title>
+  <script src="https://meet.jit.si/external_api.js"></script>
+</head>
+<body>
+    <style>
+      html, body, #meet {
+        width: 100%;
+        height: 100%;
+      }
+  
+      #extras {
+            display:block;
+            position: absolute;
+            top: 50%;
+            left: -5px;
+            transform: translate( 0, -50% );
+            width:53px;
+            height:250px;
+            background:black;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+          }
+          .tool {
+            margin: 10px;
+            width: 48px;
+            height: 48px;
+            font-size:38px;
+            cursor: pointer;
+          }
+          .feedback {
+            position: absolute;
+            width: 96px;
+            height: 96px;
+            font-size: 96px;
+            z-index:100;
+          }
+    </style>
+
+    <div id="meet"/>
+
+    <div id="q-app">
+      <!-- part 4 Videoconference -->
+      <div id="videoconference">
+          <div id="jitsi"></div>
+      </div>
+
+      <div id="extras">
+          <div class="tool" onclick="feedback('🧠')">🧠</div>
+          <div class="tool" onclick="feedback('🥰')">🥰</div>
+          <div class="tool" onclick="feedback('😍')">😍</div>
+          <div class="tool" onclick="feedback('🚀')">🚀</div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+    <script>
+        let hash = location.hash.substring(1); //jitsi room name
+        let id = hash.split(".")[0];
+        let roomName = hash.split(".")[1];
+        let cid = Math.random().toString(); //client id
+        let timer;
+        wss = new ReconnectingWebSocket("wss://brainspell.org/vcrooms");
+        // let wss = new WebSocket("wss://dev1.soichi.us/ohbm2020/");
+
+        console.log(id, roomName);
+        if(!roomName) alert("no room name set in hash");
+
+        const api = new JitsiMeetExternalAPI("meet.jit.si", {
+            roomName,
+            parentNode: document.querySelector('#meet')
+        }).addEventListener("readyToClose", () => {
+            clearInterval(timer);
+            wss.send(JSON.stringify({action: "jitclose", id, cid}));
+        });
+        
+        wss.onopen = () => {
+          wss.send(JSON.stringify({action: "jit", id, cid}));
+          timer = setInterval(()=>{
+            wss.send(JSON.stringify({action: "jit", id, cid}));
+          }, 1000*30);
+        };
+
+        window.addEventListener("beforeunload", function(evt) {
+            wss.send(JSON.stringify({action: "jitclose", id, cid}));
+        });
+
+        function feedbackAnimationStep(timer, elem) {
+          const dx = 500 * Math.random() - 250;
+          const x = parseInt("0" + elem.style.left);
+          const y = parseInt("0" + elem.style.top);
+          const newx = 0.9*x + 0.1*(x+dx);
+          const newy = y - 25;
+          elem.style.left = newx + "px";
+          elem.style.top = newy + "px";
+          if(newy <= 0 ) {
+            clearInterval(timer);
+            elem.remove();
+          }
+        }
+        function feedbackAnimation(emoji) {
+          const elem = document.createElement('div');
+          elem.innerText = emoji;
+          elem.classList.add("feedback");
+          document.body.appendChild(elem);
+          elem.style.left = window.innerWidth/2.0 + "px";
+          elem.style.top = window.innerHeight + "px";
+          const timer = setInterval( () => {
+            feedbackAnimationStep(timer, elem);
+          }, 25);
+        }
+        function feedback(emoji) {
+          feedbackAnimation(emoji);
+          broadcastMessage({type:"feedback", emoji});
+        }
+        api.addEventListener('endpointTextMessageReceived', (rawMsg) => {
+          const text = rawMsg.data.eventData.text;
+          const msg = JSON.parse(text);
+          switch(msg.type) {
+            case "feedback":
+              const emoji = msg.emoji;
+              feedbackAnimation(emoji);
+              break;
+            case "clap":
+              playClapSound();
+              break;
+          }
+        });
+        function broadcastMessage(msg) {
+          for(const participant in api._participants) {
+            let send = true;
+            if(!{}.hasOwnProperty.call(api._participants, participant)) {
+              continue;
+            }
+            const itsme = (api._participants[participant].formattedDisplayName.slice(-5) === " (me)");
+            if(itsme) {
+              continue;
+            }
+            api.executeCommand('sendEndpointTextMessage', participant, JSON.stringify(msg));
+          }
+        }
+
+    </script>
+</body>
+</html>
