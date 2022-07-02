@@ -82,6 +82,9 @@
                     <a class="nav-link" data-value="events" href="#">Events</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/series/">Series</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/projects/">Projects</a>
                 </li>
                 <li class="nav-item">
@@ -90,9 +93,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/videoconference/">Videoconference</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="/ohbm2020/">OHBM posters</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <span class="nav-link" id="loginStatus" style="border-bottom:none"><a style="color:white" href="#" onclick="signIn()">Sign In</a></span>
                 </li>
@@ -104,20 +107,57 @@
     </nav>
 
     <!-- my header -->
-    <header class="header" id="myheader">
+    <header class="header" id="myheader"
+        style="filter:grayscale(0);-webkit-filter: grayscale(0.2);">
         <div class="overlay">
         </div>
         <div class="container no-quasar">
-            <div class="row">
-                <div id="chart"></div>
-                <div id="chart2"></div>
+            <div class="row" style="justify-content: center;">
+                <!-- <div id="chart"></div>
+                <div id="chart2"></div> -->
 
-                <div id="intro" style="color:white;position:absolute;top:8em;right:15%;text-align:left;padding:0.25em">
-                    <h1 id="introbrainweb">BrainWeb</h1>
-                    <h1 id="introneurocollab">NEUROSCIENCE COLLABORATION</h1>
-                    <h1 id="introinthetimeof">IN THE TIME OF THE CORONA</h1>
-                    <h2 id="introkickoff">Upcoming: BrainWeb Metaverse <img src="./images/landing/brainweb_metaverse_head.png" style="width:200px;" /img></h2>
-                    <!-- <a href="https://netneurosci.github.io/networks2021satellite"><h2 id="introkickoff">Upcoming: Network Neuroscience 2021</h2></a> -->
+                <div id="intro" style="color:white;position:absolute;top:8em;text-align:left;padding:0.25em">
+                    <h1 id="introbrainweb" style="margin-bottom:-1.5rem">BrainWeb</h1>
+                    <h1 class="introneurocollab" style="font-size:1.5rem">NEUROSCIENCE COLLABORATION</h1>
+                    
+                    <!-- <h1
+                        class="introneurocollab"
+                        style="font-size:1.5rem;margin-top:3rem;margin-bottom:1rem"
+                    >Next event:</h1>
+                    <h2 id="introkickoff" style="border-bottom:thin solid #999">
+                        BrainWeb Series</h2>
+
+                    <div>
+                        <div style="display:inline-block;width:500px">
+                            <h2 style="font-size:3rem;margin-bottom:3rem">
+                                <span style="font-weight:500;display:block;">Alexandra de Sousa</span>
+                                <i>"Four questions about brain and behaviour"</i>
+                            </h2>        
+                            <div style="font-size:1.5rem;margin-bottom:1rem">Join us 25 April 2022</div>
+                            <p style="font-size: 1.25rem;column-count: 2;">
+                                🌍 UTC 3pm <br />
+                                🇫🇷 Paris 5pm<br />
+                                🇺🇸 New York 11am<br />
+                                🇨🇦 Vancouver 8am<br />
+                                🇮🇳 Kanpur 8.30pm
+                            </p>
+                            <p>
+                                <a
+                                    data-value="events"
+                                    href="/#events"
+                                    style="border-bottom:thin solid white"
+                                >More details...</a>
+                            </p>
+                        </div>
+                        <div style="text-align: center; display:inline-block; vertical-align: top;">
+                            <img
+                                alt="Phylogenetic tree"
+                                src="./images/landing/AleAliSousa_mod.png"
+                                style="width:500px;padding-left: 20px; margin: 1rem" />
+                        </div>
+                    </div> -->
+
+                <!-- <a href="https://netneurosci.github.io/networks2021satellite"><h2 id="introkickoff">Upcoming: Network Neuroscience 2021</h2></a> -->
 
                     <!-- <p><a href="https://meet.jit.si/BrainWeb" target="_blank"><span style="font-size:32px;margin-left:0px;">&#x2615;</span> &nbsp;European Coffee: 8 am UTC</a></p><br/> -->
                     <!-- <p><a href="https://meet.jit.si/BrainWeb" target="_blank"><span style="font-size:44px;margin-left:-6px;">&#x1F964;</span> American Coffee: 2 pm UTC</a></p><br/> -->
@@ -128,8 +168,26 @@
                     <!-- <p><a href="/videoconference/" target="_blank"><span style="font-size:38px;">&#x1F375;</span> Global C&C at 5 pm UTC</a></p><br/> -->
 
                     <!-- for next event -->
-                    <p><a href="/videoconference/" target="_blank"><span style="font-size:38px;">&#x1F916;</span> Join us 6 to 8 December 2021</a></p><br/>
+                    <!-- emoji -->
+                    <!-- <span style="font-size:38px;">&#x1F916;</span> -->
+                <!-- </div> -->
+                <!-- <div> -->
+                    <iframe
+                        width="1000px"
+                        height="600px"
+                        frameborder="0"
+                        marginheight="0"
+                        marginwidth="0"
+                        allowtransparency="true"
+                        src="https://www.crowdcast.io/e/a-mind-set-in-stone?navlinks=false&embed=true"
+                        style="border: 1px solid #EEE;border-radius:3px"
+                        allowfullscreen="true"
+                        webkitallowfullscreen="true"
+                        mozallowfullscreen="true"
+                        allow="microphone; camera;"
+                    ></iframe>
                 </div>
+
                 <span class="btn-scroll-down scroll"></span>
 
             </div>
@@ -158,8 +216,8 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 desc">
                     <h3>The BrainWeb</h3>
                     <p>
-                        BrainWeb is a permanent virtual space for online collaborations on projects related to neuroscience. Inspired by initiatives such as Brainhack Global, the OHBM Hackathon, and the OHBM Equinox Brain Twitter Conference, BrainWeb aims at providing an online
-                        workspace to facilitate distributed collaboration on a continuous basis. <br> Let's connect as a community around the globe once every 6 weeks via <a href="https://meet.jit.si/BrainWeb" style="cursor:pointer">videoconference</a>                        where anyone can join in flexibly.
+                        BrainWeb is a permanent virtual space for online collaborations on projects related to neuroscience. Inspired by initiatives such as Brainhack Global, BrainWeb aims at providing an online
+                        workspace to facilitate distributed collaboration on a continuous basis.
                         <br/><br/>
                     </p>
                 </div>
@@ -177,9 +235,9 @@
                 </div>
                 <!-- right side 2 -->
                 <div class="col-lg-8 col-md-8 col-sm-12 desc">
-                    <h3>Coding, coffee & collaborations</h3>
+                    <h3>Online collaboration</h3>
                     <p>
-                        We are inviting all nodes of the BrainWeb to coffee & catch up every 6 weeks. This will be our regular opportunity to chat, present our progress if you wish, do spontaneous unconferences or kick off new projects and collaborations. <br>                        BrainWeb’s kickoff meeting is April 6th, shortly after the OHBMX Twitter conference and neuromatch 2020 have stimulated endless new ideas and enthusiasm. <a href="https://meet.jit.si/BrainWeb" style="cursor:pointer">Let’s get together at 3pm UTC on the BrainWeb</a>!
+                        We catch up online every 6 weeks: This is our regular opportunity to chat, present our progress, do spontaneous unconferences or kick off new projects and collaborations.
                         <br>
                         <br>
                     </p>
@@ -200,8 +258,8 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 desc">
                     <h3>Propose a project</h3>
                     <p>
-                        Before, during, and after the BrainWeb kickoff we will keep track of all BrainWeb projects. All you need to do to add your project to the BrainWeb community is to create a repository on GitHub and to add “BrainWeb” as a <i>topic</i>.
-                        <br> During our meetings, you are invited to pitch your project, find enthusiasts, break out into smaller meetings in parallel, and continue to work in teams after the online BrainWeb meeting.
+                        Before, during, and after the BrainWeb hackathons we will keep track of all BrainWeb projects. All you need to do to add your project to the BrainWeb community is to create a repository on GitHub and to add “BrainWeb” as a <i>topic</i>.
+                        <br> During our meetings, you are invited to pitch your project, find collaborators, break out into smaller meetings in parallel, and continue to work in teams after the online BrainWeb meeting.
                     </p>
                 </div>
                 <!-- left side 4 -->
@@ -220,7 +278,7 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 desc">
                     <h3>Communication</h3>
                     <p>
-                        While we all meet in the <a href="/videoconference/" target="_blank" style="cursor:pointer">main Jitsi</a>, you can also create your own, more focused videoconference room to discuss & brainstorm in parallel. You will be able to find the
+                        While we all meet in the <a href="/videoconference/" target="_blank" style="cursor:pointer">videoconference</a> space, you can also create your own, more focused videoconference room to discuss & brainstorm in parallel. You will be able to find the
                         list of all simultaneous project rooms in our shared Google Doc below. <br> We also encourage you to create a channel on <a href="https://mattermost.brainhack.org/signup_user_complete/?id=orpd9qqjb7gqpnwg5k1fdagrqa" target="_blank"
                             style="cursor:pointer">Brainhack’s Mattermost</a> , to keep track of your progress and collaborate in between BrainWeb meetings. This will also make it easier for new collaborators to learn about what your team has already achieved.
                     </p>
@@ -241,7 +299,13 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 desc">
                     <h3>Format</h3>
                     <p>
-                        BrainWeb will kick off with project pitches as a start into 3 days of hacking together, unconferencing, coffee chats and a peek into project progress. At the end of the 3 days, each team is invited to share updates on their projects with the entire community!<br>                        Let's work together no matter where we are!
+                        The <b>BrainWeb Series</b> will host an invited speaker every month aiming at lively discussions and creating interconnections beyond our labs between topics of our interest around evolution, development, philosophy, art, physics, computational geometry, computational neuroscience, neuroinformatics, and more! <br />
+                        <br />
+                        The <b>BrainWeb Catch up</b> will be our regular opportunity to chat, present our progress if you wish, do spontaneous unconferences or kick off new projects and collaborations. <br />
+                        <br />
+                        The <b>BrainWeb Hackathons</b> will combine project pitches as a start into 3 days of hacking together, unconferencing, coffee chats and a peek into project progress. At the end of the 3 days, each team is invited to share updates on their projects with the entire community!<br>
+                        <br />
+                        Let's work together no matter where we are!
                     </p>
                 </div>
             </div>
@@ -265,7 +329,7 @@
                 <!-- left side 1 -->
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <div data-aos="fade-in" data-aos-duration="3000" data-aos-offset="0">
-                        <img src="./images/landing/events_2.jpg" style="width:60%;filter:grayscale(70%) contrast(100%) opacity(90%); -webkit-filter:grayscale(70%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
+                        <img src="https://www.eva.mpg.de/fileadmin/_processed_/3/c/csm_Gunz_Philipp_Portrait_2018_1_033181cfe5.jpg" style="width:60%;margin-left:30%;filter:grayscale(0%) contrast(100%) opacity(90%); -webkit-filter:grayscale(0%) contrast(100%) opacity(90%);" class="img-fluid" alt="">
                     </div>
                     <div>
                         <p><br></p>
@@ -273,21 +337,34 @@
                 </div>
                 <!-- right side 1 -->
                 <div class="col-lg-8 col-md-8 col-sm-12 desc">
-                    <h3>BrainWeb Kickoff & 3-day Hackathon</h3>
+                    <h3>BrainWeb Series</h3>
+                    <p>05.07.2022. 3pm UTC</p>
+                    <p2 style="font-weight:900;font-size:16px;padding-top:0px;padding-bottom:0px;">Philipp Gunz &nbsp;&nbsp;</p2>
+                    <!-- <a href="https://twitter.com/AleAliSousa"><img src="/images/logo/twitter.png" style="width:17px;padding:0px;"></img>AleAliSousa</a> -->
+                    
                     <p>
-                        <b style="font-weight:900;">April 6 Kickoff</b><br/> BrainWeb’s kickoff meeting is April 6th, shortly after the OHBMX Twitter conference, and neuromatch 2020 have stimulated new ideas and enthusiasm. <a href="https://meet.jit.si/BrainWeb"
-                            target="_blank" style="color:white; cursor: pointer">Let’s get together at 3pm UTC on the BrainWeb!</a><br><br>
-                        <b style="font-weight:900;">3-day Hackathon</b><br/> The 3-day Hackathon will feature project pitches, have room for ignite talks & spontaneous unconferences, coffee & chats, and of course hacking together. At the end of the 3
-                        days, each team can share updates on their projects with the entire community. <br> Let's work together no matter where we are!
-                        <br/><br/><br/>
+                        <b style="font-weight:900;">A mind set in stone: fossil traces of human brain evolution</b><br/> 
+                        Brains do not fossilise, but as they grow and expand during fetal and infant development, they leave an imprint in the bony braincase. Such imprints of fossilised braincases provide direct evidence of brain evolution, but the underlying biological changes have remained elusive. Combining data from fossil skulls, ancient genomes, brain imaging and gene expression helps shed light on the evolutionary changes shaping the human brain. I will highlight two examples separated by more than 3 million years: the evolution of brain growth in Lucy and her kind, and differences between modern humans and Neanderthals. <br />
+                        <br />
+                        <a href="https://www.crowdcast.io/e/a-mind-set-in-stone"
+                            target="_blank" style="color:white; cursor: pointer">Let’s get together at 3pm UTC on Crowdcast!</a><br><br>
+                        <b style="font-weight:900;">Biosketch</b><br/> 
+                        Dr. Philipp Gunz is a biological anthropologist who studies the evolution of human development. Philipp obtained his PhD at the University of Vienna (2005), and works as a group leader at the Max Planck Institute for Evolutionary Anthropology in Leipzig, Germany. He is a specialist for the reconstruction of fossil skulls from computed tomographic scans, and the statistical analysis of shape. You can find out more about his research on: <a href="https://www.evodevo.de" target="_blank">https://www.evodevo.de</a>. <br/><br/>
+                        <!-- <br/><br/><br/> -->
+                        <!-- <br> Let's discuss together no matter where we are! -->
+                    </p>
+                    <p>
+                        <b style="font-weight:900;"><a href="./series/">> Past talks</a></b><br/> 
+                        <br/><br/>
                     </p>
                 </div>
             </div>
-            <div id="csv">
+            <!-- Agenda -->
+            <!-- <div id="csv">
                 <h1 style="padding-bottom:2rem;">Agenda</h1>
                     <p style="padding-top:2rem; line-height:1.7em;">Please add the links to your breakout topic discussion rooms to our <a href="https://docs.google.com/spreadsheets/d/1q7KD6JnA1G8LBbHt1Dw5Aqje3c-6L6y4V4cqGbVohPY/edit#gid=0">BrainWeb topic session Google sheet</a> and they will automatically
                         appear here in real time for the community to join.</p>
-            </div>
+            </div> -->
         </div>
         <div class="row mainpageparts hide" id="CoC" style="width:100%; position:absolute; bottom:-10px; margin:0;padding:0;border:0; color:white; background:#000000;">
             <p style="font-size:14px;position:absolute;left:50%;transform: translate(-50%,0);">Made with love &nbsp; ❤ &nbsp; Please respect the <a href="https://github.com/brain-web/brain-web.github.io/blob/master/CoC.md" target="_blank">BrainWeb Code of Conduct.</a></p>

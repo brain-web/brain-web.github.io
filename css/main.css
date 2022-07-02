@@ -217,7 +217,7 @@ button:active,.button:active:focus,.button:visited {
     margin-bottom: 0.5rem;
     margin-top:5 !important;
 }
-#introneurocollab {
+.introneurocollab {
     font-family: 'Raleway', sans-serif;
     font-size: 1.4rem;
     line-height: 1.2;
