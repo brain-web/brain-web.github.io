@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Network Neuroscience 2021</title>
+  <title>Brain-Web Videoconference Room</title>
   <script src="https://meet.jit.si/external_api.js"></script>
 </head>
 <body>
@@ -68,6 +68,8 @@
 
         console.log(id, roomName);
         if(!roomName) alert("no room name set in hash");
+
+        document.title = `${roomName} Room`;
 
         const api = new JitsiMeetExternalAPI("jitsi.deuxfleurs.fr", { // "meet.jit.si", {
             roomName,
