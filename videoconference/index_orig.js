@@ -1,6 +1,6 @@
 /* eslint-disable radix */
 
-const domain = 'meet.jit.si';
+const domain = 'jitsi.deuxfleurs.fr'; // 'meet.jit.si';
 const options = {
   roomName: 'BrainWeb',
   width: "100%",
