@@ -74,7 +74,8 @@
         const api = new JitsiMeetExternalAPI("jitsi.deuxfleurs.fr", { // "meet.jit.si", {
             roomName,
             parentNode: document.querySelector('#meet')
-        }).addEventListener("readyToClose", () => {
+        });
+        api.addEventListener("readyToClose", () => {
             clearInterval(timer);
             wss.send(JSON.stringify({action: "jitclose", id, cid}));
         });
